@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using Interface;
 using UnityEngine;
-using UnityEngine.Serialization;
 using XenoScriptableObject;
 
 namespace Manager
@@ -38,8 +36,7 @@ namespace Manager
         private async Awaitable FillGrid()
         {
             await Awaitable.BackgroundThreadAsync();
-
-            bool[,,] unitShape = new bool[4, 4, 4];
+            
             foreach (var putUnitData in PutUnitDataList)
             {
                 UnitData unit = _allUnitData.AllUnit[(int)putUnitData.unitType][putUnitData.UnitId];
@@ -57,6 +54,17 @@ namespace Manager
                     case UnitRotate.Right270:
                         shape = RotateRight270(shape);
                         break;
+                }
+
+                for (int z = 0; z < 4; z++)
+                {
+                    for (int y = 0; y < 4; y++)
+                    {
+                        for (int x = 0; x < 4; x++)
+                        {
+                            Grid[x + putUnitData.Position.x, y + putUnitData.Position.y, z] = shape[x, y, z];
+                        }
+                    }
                 }
             }
         }
@@ -92,7 +100,7 @@ namespace Manager
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public bool[,,] RotateRight90(bool[,,] matrix)
+        private bool[,,] RotateRight90(bool[,,] matrix)
         {
             bool[,,] result = new bool[4, 4, 4];
             for (int z = 0; z < 4; z++)
@@ -114,7 +122,7 @@ namespace Manager
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public bool[,,] RotateRight180(bool[,,] matrix)
+        private bool[,,] RotateRight180(bool[,,] matrix)
         {
             bool[,,] result = new bool[4, 4, 4];
             for (int z = 0; z < 4; z++)
@@ -136,7 +144,7 @@ namespace Manager
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public bool[,,] RotateRight270(bool[,,] matrix)
+        private bool[,,] RotateRight270(bool[,,] matrix)
         {
             bool[,,] result = new bool[4, 4, 4];
             for (int z = 0; z < 4; z++)
