@@ -5,6 +5,6 @@ namespace Manager
 {
     public class InGameManager : MonoBehaviour, IManager
     {
-    
+        
     }
 }
