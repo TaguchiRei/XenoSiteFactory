@@ -19,21 +19,7 @@ namespace Manager
         /// <summary>
         /// グリッドに設置されている物を保存する
         /// </summary>
-        public List<PutUnitData> PutUnitData { get; private set; }
-
-        private void Start()
-        {
-            for (int i = 1; i <= 4; i++)
-            {
-                for (int j = 1; j <= 4; j++)
-                {
-                    for (int k = 1; k <= 4; k++)
-                    {
-                        Debug.Log(i*j*k);
-                    }
-                }
-            }
-        }
+        public List<PutUnitData> PutUnitDataList { get; private set; }
 
         /// <summary>
         /// 初期化時に呼び出される
@@ -41,7 +27,7 @@ namespace Manager
         public void Initialize()
         {
             Grid = new bool[gridSize, gridSize, gridSize];
-            PutUnitData = new();
+            PutUnitDataList = new();
         }
 
         /// <summary>
@@ -50,9 +36,24 @@ namespace Manager
         private async Awaitable FillGrid()
         {
             await Awaitable.BackgroundThreadAsync();
-            foreach (var unitData in PutUnitData)
-            {
 
+            bool[,,] unitShape = new bool[4, 4, 4];
+            foreach (var unitData in PutUnitDataList)
+            {
+                Vector2Int basePos = unitData.Position;
+                Vector2Int baseDir = unitData.Direction;
+                PutUnitData data = unitData;
+                
+                for (int z = 1; z <= 4; z++)
+                {
+                    for (int y = 1; y <= 4; y++)
+                    {
+                        for (int x = 1; x <= 4; x++)
+                        {
+                            //if( x * y * z - 1 )
+                        }
+                    }
+                }
             }
         }
     }
