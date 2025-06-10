@@ -437,7 +437,7 @@ GameObject:
   - component: {fileID: 1638573850}
   - component: {fileID: 1638573849}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: DIContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94899f4ba1fb335409a8d8c3f6220973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  managerSceneName: 
+  managerSceneName: InGameManagerScene
 --- !u!4 &1638573850
 Transform:
   m_ObjectHideFlags: 0
