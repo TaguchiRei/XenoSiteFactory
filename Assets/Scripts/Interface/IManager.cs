@@ -1,3 +1,5 @@
+using DIContainer;
+
 namespace Interface
 {
     /// <summary>
@@ -7,7 +9,7 @@ namespace Interface
     {
         sealed void Register()
         {
-            
+            DiContainer.Instance.Register(this);
         }
     }
 }
