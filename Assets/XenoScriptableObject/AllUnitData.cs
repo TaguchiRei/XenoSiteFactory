@@ -1,11 +1,19 @@
+using System;
 using Manager;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace XenoScriptableObject
 {
     [CreateAssetMenu(menuName = "ScriptableObject/AllUnitData")]
-    public class AllUnitData : UnityEngine.ScriptableObject
+    public class AllUnitData : ScriptableObject
     {
-        public UnitData[][] AllUnit;
+        [FormerlySerializedAs("AllUnitArray")] public UnitDataArray[] UnitTypeArray;
+    }
+
+    [Serializable]
+    public class UnitDataArray
+    {
+        public UnitData[] AllUnit;
     }
 }
