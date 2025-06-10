@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 namespace DIContainer
 {
@@ -26,6 +26,7 @@ namespace DIContainer
             {
                 Destroy(gameObject);
             }
+            KeyLogger.Log("Initialize Complete");
         }
 
         private void Start()
@@ -52,7 +53,7 @@ namespace DIContainer
             }
             else
             {
-                Debug.Log($"type {typeof(T)} not found");
+                KeyLogger.Log($"type {typeof(T)} not found");
                 instance = default;
                 return false;
             }
