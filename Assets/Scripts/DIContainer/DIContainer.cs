@@ -2,35 +2,43 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace DIContainer
 {
     public class DiContainer : MonoBehaviour
     {
-        [SerializeField] private Scene _managerScene;
+        [SerializeField] private string managerSceneName;
 
         private Dictionary<Type, object> _container;
 
         public static DiContainer Instance;
+
         private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
+                _container = new();
+                DontDestroyOnLoad(gameObject);
             }
             else
             {
                 Destroy(gameObject);
             }
-            _container = new();
+        }
+
+        private void Start()
+        {
+            SceneManager.LoadScene(managerSceneName, LoadSceneMode.Additive);
         }
 
         public void Register<T>(T instance)
         {
-            _container.Add(typeof(T), instance);
+            _container[typeof(T)] = instance;
         }
 
-        public void Unregister<T>(T instance)
+        public void Unregister<T>()
         {
             _container.Remove(typeof(T));
         }
@@ -48,11 +56,6 @@ namespace DIContainer
                 instance = default;
                 return false;
             }
-        }
-
-        private void Start()
-        {
-            SceneManager.LoadScene(_managerScene.buildIndex);
         }
     }
 }
