@@ -26,12 +26,12 @@ namespace DIContainer
             {
                 Destroy(gameObject);
             }
-            KeyLogger.Log("Initialize Complete");
+            KeyLogger.Log("Initialize Complete",this);
         }
 
         private void Start()
         {
-            SceneManager.LoadScene(managerSceneName, LoadSceneMode.Additive);
+            if(!string.IsNullOrEmpty(managerSceneName)) SceneManager.LoadScene(managerSceneName, LoadSceneMode.Additive);
         }
 
         public void Register<T>(T instance)
