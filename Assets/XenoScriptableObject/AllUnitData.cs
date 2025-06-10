@@ -6,6 +6,6 @@ namespace XenoScriptableObject
     [CreateAssetMenu(menuName = "ScriptableObject/AllUnitData")]
     public class AllUnitData : UnityEngine.ScriptableObject
     {
-        private UnitData[] AllUnit;
+        public UnitData[][] AllUnit;
     }
 }
