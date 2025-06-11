@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
+using Unity.VisualScripting;
 using UnityEngine;
 using XenoScriptableObject;
 using Random = UnityEngine.Random;
@@ -24,7 +25,7 @@ namespace Manager
         /// </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
 
-        private Awaitable _awaitable;
+        private Awaitable<bool[,,]> _awaitable;
 
         private void Start()
         {
@@ -58,26 +59,29 @@ namespace Manager
         /// <summary>
         /// グリッドを設置済みユニットデータを利用して埋める
         /// </summary>
-        private async Awaitable FillGrid()
+        private async Awaitable<bool[,,]> FillGrid()
         {
             await Awaitable.BackgroundThreadAsync();
+            bool[,,] grid = new bool[_gridSize, _height, _gridSize];
 
             foreach (var putUnitData in PutUnitDataList)
             {
                 UnitData unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
 
-                //boolの配列を回転
-                var shape = GetUnitShape(unit.UnitShape);
+                ulong rotateShape = 0;
                 switch (putUnitData.Direction)
                 {
+                    case UnitRotate.Default:
+                        rotateShape = unit.UnitShape;
+                        break;
                     case UnitRotate.Right90:
-                        shape = RotateRightBoolBase90(shape);
+                        rotateShape = RotateRightUlongBase90(unit.UnitShape);
                         break;
                     case UnitRotate.Right180:
-                        shape = RotateRightBoolBase180(shape);
+                        rotateShape = RotateRightUlongBase180(unit.UnitShape);
                         break;
                     case UnitRotate.Right270:
-                        shape = RotateRight270BoolBase(shape);
+                        rotateShape = RotateRightUlongBase270(unit.UnitShape);
                         break;
                 }
 
@@ -88,14 +92,16 @@ namespace Manager
                     {
                         for (int x = 0; x < 4; x++)
                         {
-                            Grid[x + putUnitData.Position.x, y, z + putUnitData.Position.y] = shape[x, y, z];
+                            var bitPos = x + z * 4 + y * 16;
+                            grid[putUnitData.Position.x + x, y, putUnitData.Position.y + z] =
+                                (rotateShape & ((ulong)1 << bitPos)) != 0;
                         }
                     }
                 }
             }
 
             await Awaitable.MainThreadAsync();
-            Debug.Log("Grid Fill Success");
+            return grid;
         }
 
         /// <summary>
@@ -138,13 +144,67 @@ namespace Manager
                 {
                     for (int x = 0; x < 4; x++)
                     {
+                        int baseBit = x + z * 4 + y * 16;
                         //回転させない場合はx + z * 4 + y * 16 でビットの位置が決まる
                         //回転後のbitの位置は座標にしてx = z 、y = y、z = 3 - xで求められる。
-                        int bitPos = z + (3 - x) * 4 + (y * 16);
-                        returnShape |= (ulong)1 << bitPos;
+                        if (((shape >> baseBit) & 1UL) != 0)
+                        {
+                            int bitPos = z + (3 - x) * 4 + (y * 16);
+                            returnShape |= (ulong)1 << bitPos;
+                        }
                     }
                 }
             }
+
+            return returnShape;
+        }
+
+        /// <summary>
+        /// ulong型で保存されるユニットの形状をy軸ベースで90度回転させる　
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <returns></returns>
+        private ulong RotateRightUlongBase180(ulong shape)
+        {
+            ulong returnShape = 0;
+            for (int y = 0; y < 4; y++)
+            {
+                for (int z = 0; z < 4; z++)
+                {
+                    for (int x = 0; x < 4; x++)
+                    {
+                        int baseBit = x + z * 4 + y * 16;
+                        if (((shape >> baseBit) & 1UL) != 0)
+                        {
+                            int bitPos = (3 - z) + (3 - x) * 4 + (y * 16);
+                            returnShape |= (ulong)1 << bitPos;
+                        }
+                    }
+                }
+            }
+
+            return returnShape;
+        }
+
+        private ulong RotateRightUlongBase270(ulong shape)
+        {
+            ulong returnShape = 0;
+            for (int y = 0; y < 4; y++)
+            {
+                for (int z = 0; z < 4; z++)
+                {
+                    for (int x = 0; x < 4; x++)
+                    {
+                        int baseBit = x + z * 4 + y * 16;
+                        if (((shape >> baseBit) & 1UL) != 0)
+                        {
+                            int bitPos = (3 - z) + (x * 4) + (y * 16);
+                            returnShape |= (ulong)1 << bitPos;
+                        }
+                    }
+                }
+            }
+
             return returnShape;
         }
 
@@ -197,7 +257,7 @@ namespace Manager
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        private bool[,,] RotateRight270BoolBase(bool[,,] matrix)
+        private bool[,,] RotateRightBoolBase270(bool[,,] matrix)
         {
             bool[,,] result = new bool[4, 4, 4];
             for (int y = 0; y < 4; y++)
@@ -216,7 +276,7 @@ namespace Manager
 
         private void OnDrawGizmos()
         {
-            if (Grid == null || _awaitable == null || !_awaitable.IsCompleted) return;
+            if (Grid == null || _awaitable == null || !_awaitable) return;
             Gizmos.color = Color.red;
             for (int z = 0; z < _gridSize; z++)
             {
