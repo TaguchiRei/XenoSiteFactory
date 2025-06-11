@@ -17,6 +17,7 @@ namespace Manager
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
         [SerializeField, Range(4, 10)] private int _height;
         [SerializeField] private AllUnitData _allUnitData;
+        [SerializeField] private GameObject _gridCollider;
         
         /// <summary>
         /// グリッドが占有されているエリアを保存する
@@ -53,15 +54,24 @@ namespace Manager
             Initialize();
         }
 
-        private async UniTask MakeWait()
+        private async UniTask GenerateCollider()
         {
-            KeyLogger.Log("Stopwatch Start");
-            Stopwatch stopwatch1 = new Stopwatch();
-            stopwatch1.Start();
-            var result1 = await FillGridDUlongBase();
-            stopwatch1.Start();
-            KeyLogger.Log("stopWatch1 FillGridDUlongBase" + stopwatch1.ElapsedMilliseconds + "ms");
+            DUlongGrid = await FillGridDUlongBase();
             _gridCreated = true;
+            
+            for (int z = 0; z < _gridSize; z++)
+            {
+                for (int y = 0; y < _height; y++)
+                {
+                    for (int x = 0; x < _gridSize; x++)
+                    {
+                        if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
+                        {
+                            Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -69,7 +79,7 @@ namespace Manager
         /// </summary>
         public void Initialize()
         {
-            _ = MakeWait();
+            _ = GenerateCollider();
         }
         
 
@@ -211,7 +221,7 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            Gizmos.DrawWireCube(new Vector3(x + 5, y, z), Vector3.one);
+                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
                         }
                     }
                 }
