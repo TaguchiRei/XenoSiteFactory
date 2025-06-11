@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Unity.VisualScripting;
@@ -25,7 +26,7 @@ namespace Manager
         /// </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
 
-        private Awaitable<bool[,,]> _awaitableBoolArray;
+        private bool _gridCreated;
 
         private void Start()
         {
@@ -43,8 +44,14 @@ namespace Manager
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
             }
-
             Initialize();
+        }
+
+        private async UniTask MakeWait()
+        {
+            var result = await FillGrid();
+            Grid = result;
+            _gridCreated = true;
         }
 
         /// <summary>
@@ -53,7 +60,7 @@ namespace Manager
         public void Initialize()
         {
             Grid = new bool[_gridSize, _height, _gridSize];
-            _awaitableBoolArray = FillGrid();
+            _ = MakeWait();
         }
 
         /// <summary>
@@ -275,7 +282,7 @@ namespace Manager
 
         private void OnDrawGizmos()
         {
-            if (Grid == null || _awaitableBoolArray == null) return;
+            if (Grid == null || !_gridCreated) return;
             Gizmos.color = Color.red;
             for (int z = 0; z < _gridSize; z++)
             {
