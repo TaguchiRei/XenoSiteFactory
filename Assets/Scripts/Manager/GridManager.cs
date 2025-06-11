@@ -153,9 +153,10 @@ namespace Manager
                         for (int x = 0; x < 4; x++)
                         {
                             int bitPosition = x + z * 4 + y * 16;
+                            int gridZ = putUnitData.Position.y + z;
                             if ((rotateShape & ((ulong)1 << bitPosition)) != 0)
                             {
-                                grid[putUnitData.Position.x + x, y] |= _oneDUlong << bitPosition;
+                                grid[putUnitData.Position.x + x, y] |= _oneDUlong << gridZ;
                             }
                         }
                     }
@@ -361,9 +362,9 @@ namespace Manager
                 {
                     for (int x = 0; x < _gridSize; x++)
                     {
-                        if ((DUlongGrid[x, y] & (_oneDUlong << z)) == _oneDUlong)
+                        if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
+                            Gizmos.DrawWireCube(new Vector3(x + 5, y, z), Vector3.one);
                         }
                     }
                 }
