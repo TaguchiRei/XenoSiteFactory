@@ -221,7 +221,7 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            Gizmos.DrawWireCube(new Vector3(x + 5, y, z), Vector3.one);
+                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
                         }
                     }
                 }
