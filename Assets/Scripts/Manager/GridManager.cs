@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
+using GamesKeystoneFramework.KeyMathBit;
 using Interface;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,12 +22,17 @@ namespace Manager
         /// </summary>
         public bool[,,] Grid { get; private set; }
 
+        public DUlong[,] DUlongGrid { get; private set; }
+
         /// <summary>
         /// グリッドに設置されている物を保存する
         /// </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
 
         private bool _gridCreated;
+
+        private readonly DUlong _oneDUlong = new DUlong(0, 1);
+
 
         private void Start()
         {
@@ -44,13 +50,16 @@ namespace Manager
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
             }
+
             Initialize();
         }
 
         private async UniTask MakeWait()
         {
-            var result = await FillGrid();
-            Grid = result;
+            var result1 = await FillGridDUlongBase();
+            var result2 = await FillGridBoolBase();
+            DUlongGrid = result1;
+            Grid = result2;
             _gridCreated = true;
         }
 
@@ -66,7 +75,7 @@ namespace Manager
         /// <summary>
         /// グリッドを設置済みユニットデータを利用して埋める
         /// </summary>
-        private async Awaitable<bool[,,]> FillGrid()
+        private async Awaitable<bool[,,]> FillGridBoolBase()
         {
             await Awaitable.BackgroundThreadAsync();
             bool[,,] grid = new bool[_gridSize, _height, _gridSize];
@@ -102,6 +111,52 @@ namespace Manager
                             var bitPos = x + z * 4 + y * 16;
                             grid[putUnitData.Position.x + x, y, putUnitData.Position.y + z] =
                                 (rotateShape & ((ulong)1 << bitPos)) != 0;
+                        }
+                    }
+                }
+            }
+
+            await Awaitable.MainThreadAsync();
+            return grid;
+        }
+
+        private async Awaitable<DUlong[,]> FillGridDUlongBase()
+        {
+            await Awaitable.BackgroundThreadAsync();
+            DUlong[,] grid = new DUlong[_gridSize, _height];
+
+            foreach (var putUnitData in PutUnitDataList)
+            {
+                UnitData unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
+                ulong rotateShape = 0;
+
+                switch (putUnitData.Direction)
+                {
+                    case UnitRotate.Default:
+                        rotateShape = unit.UnitShape;
+                        break;
+                    case UnitRotate.Right90:
+                        rotateShape = RotateRightUlongBase90(unit.UnitShape);
+                        break;
+                    case UnitRotate.Right180:
+                        rotateShape = RotateRightUlongBase180(unit.UnitShape);
+                        break;
+                    case UnitRotate.Right270:
+                        rotateShape = RotateRightUlongBase270(unit.UnitShape);
+                        break;
+                }
+
+                for (int y = 0; y < 4; y++)
+                {
+                    for (int z = 0; z < 4; z++)
+                    {
+                        for (int x = 0; x < 4; x++)
+                        {
+                            int bitPosition = x + z * 4 + y * 16;
+                            if ((rotateShape & ((ulong)1 << bitPosition)) != 0)
+                            {
+                                grid[putUnitData.Position.x + x, y] |= _oneDUlong << bitPosition;
+                            }
                         }
                     }
                 }
@@ -255,6 +310,7 @@ namespace Manager
                     }
                 }
             }
+
             return result;
         }
 
@@ -291,6 +347,21 @@ namespace Manager
                     for (int x = 0; x < _gridSize; x++)
                     {
                         if (Grid[x, y, z])
+                        {
+                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
+                        }
+                    }
+                }
+            }
+
+            Gizmos.color = Color.green;
+            for (int z = 0; z < _gridSize; z++)
+            {
+                for (int y = 0; y < _height; y++)
+                {
+                    for (int x = 0; x < _gridSize; x++)
+                    {
+                        if ((DUlongGrid[x, y] & (_oneDUlong << z)) == _oneDUlong)
                         {
                             Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
                         }
