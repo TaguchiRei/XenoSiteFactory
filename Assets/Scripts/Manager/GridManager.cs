@@ -25,7 +25,7 @@ namespace Manager
         /// </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
 
-        private Awaitable<bool[,,]> _awaitable;
+        private Awaitable<bool[,,]> _awaitableBoolArray;
 
         private void Start()
         {
@@ -53,7 +53,7 @@ namespace Manager
         public void Initialize()
         {
             Grid = new bool[_gridSize, _height, _gridSize];
-            _awaitable = FillGrid();
+            _awaitableBoolArray = FillGrid();
         }
 
         /// <summary>
@@ -248,7 +248,6 @@ namespace Manager
                     }
                 }
             }
-
             return result;
         }
 
@@ -276,7 +275,7 @@ namespace Manager
 
         private void OnDrawGizmos()
         {
-            if (Grid == null || _awaitable == null || !_awaitable) return;
+            if (Grid == null || _awaitableBoolArray == null) return;
             Gizmos.color = Color.red;
             for (int z = 0; z < _gridSize; z++)
             {
