@@ -56,11 +56,7 @@ namespace Manager
         private async UniTask MakeWait()
         {
             KeyLogger.Log("Stopwatch Start");
-            Stopwatch stopwatch1 = new Stopwatch();
-            stopwatch1.Start();
-            var result1 = await FillGridDUlongBase();
-            stopwatch1.Start();
-            KeyLogger.Log("stopWatch1 FillGridDUlongBase" + stopwatch1.ElapsedMilliseconds + "ms");
+            DUlongGrid = await FillGridDUlongBase();
             _gridCreated = true;
         }
 
