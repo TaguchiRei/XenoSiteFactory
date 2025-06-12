@@ -8,6 +8,11 @@ namespace Player
     {
         public bool IsPaused { get; set; }
 
+        private void Start()
+        {
+            
+        }
+
         private void Update()
         {
             if(IsPaused) return;

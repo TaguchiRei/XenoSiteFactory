@@ -82,13 +82,13 @@ namespace Manager
             /// </summary>
             Observe = 0,
             /// <summary>
-            /// 一日が始まったばかりの状態。処理を終えた後にObserveに切り替わる。　一時停止される
-            /// </summary>
-            DayStart = 1,
-            /// <summary>
             /// 生産ラインを作るための状態。終わるとObserveに切り替わる　　一時停止される
             /// </summary>
-            BuildMode = 2,
+            BuildMode = 1,
+            /// <summary>
+            /// 一日が始まったばかりの状態。処理を終えた後にObserveに切り替わる。　一時停止される
+            /// </summary>
+            DayStart = 2,
             /// <summary>
             /// メニューを開いているときの状態。メニューを閉じるとObserveに切り替わる。　　一時停止される
             /// </summary>

@@ -28,27 +28,42 @@ namespace Player
         #region Player
         public void OnMove(InputAction.CallbackContext context)
         {
-            OnMoveAction?.Invoke();
+            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            {
+                OnMoveAction?.Invoke();
+            }
         }
 
         public void OnInteract(InputAction.CallbackContext context)
         {
-            OnInteractAction?.Invoke();
+            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            {
+                OnInteractAction?.Invoke();
+            }
         }
 
         public void OnPrevious(InputAction.CallbackContext context)
         {
-            OnPreviousAction?.Invoke();
+            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            {
+                OnPreviousAction?.Invoke();
+            }
         }
 
         public void OnNext(InputAction.CallbackContext context)
         {
-            OnNextAction?.Invoke();
+            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            {
+                OnNextAction?.Invoke();
+            }
         }
 
         public void OnMouseMove(InputAction.CallbackContext context)
         {
-            OnMouseMoveAction?.Invoke();
+            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            {
+                OnMouseMoveAction?.Invoke();
+            }
         }
 
         #endregion
