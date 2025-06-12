@@ -29,6 +29,10 @@ namespace Manager
             DayState = InGameState.DayStart;
             
             yield return null;
+            DayState = InGameState.Observe;
+
+            yield return null;
+            DayState = InGameState.DayEnd;
         }
         
         public void Register()
@@ -41,6 +45,12 @@ namespace Manager
             DayState = InGameState.Menu;
             pauseManager.Pause();
             
+        }
+
+        public void CloseMenu()
+        {
+            DayState = InGameState.Observe;
+            pauseManager.Resume();
         }
 
         public void Initialize()
