@@ -233,7 +233,7 @@ namespace Manager
             DiContainer.Instance.Register(this);
         }
 
-        void OnEnable()
+        void Awake()
         {
             DiContainer.Instance.Register(this);
         }

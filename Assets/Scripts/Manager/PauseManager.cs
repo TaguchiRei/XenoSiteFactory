@@ -43,7 +43,7 @@ namespace Manager
             
         }
 
-        private void OnEnable()
+        private void Awake()
         {
             Register();
         }

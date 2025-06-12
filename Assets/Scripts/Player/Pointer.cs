@@ -4,6 +4,7 @@ using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Player
 {
@@ -16,6 +17,7 @@ namespace Player
         PlayerOperationManager _playerOperationManager;
         private Vector2 _mousePosition;
         
+        
         private void Start()
         {
             if(DiContainer.Instance.TryGet(out _inGameManager) && DiContainer.Instance.TryGet(out _playerOperationManager))
@@ -27,18 +29,20 @@ namespace Player
                 KeyLogger.Log("GetManagerClass");
                 return;
             }
+            _playerOperationManager.OnMouseMoveAction += GetMousePosition;
         }
 
         private void Update()
         {
             if(IsPaused) return;
-
+            KeyLogger.Log("MousePos" + _mousePosition);
             var ray = Camera.main.ScreenPointToRay(_mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                var hitPos = hit.collider.gameObject.transform.position;
+                var hitPos = new Vector3Int((int)hit.point.x, (int)hit.point.y, (int)hit.point.z);
                 var hitNormal = hit.normal.normalized;
-                
+                transform.position = hitPos;
+                transform.rotation = Quaternion.FromToRotation(Vector3.up, hitNormal);
             }
         }
 

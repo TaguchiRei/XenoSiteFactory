@@ -20,7 +20,7 @@ namespace Player
         private InputSystem_Actions inputSystemActions;
         private InGameManager inGameManager;
 
-        private void OnEnable()
+        private void Awake()
         {
             DiContainer.Instance.Register(this);
         }

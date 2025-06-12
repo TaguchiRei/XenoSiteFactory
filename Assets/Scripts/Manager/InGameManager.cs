@@ -4,6 +4,7 @@ using Interface;
 using UnityEngine;
 using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
+using Player;
 using UnityEngine.Events;
 
 namespace Manager
@@ -14,14 +15,20 @@ namespace Manager
         public InGameState DayState { get; private set; }
         
         
-        private PauseManager pauseManager;
-        private GridManager gridManager;
+        private PauseManager _pauseManager;
+        private GridManager _gridManager;
         private IEnumerator _oneDayCycleEnumerator;
+        private PlayerOperationManager _playerOperationManager;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
         [SerializeField] private UnityEvent _OpenMenuEvent = new UnityEvent();
         [SerializeField] private UnityEvent _CloseMenuEvent = new UnityEvent();
         [SerializeField] private UnityEvent _DayEndEvent = new UnityEvent();
-        
+
+
+        private void OnEnable()
+        {
+            Initialize();
+        }
 
         IEnumerator OneDayCycle()
         {
@@ -43,31 +50,36 @@ namespace Manager
         public void OpenMenu()
         {
             DayState = InGameState.Menu;
-            pauseManager.Pause();
-            
+            _pauseManager.Pause();
         }
 
         public void CloseMenu()
         {
             DayState = InGameState.Observe;
-            pauseManager.Resume();
+            _pauseManager.Resume();
         }
 
         public void Initialize()
         {
-            if (DiContainer.Instance.TryGet(out pauseManager) && DiContainer.Instance.TryGet(out gridManager))
+            if (DiContainer.Instance.TryGet(out _pauseManager) && 
+                DiContainer.Instance.TryGet(out _gridManager) &&
+                DiContainer.Instance.TryGet(out _playerOperationManager))
             {
-                pauseManager.Initialize();
-                gridManager.Initialize();
+                _pauseManager.Initialize();
+                _gridManager.Initialize();
+                _playerOperationManager.Initialize();
                 KeyLogger.Log("Initialize Success", this);
             }
             else
             {
                 KeyLogger.Log("Initialize Failed", this);
             }
+            _oneDayCycleEnumerator = OneDayCycle();
+            _oneDayCycleEnumerator.MoveNext();
+            DayState = InGameState.Observe;
         }
 
-        public void OnEnable()
+        public void Awake()
         {
             Register();
         }
