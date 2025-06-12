@@ -1,6 +1,8 @@
 using System;
 using DIContainer;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
+using Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +12,8 @@ namespace Player
         InputSystem_Actions.IUIActions
     {
         private InputSystem_Actions inputSystemActions;
+        
+        private InGameManager inGameManager;
 
         private void OnEnable()
         {
@@ -19,6 +23,7 @@ namespace Player
         #region Player
         public void OnMove(InputAction.CallbackContext context)
         {
+            
         }
 
         public void OnInteract(InputAction.CallbackContext context)
@@ -81,6 +86,15 @@ namespace Player
             inputSystemActions = new InputSystem_Actions();
             inputSystemActions.Player.SetCallbacks(this);
             inputSystemActions.Enable();
+
+            if (DiContainer.Instance.TryGet(out inGameManager))
+            {
+                KeyLogger.Log("inGameManager is already set", this);
+            }
+            else
+            {
+                KeyLogger.Log("inGameManager is not find");
+            }
         }
     }
 }

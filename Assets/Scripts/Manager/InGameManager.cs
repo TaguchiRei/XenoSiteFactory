@@ -59,11 +59,11 @@ namespace Manager
             {
                 pauseManager.Initialize();
                 gridManager.Initialize();
-                KeyLogger.Log("Initialize Success");
+                KeyLogger.Log("Initialize Success", this);
             }
             else
             {
-                KeyLogger.Log("Initialize Failed");
+                KeyLogger.Log("Initialize Failed", this);
             }
         }
 
