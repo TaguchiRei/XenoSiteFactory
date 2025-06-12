@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public class Pointer : MonoBehaviour
+namespace Player
 {
+    public class Pointer : MonoBehaviour
+    {
     
+    }
 }
