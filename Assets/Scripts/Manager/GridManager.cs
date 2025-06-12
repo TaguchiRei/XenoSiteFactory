@@ -126,6 +126,7 @@ namespace Manager
                 }
             }
             await Awaitable.MainThreadAsync();
+            KeyLogger.Log("Generate End");
             return grid;
         }
         

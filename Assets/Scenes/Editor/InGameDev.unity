@@ -587,7 +587,7 @@ GameObject:
   - component: {fileID: 966812182}
   - component: {fileID: 966812181}
   - component: {fileID: 966812185}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,6 +696,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821dfc82dacbef44f92a67836a0d6412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointerOffset: 0
 --- !u!1 &1779989435
 GameObject:
   m_ObjectHideFlags: 0
@@ -725,10 +726,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a1193f91c20ec449d01562548da36a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridSize: 128
-  _height: 4
   _allUnitData: {fileID: 11400000, guid: 73de3c5aebba1da4ead7ea5de025f608, type: 2}
   _gridCollider: {fileID: 8084553370101708582, guid: 8e4e276718c248c499e61638e32236a7, type: 3}
+  _gridSize: 128
+  _height: 4
 --- !u!4 &1779989437
 Transform:
   m_ObjectHideFlags: 0
