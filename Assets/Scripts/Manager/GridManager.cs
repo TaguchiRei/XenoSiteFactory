@@ -13,24 +13,24 @@ namespace Manager
 {
     public class GridManager : MonoBehaviour, IManager
     {
-        [SerializeField, Range(20, 128)] private int _gridSize = 20;
-        [SerializeField, Range(4, 10)] private int _height;
-        [SerializeField] private AllUnitData _allUnitData;
-        [SerializeField] private GameObject _gridCollider;
-        
         /// <summary>
         /// グリッドが占有されているエリアを保存する
         /// </summary>
         public DUlong[,] DUlongGrid { get; private set; }
-
+        
         /// <summary>
         /// グリッドに設置されている物を保存する
         /// </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
 
-        private bool _gridCreated;
+        private static readonly Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
 
         private readonly DUlong _oneDUlong = new(0, 1);
+        private bool _gridCreated;
+        [SerializeField] private AllUnitData _allUnitData;
+        [SerializeField] private GameObject _gridCollider;
+        [SerializeField, Range(20, 128)] private int _gridSize = 20;
+        [SerializeField, Range(4, 10)] private int _height;
 
 
         private void Start()
@@ -66,7 +66,7 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            var col = Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity);
+                            var col = Instantiate(_gridCollider, new Vector3(x, y , z) + offset, Quaternion.identity);
                             col.transform.SetParent(transform);
                         }
                     }
@@ -221,7 +221,7 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
+                            Gizmos.DrawWireCube(new Vector3(x, y, z) + offset, Vector3.one);
                         }
                     }
                 }
