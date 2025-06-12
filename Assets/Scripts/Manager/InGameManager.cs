@@ -3,6 +3,7 @@ using System.Collections;
 using Interface;
 using UnityEngine;
 using DIContainer;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using UnityEngine.Events;
 
 namespace Manager
@@ -13,9 +14,13 @@ namespace Manager
         public InGameState DayState { get; private set; }
         
         
+        private PauseManager pauseManager;
+        private GridManager gridManager;
         private IEnumerator _oneDayCycleEnumerator;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
-        
+        [SerializeField] private UnityEvent _OpenMenuEvent = new UnityEvent();
+        [SerializeField] private UnityEvent _CloseMenuEvent = new UnityEvent();
+        [SerializeField] private UnityEvent _DayEndEvent = new UnityEvent();
         
 
         IEnumerator OneDayCycle()
@@ -29,6 +34,25 @@ namespace Manager
         public void Register()
         {
             DiContainer.Instance.Register(this);
+        }
+
+        public void OpenMenu()
+        {
+            DayState = InGameState.Menu;
+            pauseManager.Pause();
+            
+        }
+
+        public void Initialize()
+        {
+            if (DiContainer.Instance.TryGet(out pauseManager) && DiContainer.Instance.TryGet(out gridManager))
+            {
+                KeyLogger.Log("Initialize Success");
+            }
+            else
+            {
+                KeyLogger.Log("Initialize Failed");
+            }
         }
 
         public void OnEnable()
