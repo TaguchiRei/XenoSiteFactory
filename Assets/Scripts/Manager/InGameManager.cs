@@ -73,7 +73,8 @@ namespace Manager
         }
 
         /// <summary>
-        /// インゲームでの状態を管理する
+        /// インゲームでの状態を管理する。
+        /// 0以外は一時停止を行い、2以上は操作モードがメニューになる。
         /// </summary>
         public enum InGameState
         {
@@ -86,13 +87,13 @@ namespace Manager
             /// </summary>
             BuildMode = 1,
             /// <summary>
-            /// 一日が始まったばかりの状態。処理を終えた後にObserveに切り替わる。　一時停止される
-            /// </summary>
-            DayStart = 2,
-            /// <summary>
             /// メニューを開いているときの状態。メニューを閉じるとObserveに切り替わる。　　一時停止される
             /// </summary>
-            Menu = 3,
+            Menu = 2,
+            /// <summary>
+            /// 一日が始まったばかりの状態。処理を終えた後にObserveに切り替わる。　一時停止される
+            /// </summary>
+            DayStart = 3,
             /// <summary>
             /// 一日が終了したときに状態。処理を終えた後にセーブを行い、次の日に向かう。　　一時停止される
             /// </summary>
