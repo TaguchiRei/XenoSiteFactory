@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Interface;
 using UnityEngine;
 using DIContainer;
@@ -9,15 +10,30 @@ namespace Manager
     public class InGameManager : MonoBehaviour, IManager
     { 
         public int Day { get; private set; }
+        public InGameState DayState { get; private set; }
         
         
-        
+        private IEnumerator _oneDayCycleEnumerator;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
-        
-        
-        void IManager.Register()
+
+        public void Register()
         {
             DiContainer.Instance.Register(this);
+        }
+
+        public void OnEnable()
+        {
+            Register();
+        }
+        
+
+
+        IEnumerator OneDayCycle()
+        {
+            //各種マネージャーを初期化する
+            DayState = InGameState.DayStart;
+            
+            yield return null;
         }
 
         /// <summary>
