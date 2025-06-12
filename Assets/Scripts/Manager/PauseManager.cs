@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DIContainer;
 using Interface;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Manager
 {
@@ -18,7 +19,7 @@ namespace Manager
             _pausables.Add(pausable);
         }
 
-        private void Pause()
+        public void Pause()
         {
             foreach (var pausable in _pausables)
             {
@@ -26,7 +27,7 @@ namespace Manager
             }
         }
 
-        private void Resume()
+        public void Resume()
         {
             foreach (var pausable in _pausables)
             {
@@ -37,6 +38,11 @@ namespace Manager
         public void Register()
         {
             DiContainer.Instance.Register(this);
+        }
+
+        public void Initialize()
+        {
+            
         }
 
         private void OnEnable()
