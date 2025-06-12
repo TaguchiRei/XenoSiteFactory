@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using DIContainer;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 namespace Manager
 {
@@ -45,7 +44,7 @@ namespace Manager
             
         }
 
-        private void OnEnable()
+        private void Awake()
         {
             Register();
         }

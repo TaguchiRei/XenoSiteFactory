@@ -31,7 +31,7 @@ namespace DIContainer
 
         private void Start()
         {
-            if(!string.IsNullOrEmpty(managerSceneName)) SceneManager.LoadScene(managerSceneName, LoadSceneMode.Additive);
+            if(!string.IsNullOrEmpty(managerSceneName)) SceneManager.LoadScene(managerSceneName, LoadSceneMode.Single);
         }
 
         public void Register<T>(T instance)
@@ -53,7 +53,7 @@ namespace DIContainer
             }
             else
             {
-                KeyLogger.Log($"type {typeof(T)} not found");
+                KeyLogger.Log($"type {typeof(T).Name} not found");
                 instance = default;
                 return false;
             }
