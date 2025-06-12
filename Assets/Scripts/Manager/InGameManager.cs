@@ -57,6 +57,8 @@ namespace Manager
         {
             if (DiContainer.Instance.TryGet(out pauseManager) && DiContainer.Instance.TryGet(out gridManager))
             {
+                pauseManager.Initialize();
+                gridManager.Initialize();
                 KeyLogger.Log("Initialize Success");
             }
             else
