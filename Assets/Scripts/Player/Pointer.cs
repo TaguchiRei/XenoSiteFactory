@@ -15,7 +15,6 @@ namespace Player
         
         InGameManager _inGameManager;
         PlayerOperationManager _playerOperationManager;
-        private Vector2 _mousePosition;
         
         
         private void Start()
@@ -32,10 +31,12 @@ namespace Player
             _playerOperationManager.OnMouseMoveAction += GetMousePosition;
         }
 
-        private void Update()
+
+
+        private void GetMousePosition(Vector2 mousePosition)
         {
             if(IsPaused) return;
-            var ray = Camera.main.ScreenPointToRay(_mousePosition);
+            var ray = Camera.main.ScreenPointToRay(mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 var hitPos = new Vector3Int((int)hit.point.x, (int)hit.point.y, (int)hit.point.z);
@@ -43,11 +44,6 @@ namespace Player
                 transform.position = hitPos;
                 transform.rotation = Quaternion.FromToRotation(Vector3.up, hitNormal);
             }
-        }
-
-        private void GetMousePosition(Vector2 mousePosition)
-        {
-            _mousePosition = mousePosition;
         }
 
 
