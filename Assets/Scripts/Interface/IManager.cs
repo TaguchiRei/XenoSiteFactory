@@ -11,5 +11,7 @@ namespace Interface
         /// DIContainerに登録
         /// </summary>
         void Register();
+        
+        void Initialize();
     }
 }

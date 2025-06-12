@@ -15,6 +15,8 @@ namespace Manager
         
         private IEnumerator _oneDayCycleEnumerator;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
+        
+        
 
         IEnumerator OneDayCycle()
         {
