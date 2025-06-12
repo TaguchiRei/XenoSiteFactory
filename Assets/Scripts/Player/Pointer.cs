@@ -11,6 +11,7 @@ namespace Player
     public class Pointer : MonoBehaviour, IPauseable
     {
         public bool IsPaused { get; set; }
+        [SerializeField, Range(0, 1f)] private float pointerOffset;
         
         
         InGameManager _inGameManager;
@@ -39,9 +40,9 @@ namespace Player
             var ray = Camera.main.ScreenPointToRay(mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                var hitPos = new Vector3Int((int)hit.point.x, (int)hit.point.y, (int)hit.point.z);
                 var hitNormal = hit.normal.normalized;
-                transform.position = hitPos;
+                var pointerPos = hit.collider.transform.position + (hitNormal * 0.6f);
+                transform.position = pointerPos;
                 transform.rotation = Quaternion.FromToRotation(Vector3.up, hitNormal);
             }
         }

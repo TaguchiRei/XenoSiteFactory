@@ -23,7 +23,7 @@ namespace Manager
         /// </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
 
-        private static readonly Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
+        //private static readonly Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
 
         private readonly DUlong _oneDUlong = new(0, 1);
         private bool _gridCreated;
@@ -66,7 +66,7 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            var col = Instantiate(_gridCollider, new Vector3(x, y , z) + offset, Quaternion.identity);
+                            var col = Instantiate(_gridCollider, new Vector3(x, y , z), Quaternion.identity);
                             col.transform.SetParent(transform);
                         }
                     }
@@ -221,7 +221,7 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            Gizmos.DrawWireCube(new Vector3(x, y, z) + offset, Vector3.one);
+                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
                         }
                     }
                 }
