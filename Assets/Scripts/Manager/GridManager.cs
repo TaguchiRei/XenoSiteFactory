@@ -39,13 +39,13 @@ namespace Manager
             PutUnitDataList = new List<PutUnitData>();
             for (int i = 0; i < 10; i++)
             {
-                var id = 0;
+                var id = Random.Range(0, 5);
                 PutUnitDataList.Add(new PutUnitData()
                 {
-                    UnitId = 0,
+                    UnitId = id,
                     UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
                     Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
-                    Direction = 0
+                    Direction = (UnitRotate)Random.Range(0, 4)
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
             }
@@ -66,7 +66,8 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity);
+                            var col = Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity);
+                            col.transform.SetParent(transform);
                         }
                     }
                 }
