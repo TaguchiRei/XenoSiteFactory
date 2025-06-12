@@ -11,11 +11,11 @@ namespace Player
     public class PlayerOperationManager : MonoBehaviour, IManager, InputSystem_Actions.IPlayerActions,
         InputSystem_Actions.IUIActions
     {
-        public Action OnMoveAction;
+        public Action<Vector2> OnMoveAction;
         public Action OnInteractAction;
         public Action OnPreviousAction;
         public Action OnNextAction;
-        public Action OnMouseMoveAction;
+        public Action<Vector2> OnMouseMoveAction;
         
         private InputSystem_Actions inputSystemActions;
         private InGameManager inGameManager;
@@ -30,7 +30,7 @@ namespace Player
         {
             if (inGameManager == null || (int)inGameManager.DayState < 2)
             {
-                OnMoveAction?.Invoke();
+                OnMoveAction?.Invoke(context.ReadValue<Vector2>());
             }
         }
 
@@ -62,7 +62,7 @@ namespace Player
         {
             if (inGameManager == null || (int)inGameManager.DayState < 2)
             {
-                OnMouseMoveAction?.Invoke();
+                OnMouseMoveAction?.Invoke(context.ReadValue<Vector2>());
             }
         }
 
