@@ -11,13 +11,7 @@ namespace Interface
         /// <summary>
         /// 体力を減らす（ダメージを受ける）
         /// </summary>
-        void TakeDamage(int amount);
-
-        /// <summary>
-        /// 体力を回復する
-        /// </summary>
-        void Heal(int amount);
-
+        void HitPointChange(int point);
         /// <summary>
         /// 破壊時に呼ばれる処理
         /// </summary>
