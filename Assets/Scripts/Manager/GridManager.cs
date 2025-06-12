@@ -23,6 +23,8 @@ namespace Manager
         /// </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
 
+        private UniTask _generateColliderTask;
+
         //private static readonly Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
 
         private readonly DUlong _oneDUlong = new(0, 1);
@@ -32,30 +34,27 @@ namespace Manager
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
         [SerializeField, Range(4, 10)] private int _height;
 
-
-        private void Start()
-        {
-            //テスト用スクリプト
-            PutUnitDataList = new List<PutUnitData>();
-            for (int i = 0; i < 10; i++)
-            {
-                var id = Random.Range(0, 5);
-                PutUnitDataList.Add(new PutUnitData()
-                {
-                    UnitId = id,
-                    UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
-                    Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
-                    Direction = (UnitRotate)Random.Range(0, 4)
-                });
-                KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
-            }
-
-            Initialize();
-        }
-
         private async UniTask GenerateCollider()
         {
+            if (PutUnitDataList == null)
+            {
+                //テスト用スクリプト
+                PutUnitDataList = new List<PutUnitData>();
+                for (int i = 0; i < 10; i++)
+                {
+                    var id = Random.Range(0, 5);
+                    PutUnitDataList.Add(new PutUnitData()
+                    {
+                        UnitId = id,
+                        UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
+                        Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
+                        Direction = (UnitRotate)Random.Range(0, 4)
+                    });
+                    KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
+                }
+            }
             DUlongGrid = await FillGridDUlongBase();
+            
             _gridCreated = true;
             
             for (int z = 0; z < _gridSize; z++)
@@ -79,16 +78,18 @@ namespace Manager
         /// </summary>
         public void Initialize()
         {
-            _ = GenerateCollider();
+            Debug.Log("GridManager initialized");
+            GenerateCollider().Forget();
         }
         
 
         private async Awaitable<DUlong[,]> FillGridDUlongBase()
         {
+            List<PutUnitData> unitDataList = new(PutUnitDataList);
             await Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
 
-            foreach (var putUnitData in PutUnitDataList)
+            foreach (var putUnitData in unitDataList)
             {
                 UnitData unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
                 ulong rotateShape = 0;
