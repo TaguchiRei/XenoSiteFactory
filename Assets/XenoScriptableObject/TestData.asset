@@ -14,31 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UnitTypeArray:
   - AllUnit:
-    - UnitShape: 106956384
-      UnitType: 0
-      EnterPositions:
-      - {x: 0, y: 0}
-      ExitPositions:
-      - {x: 0, y: 0}
-    - UnitShape: 106983414
-      UnitType: 0
-      EnterPositions:
-      - {x: 0, y: 0}
-      ExitPositions:
-      - {x: 0, y: 0}
-    - UnitShape: 918750683514011647
-      UnitType: 0
-      EnterPositions:
-      - {x: 0, y: 0}
-      ExitPositions:
-      - {x: 0, y: 0}
-    - UnitShape: 459428133329697999
-      UnitType: 0
-      EnterPositions:
-      - {x: 0, y: 0}
-      ExitPositions:
-      - {x: 0, y: 0}
-    - UnitShape: 4169726088
+    - UnitShape: 3530822107858497809
       UnitType: 0
       EnterPositions:
       - {x: 0, y: 0}

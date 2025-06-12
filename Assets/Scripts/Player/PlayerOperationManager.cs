@@ -98,6 +98,17 @@ namespace Player
         {
             throw new NotImplementedException();
         }
+
+        public void OnMiddleClick(InputAction.CallbackContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnScrollWheel(InputAction.CallbackContext context)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         public void Register()

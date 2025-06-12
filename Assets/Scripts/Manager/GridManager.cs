@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Cysharp.Threading.Tasks;
 using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
@@ -40,13 +39,13 @@ namespace Manager
             PutUnitDataList = new List<PutUnitData>();
             for (int i = 0; i < 10; i++)
             {
-                var id = Random.Range(0, 5);
+                var id = 0;
                 PutUnitDataList.Add(new PutUnitData()
                 {
-                    UnitId = Random.Range(0, 5),
+                    UnitId = 0,
                     UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
                     Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
-                    Direction = (UnitRotate)Random.Range(0, 4)
+                    Direction = 0
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
             }
