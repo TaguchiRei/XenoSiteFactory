@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using DIContainer;
 using Interface;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 namespace Manager
 {
