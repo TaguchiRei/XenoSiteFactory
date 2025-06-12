@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using Interface;
 using UnityEngine;
 using DIContainer;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using UnityEngine.Events;
 
 namespace Manager
@@ -9,15 +11,53 @@ namespace Manager
     public class InGameManager : MonoBehaviour, IManager
     { 
         public int Day { get; private set; }
+        public InGameState DayState { get; private set; }
         
         
-        
+        private PauseManager pauseManager;
+        private GridManager gridManager;
+        private IEnumerator _oneDayCycleEnumerator;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
+        [SerializeField] private UnityEvent _OpenMenuEvent = new UnityEvent();
+        [SerializeField] private UnityEvent _CloseMenuEvent = new UnityEvent();
+        [SerializeField] private UnityEvent _DayEndEvent = new UnityEvent();
         
+
+        IEnumerator OneDayCycle()
+        {
+            //各種マネージャーを初期化する
+            DayState = InGameState.DayStart;
+            
+            yield return null;
+        }
         
-        void IManager.Register()
+        public void Register()
         {
             DiContainer.Instance.Register(this);
+        }
+
+        public void OpenMenu()
+        {
+            DayState = InGameState.Menu;
+            pauseManager.Pause();
+            
+        }
+
+        public void Initialize()
+        {
+            if (DiContainer.Instance.TryGet(out pauseManager) && DiContainer.Instance.TryGet(out gridManager))
+            {
+                KeyLogger.Log("Initialize Success");
+            }
+            else
+            {
+                KeyLogger.Log("Initialize Failed");
+            }
+        }
+
+        public void OnEnable()
+        {
+            Register();
         }
 
         /// <summary>

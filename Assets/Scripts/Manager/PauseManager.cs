@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using DIContainer;
 using Interface;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Manager
 {
@@ -11,17 +13,13 @@ namespace Manager
         private List<IPauseable> _pausables = new();
         
         
-        void IManager.Register()
-        {
-            DiContainer.Instance.Register<IManager>(this);
-        }
 
         public void AddPauseObject(IPauseable pausable)
         {
             _pausables.Add(pausable);
         }
 
-        private void Pause()
+        public void Pause()
         {
             foreach (var pausable in _pausables)
             {
@@ -29,12 +27,27 @@ namespace Manager
             }
         }
 
-        private void Resume()
+        public void Resume()
         {
             foreach (var pausable in _pausables)
             {
                 pausable.Resume();
             }
+        }
+
+        public void Register()
+        {
+            DiContainer.Instance.Register(this);
+        }
+
+        public void Initialize()
+        {
+            
+        }
+
+        private void OnEnable()
+        {
+            Register();
         }
     }
 }

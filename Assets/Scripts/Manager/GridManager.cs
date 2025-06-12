@@ -232,6 +232,11 @@ namespace Manager
         {
             DiContainer.Instance.Register(this);
         }
+
+        void OnEnable()
+        {
+            DiContainer.Instance.Register(this);
+        }
     }
 
     /// <summary>

@@ -7,6 +7,11 @@ namespace Interface
     /// </summary>
     public interface IManager
     {
-        protected void Register();
+        /// <summary>
+        /// DIContainerに登録
+        /// </summary>
+        void Register();
+        
+        void Initialize();
     }
 }
