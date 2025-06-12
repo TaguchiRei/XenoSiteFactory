@@ -6,6 +6,7 @@ using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Player;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Manager
 {
@@ -19,20 +20,20 @@ namespace Manager
         private GridManager _gridManager;
         private IEnumerator _oneDayCycleEnumerator;
         private PlayerOperationManager _playerOperationManager;
+        [SerializeField] private string _inGameSceneName;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
         [SerializeField] private UnityEvent _OpenMenuEvent = new UnityEvent();
         [SerializeField] private UnityEvent _CloseMenuEvent = new UnityEvent();
         [SerializeField] private UnityEvent _DayEndEvent = new UnityEvent();
 
-
-        private void OnEnable()
+        private void Start()
         {
             Initialize();
+            SceneManager.LoadScene(_inGameSceneName, LoadSceneMode.Additive);
         }
-
+        
         IEnumerator OneDayCycle()
         {
-            //各種マネージャーを初期化する
             DayState = InGameState.DayStart;
             
             yield return null;

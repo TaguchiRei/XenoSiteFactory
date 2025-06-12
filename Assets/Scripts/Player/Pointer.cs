@@ -35,7 +35,6 @@ namespace Player
         private void Update()
         {
             if(IsPaused) return;
-            KeyLogger.Log("MousePos" + _mousePosition);
             var ray = Camera.main.ScreenPointToRay(_mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
