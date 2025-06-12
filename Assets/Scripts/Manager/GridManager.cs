@@ -31,6 +31,11 @@ namespace Manager
         private bool _gridCreated;
         [SerializeField] private AllUnitData _allUnitData;
         [SerializeField] private GameObject _gridCollider;
+        [SerializeField] private GameObject _wallPrehub;
+        /// <summary>壁の一番原点に近い頂点の位置</summary>
+        [SerializeField] private Vector3 _wallPosition;
+        /// <summary> 壁の一辺の長さ </summary>
+        [SerializeField] private int _wallSize;
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
         [SerializeField, Range(4, 10)] private int _height;
 
@@ -72,17 +77,7 @@ namespace Manager
                 }
             }
         }
-
-        /// <summary>
-        /// 初期化時に呼び出される
-        /// </summary>
-        public void Initialize()
-        {
-            Debug.Log("GridManager initialized");
-            GenerateCollider().Forget();
-        }
         
-
         private async Awaitable<DUlong[,]> FillGridDUlongBase()
         {
             List<PutUnitData> unitDataList = new(PutUnitDataList);
@@ -209,6 +204,15 @@ namespace Manager
 
             return returnShape;
         }
+
+        private void WallGenerate()
+        {
+            GameObject[] walls = new GameObject[4];
+            for (int i = 0; i < 4; i++)
+            {
+                walls[i] = Instantiate(_wallPrehub, _wallPosition, Quaternion.identity);
+            }
+        }
         
         private void OnDrawGizmos()
         {
@@ -230,12 +234,21 @@ namespace Manager
             }
         }
 
+        /// <summary>
+        /// 初期化時に呼び出される
+        /// </summary>
+        public void Initialize()
+        {
+            Debug.Log("GridManager initialized");
+            GenerateCollider().Forget();
+        }
+        
         void IManager.Register()
         {
             DiContainer.Instance.Register(this);
         }
 
-        void Awake()
+        private void Awake()
         {
             DiContainer.Instance.Register(this);
         }
