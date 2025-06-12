@@ -11,8 +11,13 @@ namespace Player
     public class PlayerOperationManager : MonoBehaviour, IManager, InputSystem_Actions.IPlayerActions,
         InputSystem_Actions.IUIActions
     {
-        private InputSystem_Actions inputSystemActions;
+        public Action OnMoveAction;
+        public Action OnInteractAction;
+        public Action OnPreviousAction;
+        public Action OnNextAction;
+        public Action OnMouseMoveAction;
         
+        private InputSystem_Actions inputSystemActions;
         private InGameManager inGameManager;
 
         private void OnEnable()
@@ -23,23 +28,27 @@ namespace Player
         #region Player
         public void OnMove(InputAction.CallbackContext context)
         {
-            
+            OnMoveAction?.Invoke();
         }
 
         public void OnInteract(InputAction.CallbackContext context)
         {
+            OnInteractAction?.Invoke();
         }
 
         public void OnPrevious(InputAction.CallbackContext context)
         {
+            OnPreviousAction?.Invoke();
         }
 
         public void OnNext(InputAction.CallbackContext context)
         {
+            OnNextAction?.Invoke();
         }
 
         public void OnMouseMove(InputAction.CallbackContext context)
         {
+            OnMouseMoveAction?.Invoke();
         }
 
         #endregion
