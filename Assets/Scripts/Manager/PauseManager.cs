@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DIContainer;
 using Interface;
@@ -11,10 +12,6 @@ namespace Manager
         private List<IPauseable> _pausables = new();
         
         
-        void IManager.Register()
-        {
-            DiContainer.Instance.Register<IManager>(this);
-        }
 
         public void AddPauseObject(IPauseable pausable)
         {
@@ -35,6 +32,16 @@ namespace Manager
             {
                 pausable.Resume();
             }
+        }
+
+        public void Register()
+        {
+            DiContainer.Instance.Register(this);
+        }
+
+        private void OnEnable()
+        {
+            Register();
         }
     }
 }

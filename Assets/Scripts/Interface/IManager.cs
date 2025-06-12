@@ -10,6 +10,6 @@ namespace Interface
         /// <summary>
         /// DIContainerに登録
         /// </summary>
-        public void Register();
+        void Register();
     }
 }

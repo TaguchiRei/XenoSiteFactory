@@ -16,6 +16,14 @@ namespace Manager
         private IEnumerator _oneDayCycleEnumerator;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
 
+        IEnumerator OneDayCycle()
+        {
+            //各種マネージャーを初期化する
+            DayState = InGameState.DayStart;
+            
+            yield return null;
+        }
+        
         public void Register()
         {
             DiContainer.Instance.Register(this);
@@ -24,16 +32,6 @@ namespace Manager
         public void OnEnable()
         {
             Register();
-        }
-        
-
-
-        IEnumerator OneDayCycle()
-        {
-            //各種マネージャーを初期化する
-            DayState = InGameState.DayStart;
-            
-            yield return null;
         }
 
         /// <summary>
