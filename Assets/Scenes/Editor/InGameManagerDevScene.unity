@@ -249,10 +249,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a1193f91c20ec449d01562548da36a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridSize: 128
-  _height: 4
   _allUnitData: {fileID: 11400000, guid: 73de3c5aebba1da4ead7ea5de025f608, type: 2}
   _gridCollider: {fileID: 8084553370101708582, guid: 8e4e276718c248c499e61638e32236a7, type: 3}
+  _gridSize: 128
+  _height: 4
+  _wallData:
+    wallPrefab: {fileID: 118725316214312412, guid: b683401707940e04e9c75619846c0e4b, type: 3}
+    Position: {x: 20, y: 1, z: 20}
+    Height: 2
+    Width: 3
+    Size: 10
 --- !u!4 &962066675
 Transform:
   m_ObjectHideFlags: 0

@@ -5,6 +5,7 @@ using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GamesKeystoneFramework.KeyMathBit;
 using Interface;
+using StaticObject;
 using UnityEngine;
 using XenoScriptableObject;
 using Random = UnityEngine.Random;
@@ -31,18 +32,9 @@ namespace Manager
         private bool _gridCreated;
         [SerializeField] private AllUnitData _allUnitData;
         [SerializeField] private GameObject _gridCollider;
-        [SerializeField] private GameObject _wallPrehub;
-
-        /// <summary>壁の一番原点に近い頂点の位置</summary>
-        [SerializeField] private Vector3 _wallPosition;
-
-        [SerializeField] private float _wallHeight;
-
-        /// <summary> 壁の一辺の長さ </summary>
-        [SerializeField] private int _wallSize;
-
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
         [SerializeField, Range(4, 10)] private int _height;
+        [SerializeField] WallData _wallData;
 
         private async UniTask GenerateCollider()
         {
@@ -216,12 +208,10 @@ namespace Manager
             GameObject[] walls = new GameObject[4];
             for (int i = 0; i < 4; i++)
             {
-                walls[i] = Instantiate(_wallPrehub, _wallPosition, Quaternion.identity);
+                walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position, Quaternion.identity);
+                walls[i].name = "Wall" + i;
             }
-
-            walls[0].transform.localScale = new Vector3(_wallSize - 3, _wallHeight, 3);
-            walls[1].transform.position = new Vector3(_wallPosition.x + 3, _wallPosition.y, _wallPosition.z + _wallSize);
-            walls[1].transform.localScale = new Vector3(_wallSize - 3, _wallHeight, 3);
+            WallGenerator.GenerateWalls(_wallData,walls);
         }
 
         private void OnDrawGizmos()
@@ -288,6 +278,19 @@ namespace Manager
         public UnitType UnitType;
         public Vector2Int[] EnterPositions;
         public Vector2Int[] ExitPositions;
+    }
+
+    [Serializable]
+    public struct WallData
+    {
+        /// <summary>
+        /// 壁の最も原点に近い部分の座標
+        /// </summary>
+        public GameObject wallPrefab;
+        [Tooltip("壁の最も原点に近い座標")]public Vector3Int Position;
+        [Tooltip("壁の高さ")] public int Height;
+        [Tooltip("壁の厚み 必ず奇数にしてください")]public int Width;
+        [Tooltip("壁の外側の長さ")]public int Size;
     }
 
     public enum UnitType : byte
