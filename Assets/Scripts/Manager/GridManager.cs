@@ -17,7 +17,7 @@ namespace Manager
         /// グリッドが占有されているエリアを保存する
         /// </summary>
         public DUlong[,] DUlongGrid { get; private set; }
-        
+
         /// <summary>
         /// グリッドに設置されている物を保存する
         /// </summary>
@@ -32,10 +32,15 @@ namespace Manager
         [SerializeField] private AllUnitData _allUnitData;
         [SerializeField] private GameObject _gridCollider;
         [SerializeField] private GameObject _wallPrehub;
+
         /// <summary>壁の一番原点に近い頂点の位置</summary>
         [SerializeField] private Vector3 _wallPosition;
+
+        [SerializeField] private float _wallHeight;
+
         /// <summary> 壁の一辺の長さ </summary>
         [SerializeField] private int _wallSize;
+
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
         [SerializeField, Range(4, 10)] private int _height;
 
@@ -58,10 +63,11 @@ namespace Manager
                     KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
                 }
             }
+
             DUlongGrid = await FillGridDUlongBase();
-            
+
             _gridCreated = true;
-            
+
             for (int z = 0; z < _gridSize; z++)
             {
                 for (int y = 0; y < _height; y++)
@@ -70,14 +76,13 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            var col = Instantiate(_gridCollider, new Vector3(x, y , z), Quaternion.identity);
-                            col.transform.SetParent(transform);
+                            Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity).transform.SetParent(transform);
                         }
                     }
                 }
             }
         }
-        
+
         private async Awaitable<DUlong[,]> FillGridDUlongBase()
         {
             List<PutUnitData> unitDataList = new(PutUnitDataList);
@@ -121,11 +126,12 @@ namespace Manager
                     }
                 }
             }
+
             await Awaitable.MainThreadAsync();
             KeyLogger.Log("Generate End");
             return grid;
         }
-        
+
 
         /// <summary>
         /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる
@@ -205,19 +211,23 @@ namespace Manager
             return returnShape;
         }
 
-        private void WallGenerate()
+        private void GenerateWall()
         {
             GameObject[] walls = new GameObject[4];
             for (int i = 0; i < 4; i++)
             {
                 walls[i] = Instantiate(_wallPrehub, _wallPosition, Quaternion.identity);
             }
+
+            walls[0].transform.localScale = new Vector3(_wallSize - 3, _wallHeight, 3);
+            walls[1].transform.position = new Vector3(_wallPosition.x + 3, _wallPosition.y, _wallPosition.z + _wallSize);
+            walls[1].transform.localScale = new Vector3(_wallSize - 3, _wallHeight, 3);
         }
-        
+
         private void OnDrawGizmos()
         {
             if (!_gridCreated) return;
-            
+
             Gizmos.color = Color.green;
             for (int z = 0; z < _gridSize; z++)
             {
@@ -241,8 +251,9 @@ namespace Manager
         {
             Debug.Log("GridManager initialized");
             GenerateCollider().Forget();
+            GenerateWall();
         }
-        
+
         void IManager.Register()
         {
             DiContainer.Instance.Register(this);
