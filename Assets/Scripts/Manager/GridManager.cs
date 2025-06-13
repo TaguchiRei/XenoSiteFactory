@@ -5,6 +5,7 @@ using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GamesKeystoneFramework.KeyMathBit;
 using Interface;
+using StaticObject;
 using UnityEngine;
 using XenoScriptableObject;
 using Random = UnityEngine.Random;
@@ -17,13 +18,15 @@ namespace Manager
         /// グリッドが占有されているエリアを保存する
         /// </summary>
         public DUlong[,] DUlongGrid { get; private set; }
-        
+
         /// <summary>
         /// グリッドに設置されている物を保存する
         /// </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
 
-        private static readonly Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
+        private UniTask _generateColliderTask;
+
+        //private static readonly Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
 
         private readonly DUlong _oneDUlong = new(0, 1);
         private bool _gridCreated;
@@ -31,33 +34,32 @@ namespace Manager
         [SerializeField] private GameObject _gridCollider;
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
         [SerializeField, Range(4, 10)] private int _height;
-
-
-        private void Start()
-        {
-            //テスト用スクリプト
-            PutUnitDataList = new List<PutUnitData>();
-            for (int i = 0; i < 10; i++)
-            {
-                var id = Random.Range(0, 5);
-                PutUnitDataList.Add(new PutUnitData()
-                {
-                    UnitId = id,
-                    UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
-                    Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
-                    Direction = (UnitRotate)Random.Range(0, 4)
-                });
-                KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
-            }
-
-            Initialize();
-        }
+        [SerializeField] WallData _wallData;
 
         private async UniTask GenerateCollider()
         {
+            if (PutUnitDataList == null)
+            {
+                //テスト用スクリプト
+                PutUnitDataList = new List<PutUnitData>();
+                for (int i = 0; i < 10; i++)
+                {
+                    var id = Random.Range(0, 5);
+                    PutUnitDataList.Add(new PutUnitData()
+                    {
+                        UnitId = id,
+                        UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
+                        Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
+                        Direction = (UnitRotate)Random.Range(0, 4)
+                    });
+                    KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
+                }
+            }
+
             DUlongGrid = await FillGridDUlongBase();
+
             _gridCreated = true;
-            
+
             for (int z = 0; z < _gridSize; z++)
             {
                 for (int y = 0; y < _height; y++)
@@ -66,29 +68,20 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            var col = Instantiate(_gridCollider, new Vector3(x, y , z) + offset, Quaternion.identity);
-                            col.transform.SetParent(transform);
+                            Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity).transform.SetParent(transform);
                         }
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// 初期化時に呼び出される
-        /// </summary>
-        public void Initialize()
-        {
-            _ = GenerateCollider();
-        }
-        
-
         private async Awaitable<DUlong[,]> FillGridDUlongBase()
         {
+            List<PutUnitData> unitDataList = new(PutUnitDataList);
             await Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
 
-            foreach (var putUnitData in PutUnitDataList)
+            foreach (var putUnitData in unitDataList)
             {
                 UnitData unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
                 ulong rotateShape = 0;
@@ -125,10 +118,12 @@ namespace Manager
                     }
                 }
             }
+
             await Awaitable.MainThreadAsync();
+            KeyLogger.Log("Generate End");
             return grid;
         }
-        
+
 
         /// <summary>
         /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる
@@ -207,11 +202,22 @@ namespace Manager
 
             return returnShape;
         }
-        
+
+        private void GenerateWall()
+        {
+            GameObject[] walls = new GameObject[4];
+            for (int i = 0; i < 4; i++)
+            {
+                walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position, Quaternion.identity);
+                walls[i].name = "Wall" + i;
+            }
+            WallGenerator.GenerateWalls(_wallData,walls);
+        }
+
         private void OnDrawGizmos()
         {
             if (!_gridCreated) return;
-            
+
             Gizmos.color = Color.green;
             for (int z = 0; z < _gridSize; z++)
             {
@@ -221,11 +227,21 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            Gizmos.DrawWireCube(new Vector3(x, y, z) + offset, Vector3.one);
+                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 初期化時に呼び出される
+        /// </summary>
+        public void Initialize()
+        {
+            Debug.Log("GridManager initialized");
+            GenerateCollider().Forget();
+            GenerateWall();
         }
 
         void IManager.Register()
@@ -233,7 +249,7 @@ namespace Manager
             DiContainer.Instance.Register(this);
         }
 
-        void Awake()
+        private void Awake()
         {
             DiContainer.Instance.Register(this);
         }
@@ -262,6 +278,19 @@ namespace Manager
         public UnitType UnitType;
         public Vector2Int[] EnterPositions;
         public Vector2Int[] ExitPositions;
+    }
+
+    [Serializable]
+    public struct WallData
+    {
+        /// <summary>
+        /// 壁の最も原点に近い部分の座標
+        /// </summary>
+        public GameObject wallPrefab;
+        [Tooltip("壁の最も原点に近い座標")]public Vector3Int Position;
+        [Tooltip("壁の高さ")] public int Height;
+        [Tooltip("壁の厚み 必ず奇数にしてください")]public int Width;
+        [Tooltip("壁の外側の長さ")]public int Size;
     }
 
     public enum UnitType : byte
