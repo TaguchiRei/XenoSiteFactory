@@ -255,10 +255,10 @@ MonoBehaviour:
   _height: 4
   _wallData:
     wallPrefab: {fileID: 118725316214312412, guid: b683401707940e04e9c75619846c0e4b, type: 3}
-    Position: {x: 20, y: 1, z: 20}
+    Position: {x: 64, y: 1, z: 64}
     Height: 2
     Width: 3
-    Size: 10
+    Size: 20
 --- !u!4 &962066675
 Transform:
   m_ObjectHideFlags: 0
