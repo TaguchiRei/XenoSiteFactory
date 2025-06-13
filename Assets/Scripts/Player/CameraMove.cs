@@ -1,3 +1,4 @@
+using System.Collections;
 using DIContainer;
 using Manager;
 using UnityEngine;
@@ -6,10 +7,10 @@ namespace Player
 {
     public class CameraMove : MonoBehaviour
     {
-        private bool _rotating;
         private Vector3 _moveDirection;
         private InGameManager _inGameManager;
         [SerializeField] private float _speed;
+        [SerializeField] private float _rotationSpeed;
         
         //初期化処理を書く
         private void Start()
@@ -29,7 +30,15 @@ namespace Player
         //操作受付時の処理
         private void OnMoveInput(Vector2 input)
         {
-            _moveDirection = new Vector3(input.x, 0, input.y);
+            var inputDirection = new Vector3(input.x, 0, input.y);
+            float yRotation = transform.eulerAngles.y;
+            Quaternion yOnlyRotation = Quaternion.Euler(0f, yRotation, 0f); 
+            _moveDirection = yOnlyRotation * inputDirection;
+        }
+
+        private void OnPreviousInput()
+        {
+            
         }
     }
 }
