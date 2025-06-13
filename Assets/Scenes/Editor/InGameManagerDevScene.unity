@@ -258,7 +258,7 @@ MonoBehaviour:
     Position: {x: 64, y: 1, z: 64}
     Height: 2
     Width: 3
-    Size: 20
+    Size: 65
 --- !u!4 &962066675
 Transform:
   m_ObjectHideFlags: 0
