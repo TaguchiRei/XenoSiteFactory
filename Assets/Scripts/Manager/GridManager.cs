@@ -280,7 +280,7 @@ namespace Manager
         /// 壁の最も原点に近い部分の座標
         /// </summary>
         public GameObject wallPrefab;
-        [Tooltip("壁の最も原点に近い座標")]public Vector3Int Position;
+        [Tooltip("壁に囲まれた空間の中心座標")]public Vector3Int Position;
         [Tooltip("壁の高さ")] public int Height;
         [Tooltip("壁の厚み 必ず奇数にしてください")]public int Width;
         [Tooltip("壁の外側の長さ")]public int Size;
