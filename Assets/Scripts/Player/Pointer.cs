@@ -4,6 +4,7 @@ using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace Player
@@ -34,9 +35,10 @@ namespace Player
 
 
 
-        private void GetMousePosition(Vector2 mousePosition)
+        private void GetMousePosition(InputAction.CallbackContext context)
         {
             if(IsPaused) return;
+            Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
