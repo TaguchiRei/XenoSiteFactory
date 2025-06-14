@@ -47,14 +47,14 @@ namespace Player
         private void OnPreviousInput(InputAction.CallbackContext context)
         {
             if (context.phase != InputActionPhase.Started) return;
-            _rotation += new Vector3(0, 90, 0);
+            _rotation += new Vector3(0, -90, 0);
             transform.DORotate(_rotation, 1.0f);
         }
 
         private void OnNextInput(InputAction.CallbackContext context)
         {
             if (context.phase != InputActionPhase.Started) return;
-            _rotation += new Vector3(0, -90, 0);
+            _rotation += new Vector3(0, 90, 0);
             transform.DORotate(_rotation, 1.0f);
         }
     }
