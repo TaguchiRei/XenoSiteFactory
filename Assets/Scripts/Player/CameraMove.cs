@@ -3,6 +3,7 @@ using DG.Tweening;
 using DIContainer;
 using Manager;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Player
 {
@@ -18,6 +19,7 @@ namespace Player
         //初期化処理を書く
         private void Start()
         {
+            _rotation = transform.eulerAngles;
             DiContainer.Instance.TryGet(out _inGameManager);
             DiContainer.Instance.TryGet(out PlayerOperationManager playerOperationManager);
             playerOperationManager.OnMoveAction += OnMoveInput;
@@ -33,25 +35,26 @@ namespace Player
         }
 
         //操作受付時の処理
-        private void OnMoveInput(Vector2 input)
+        private void OnMoveInput(InputAction.CallbackContext context)
         {
+            Vector2 input = context.ReadValue<Vector2>();
             var inputDirection = new Vector3(input.x, 0, input.y);
             float yRotation = transform.eulerAngles.y;
             Quaternion yOnlyRotation = Quaternion.Euler(0f, yRotation, 0f);
             _moveDirection = yOnlyRotation * inputDirection;
         }
 
-        private void OnPreviousInput()
+        private void OnPreviousInput(InputAction.CallbackContext context)
         {
+            if (context.phase != InputActionPhase.Started) return;
             _rotation += new Vector3(0, 90, 0);
-            _rotation.y %= 360f;
             transform.DORotate(_rotation, 1.0f);
         }
 
-        private void OnNextInput()
+        private void OnNextInput(InputAction.CallbackContext context)
         {
+            if (context.phase != InputActionPhase.Started) return;
             _rotation += new Vector3(0, -90, 0);
-            _rotation.y %= 360f;
             transform.DORotate(_rotation, 1.0f);
         }
     }

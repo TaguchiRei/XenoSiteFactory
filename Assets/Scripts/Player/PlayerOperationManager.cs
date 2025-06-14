@@ -11,11 +11,11 @@ namespace Player
     public class PlayerOperationManager : MonoBehaviour, IManager, InputSystem_Actions.IPlayerActions,
         InputSystem_Actions.IUIActions
     {
-        public Action<Vector2> OnMoveAction;
-        public Action OnInteractAction;
-        public Action OnPreviousAction;
-        public Action OnNextAction;
-        public Action<Vector2> OnMouseMoveAction;
+        public Action<InputAction.CallbackContext> OnMoveAction;
+        public Action<InputAction.CallbackContext> OnInteractAction;
+        public Action<InputAction.CallbackContext> OnPreviousAction;
+        public Action<InputAction.CallbackContext> OnNextAction;
+        public Action<InputAction.CallbackContext> OnMouseMoveAction;
         
         private InputSystem_Actions inputSystemActions;
         private InGameManager inGameManager;
@@ -30,7 +30,7 @@ namespace Player
         {
             if (inGameManager == null || (int)inGameManager.DayState < 2)
             {
-                OnMoveAction?.Invoke(context.ReadValue<Vector2>());
+                OnMoveAction?.Invoke(context);
             }
         }
 
@@ -38,7 +38,7 @@ namespace Player
         {
             if (inGameManager == null || (int)inGameManager.DayState < 2)
             {
-                OnInteractAction?.Invoke();
+                OnInteractAction?.Invoke(context);
             }
         }
 
@@ -46,7 +46,7 @@ namespace Player
         {
             if (inGameManager == null || (int)inGameManager.DayState < 2)
             {
-                OnPreviousAction?.Invoke();
+                OnPreviousAction?.Invoke(context);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Player
         {
             if (inGameManager == null || (int)inGameManager.DayState < 2)
             {
-                OnNextAction?.Invoke();
+                OnNextAction?.Invoke(context);
             }
         }
 
@@ -62,7 +62,7 @@ namespace Player
         {
             if (inGameManager == null || (int)inGameManager.DayState < 2)
             {
-                OnMouseMoveAction?.Invoke(context.ReadValue<Vector2>());
+                OnMouseMoveAction?.Invoke(context);
             }
         }
 
