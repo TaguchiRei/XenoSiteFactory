@@ -21,13 +21,14 @@ namespace Player
             DiContainer.Instance.TryGet(out _inGameManager);
             DiContainer.Instance.TryGet(out PlayerOperationManager playerOperationManager);
             playerOperationManager.OnMoveAction += OnMoveInput;
+            playerOperationManager.OnNextAction += OnNextInput;
+            playerOperationManager.OnPreviousAction += OnPreviousInput;
         }
 
         //前後左右へのカメラ移動、
         private void FixedUpdate()
         {
             if (_inGameManager.DayState != 0) return;
-
             transform.position += _moveDirection * _speed;
         }
 
