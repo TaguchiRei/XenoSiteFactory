@@ -29,6 +29,27 @@ namespace Manager
         [SerializeField, Range(4, 10)] private int _height;
         [SerializeField] WallData _wallData;
 
+        private async Awaitable GridManagerInitialize()
+        {
+            GenerateWall();
+
+            Awaitable.BackgroundThreadAsync();
+            DUlong[,] grid = new DUlong[_gridSize, _height];
+            var wallIndices = await WallGenerator.GetWallIndices(_wallData);
+            foreach (var index in wallIndices)
+            {
+                for (int y = 0; y < _wallData.Height; y++)
+                {
+                    //XY平面上で表現されたグリッドにZ軸の情報を足す。index.yはZ軸情報
+                    grid[index.x, y] |= 1u << index.y;
+                }
+            }
+            await Awaitable.MainThreadAsync();
+        }
+        
+        /// <summary>
+        /// コライダーの生成を担当する
+        /// </summary>
         private async UniTask GenerateCollider()
         {
             if (PutUnitDataList == null)
@@ -68,6 +89,10 @@ namespace Manager
             }
         }
 
+        /// <summary>
+        /// グリッドを埋めて保存することを担当する
+        /// </summary>
+        /// <returns></returns>
         private async Awaitable<DUlong[,]> FillGridDUlongBase()
         {
             List<PutUnitData> unitDataList = new(PutUnitDataList);
@@ -116,8 +141,20 @@ namespace Manager
             KeyLogger.Log("Generate End");
             return grid;
         }
-
-
+        /// <summary>
+        /// 壁オブジェクトのインスタンス生成を担当する
+        /// </summary>
+        private void GenerateWall()
+        {
+            GameObject[] walls = new GameObject[4];
+            for (int i = 0; i < 4; i++)
+            {
+                walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position + _wallOffset, Quaternion.identity);
+                walls[i].name = "Wall" + i;
+            }
+            WallGenerator.GenerateWalls(_wallData,walls);
+        }
+        
         /// <summary>
         /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる
         /// </summary>
@@ -194,17 +231,6 @@ namespace Manager
             }
 
             return returnShape;
-        }
-
-        private void GenerateWall()
-        {
-            GameObject[] walls = new GameObject[4];
-            for (int i = 0; i < 4; i++)
-            {
-                walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position + _wallOffset, Quaternion.identity);
-                walls[i].name = "Wall" + i;
-            }
-            WallGenerator.GenerateWalls(_wallData,walls);
         }
 
         private void OnDrawGizmos()
