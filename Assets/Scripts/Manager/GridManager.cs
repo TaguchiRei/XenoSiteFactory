@@ -16,9 +16,10 @@ namespace Manager
     {
         /// <summary> グリッドが占有されているエリアを保存する </summary>
         public DUlong[,] DUlongGrid { get; private set; }
+
         /// <summary> グリッドに設置されている物を保存する </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
-        
+
         private static readonly Vector3 _wallOffset = new(0f, -0.5f, 0f);
         private bool _gridCreated;
         private UniTask _generateColliderTask;
@@ -29,13 +30,40 @@ namespace Manager
         [SerializeField, Range(4, 10)] private int _height;
         [SerializeField] WallData _wallData;
 
-        private async Awaitable GridManagerInitialize()
+        /// <summary>
+        /// テスト用のスクリプトなので今後削除予定です
+        /// </summary>
+        private void GenerateTestData()
+        {
+            KeyLogger.LogWarning("This is Test Only Method");
+            //テスト用スクリプト
+            PutUnitDataList = new List<PutUnitData>();
+            for (int i = 0; i < 10; i++)
+            {
+                var id = Random.Range(0, 5);
+                PutUnitDataList.Add(new PutUnitData()
+                {
+                    UnitId = id,
+                    UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
+                    Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
+                    Direction = (UnitRotate)Random.Range(0, 4)
+                });
+                KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
+            }
+        }
+
+        /// <summary>
+        /// グリッドマネージャーの初期化を行う。
+        /// グリッド情報生成、壁の生成、占有座標へのコライダー配置等
+        /// </summary>
+        private async Awaitable GridManagerInitialize(List<PutUnitData> putUnitDataList)
         {
             GenerateWall();
-
+            
             Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
             var wallIndices = await WallGenerator.GetWallIndices(_wallData);
+            
             foreach (var index in wallIndices)
             {
                 for (int y = 0; y < _wallData.Height; y++)
@@ -44,36 +72,19 @@ namespace Manager
                     grid[index.x, y] |= 1u << index.y;
                 }
             }
+            
+            grid = FillGridDUlongBase(grid, putUnitDataList);
             await Awaitable.MainThreadAsync();
+            
+            DUlongGrid = grid;
+            GenerateCollider();
         }
-        
+
         /// <summary>
         /// コライダーの生成を担当する
         /// </summary>
-        private async UniTask GenerateCollider()
+        private void GenerateCollider()
         {
-            if (PutUnitDataList == null)
-            {
-                //テスト用スクリプト
-                PutUnitDataList = new List<PutUnitData>();
-                for (int i = 0; i < 10; i++)
-                {
-                    var id = Random.Range(0, 5);
-                    PutUnitDataList.Add(new PutUnitData()
-                    {
-                        UnitId = id,
-                        UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
-                        Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
-                        Direction = (UnitRotate)Random.Range(0, 4)
-                    });
-                    KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
-                }
-            }
-
-            DUlongGrid = await FillGridDUlongBase();
-
-            _gridCreated = true;
-
             for (int z = 0; z < _gridSize; z++)
             {
                 for (int y = 0; y < _height; y++)
@@ -82,7 +93,8 @@ namespace Manager
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
-                            Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity).transform.SetParent(transform);
+                            Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity).transform
+                                .SetParent(transform);
                         }
                     }
                 }
@@ -93,12 +105,8 @@ namespace Manager
         /// グリッドを埋めて保存することを担当する
         /// </summary>
         /// <returns></returns>
-        private async Awaitable<DUlong[,]> FillGridDUlongBase()
+        private DUlong[,] FillGridDUlongBase(DUlong[,] grid, List<PutUnitData> unitDataList)
         {
-            List<PutUnitData> unitDataList = new(PutUnitDataList);
-            await Awaitable.BackgroundThreadAsync();
-            DUlong[,] grid = new DUlong[_gridSize, _height];
-
             foreach (var putUnitData in unitDataList)
             {
                 UnitData unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
@@ -137,10 +145,9 @@ namespace Manager
                 }
             }
 
-            await Awaitable.MainThreadAsync();
-            KeyLogger.Log("Generate End");
             return grid;
         }
+
         /// <summary>
         /// 壁オブジェクトのインスタンス生成を担当する
         /// </summary>
@@ -152,9 +159,10 @@ namespace Manager
                 walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position + _wallOffset, Quaternion.identity);
                 walls[i].name = "Wall" + i;
             }
-            WallGenerator.GenerateWalls(_wallData,walls);
+
+            WallGenerator.GenerateWalls(_wallData, walls);
         }
-        
+
         /// <summary>
         /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる
         /// </summary>
@@ -259,8 +267,8 @@ namespace Manager
         public void Initialize()
         {
             Debug.Log("GridManager initialized");
-            GenerateCollider().Forget();
-            GenerateWall();
+            GenerateTestData();
+            _ = GridManagerInitialize(PutUnitDataList);
         }
 
         void IManager.Register()
@@ -306,10 +314,11 @@ namespace Manager
         /// 壁の最も原点に近い部分の座標
         /// </summary>
         public GameObject wallPrefab;
-        [Tooltip("壁に囲まれた空間の中心座標")]public Vector3Int Position;
+
+        [Tooltip("壁に囲まれた空間の中心座標")] public Vector3Int Position;
         [Tooltip("壁の高さ")] public int Height;
-        [Tooltip("壁の厚み 必ず奇数にしてください")]public int Width;
-        [Tooltip("壁の外側の長さ")]public int Size;
+        [Tooltip("壁の厚み 必ず奇数にしてください")] public int Width;
+        [Tooltip("壁の外側の長さ")] public int Size;
     }
 
     public enum UnitType : byte
