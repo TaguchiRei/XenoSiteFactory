@@ -14,22 +14,15 @@ namespace Manager
 {
     public class GridManager : MonoBehaviour, IManager
     {
-        /// <summary>
-        /// グリッドが占有されているエリアを保存する
-        /// </summary>
+        /// <summary> グリッドが占有されているエリアを保存する </summary>
         public DUlong[,] DUlongGrid { get; private set; }
-
-        /// <summary>
-        /// グリッドに設置されている物を保存する
-        /// </summary>
+        /// <summary> グリッドに設置されている物を保存する </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
-
-        private UniTask _generateColliderTask;
-
-        //private static readonly Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
-
-        private readonly DUlong _oneDUlong = new(0, 1);
+        
+        private static readonly Vector3 _wallOffset = new(0f, -0.5f, 0f);
         private bool _gridCreated;
+        private UniTask _generateColliderTask;
+        private readonly DUlong _oneDUlong = new(0, 1);
         [SerializeField] private AllUnitData _allUnitData;
         [SerializeField] private GameObject _gridCollider;
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
@@ -208,7 +201,7 @@ namespace Manager
             GameObject[] walls = new GameObject[4];
             for (int i = 0; i < 4; i++)
             {
-                walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position, Quaternion.identity);
+                walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position + _wallOffset, Quaternion.identity);
                 walls[i].name = "Wall" + i;
             }
             WallGenerator.GenerateWalls(_wallData,walls);
