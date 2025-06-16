@@ -19,15 +19,15 @@ namespace Manager
 
         /// <summary> グリッドに設置されている物を保存する </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
-
+        /// <summary>一辺４の長さの４*４*４のデータを扱うため </summary>
+        private const int Edge = 4;
         private static readonly Vector3 _wallOffset = new(0f, -0.5f, 0f);
         private bool _gridCreated;
-        private UniTask _generateColliderTask;
         private readonly DUlong _oneDUlong = new(0, 1);
         [SerializeField] private AllUnitData _allUnitData;
         [SerializeField] private GameObject _gridCollider;
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
-        [SerializeField, Range(4, 10)] private int _height;
+        [SerializeField, Range(Edge, 10)] private int _height;
         [SerializeField] WallData _wallData;
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace Manager
                 {
                     UnitId = id,
                     UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
-                    Position = new Vector2Int(Random.Range(0, _gridSize - 4), Random.Range(0, _gridSize - 4)),
-                    Direction = (UnitRotate)Random.Range(0, 4)
+                    Position = new Vector2Int(Random.Range(0, _gridSize - Edge), Random.Range(0, _gridSize - Edge)),
+                    Direction = (UnitRotate)Random.Range(0, Edge)
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
             }
@@ -59,11 +59,11 @@ namespace Manager
         private async Awaitable GridManagerInitialize(List<PutUnitData> putUnitDataList)
         {
             GenerateWall();
-            
+
             Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
-            var wallIndices = await WallGenerator.GetWallIndices(_wallData);
-            
+            var wallIndices = await WallGenerator.GetWallIndex(_wallData);
+
             foreach (var index in wallIndices)
             {
                 for (int y = 0; y < _wallData.Height; y++)
@@ -72,13 +72,15 @@ namespace Manager
                     grid[index.x, y] |= 1u << index.y;
                 }
             }
-            
+
             grid = FillGridDUlongBase(grid, putUnitDataList);
             await Awaitable.MainThreadAsync();
-            
+
             DUlongGrid = grid;
             GenerateCollider();
+            _gridCreated = true;
         }
+
 
         /// <summary>
         /// コライダーの生成を担当する
@@ -128,16 +130,16 @@ namespace Manager
                         break;
                 }
 
-                for (int y = 0; y < 4; y++)
+                for (int y = 0; y < Edge; y++)
                 {
-                    for (int z = 0; z < 4; z++)
+                    for (int z = 0; z < Edge; z++)
                     {
-                        for (int x = 0; x < 4; x++)
+                        for (int x = 0; x < Edge; x++)
                         {
-                            int bitPosition = x + z * 4 + y * 16;
-                            int gridZ = putUnitData.Position.y + z;
+                            int bitPosition = x + z * Edge + y * 16;
                             if ((rotateShape & ((ulong)1 << bitPosition)) != 0)
                             {
+                                int gridZ = putUnitData.Position.y + z;
                                 grid[putUnitData.Position.x + x, y] |= _oneDUlong << gridZ;
                             }
                         }
@@ -153,8 +155,8 @@ namespace Manager
         /// </summary>
         private void GenerateWall()
         {
-            GameObject[] walls = new GameObject[4];
-            for (int i = 0; i < 4; i++)
+            GameObject[] walls = new GameObject[Edge];
+            for (int i = 0; i < Edge; i++)
             {
                 walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position + _wallOffset, Quaternion.identity);
                 walls[i].name = "Wall" + i;
@@ -171,18 +173,18 @@ namespace Manager
         private ulong RotateRightUlongBase90(ulong shape)
         {
             ulong returnShape = 0;
-            for (int y = 0; y < 4; y++)
+            for (int y = 0; y < Edge; y++)
             {
-                for (int z = 0; z < 4; z++)
+                for (int z = 0; z < Edge; z++)
                 {
-                    for (int x = 0; x < 4; x++)
+                    for (int x = 0; x < Edge; x++)
                     {
-                        int baseBit = x + z * 4 + y * 16;
-                        //回転させない場合はx + z * 4 + y * 16 でビットの位置が決まる
+                        int baseBit = x + z * Edge + y * 16;
+                        //回転させない場合はx + z * Edge + y * 16 でビットの位置が決まる
                         //回転後のbitの位置は座標にしてx = z 、y = y、z = 3 - xで求められる。
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
-                            int bitPos = z + (3 - x) * 4 + (y * 16);
+                            int bitPos = z + (3 - x) * Edge + (y * 16);
                             returnShape |= (ulong)1 << bitPos;
                         }
                     }
@@ -200,16 +202,16 @@ namespace Manager
         private ulong RotateRightUlongBase180(ulong shape)
         {
             ulong returnShape = 0;
-            for (int y = 0; y < 4; y++)
+            for (int y = 0; y < Edge; y++)
             {
-                for (int z = 0; z < 4; z++)
+                for (int z = 0; z < Edge; z++)
                 {
-                    for (int x = 0; x < 4; x++)
+                    for (int x = 0; x < Edge; x++)
                     {
-                        int baseBit = x + z * 4 + y * 16;
+                        int baseBit = x + z * Edge + y * 16;
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
-                            int bitPos = (3 - z) + (3 - x) * 4 + (y * 16);
+                            int bitPos = (3 - z) + (3 - x) * Edge + (y * 16);
                             returnShape |= (ulong)1 << bitPos;
                         }
                     }
@@ -222,16 +224,16 @@ namespace Manager
         private ulong RotateRightUlongBase270(ulong shape)
         {
             ulong returnShape = 0;
-            for (int y = 0; y < 4; y++)
+            for (int y = 0; y < Edge; y++)
             {
-                for (int z = 0; z < 4; z++)
+                for (int z = 0; z < Edge; z++)
                 {
-                    for (int x = 0; x < 4; x++)
+                    for (int x = 0; x < Edge; x++)
                     {
-                        int baseBit = x + z * 4 + y * 16;
+                        int baseBit = x + z * Edge + y * 16;
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
-                            int bitPos = (3 - z) + (x * 4) + (y * 16);
+                            int bitPos = (3 - z) + (x * Edge) + (y * 16);
                             returnShape |= (ulong)1 << bitPos;
                         }
                     }

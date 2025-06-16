@@ -33,42 +33,14 @@ namespace StaticObject
         }
         
         /// <summary>
-        /// 壁のインデックス(x,z)を取得する非同期メソッド
+        /// 壁のインデックス(x,z)を取得するメソッド
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static async Awaitable<Vector2Int[]> GetWallIndices(WallData data)
+        public static Vector2Int[] GetWallIndex(WallData data)
         {
-            await Awaitable.BackgroundThreadAsync();
-            int halfSize = data.Size / 2;
-            int wallLength = data.Size - data.Width;
-            int halfLength = wallLength / 2;
-
-            Vector3Int center = data.Position;
-            List<Vector2Int> indices = new();
-
-            // 手前の壁を保存
-            for (int x = center.x - halfLength; x <= center.x + halfLength; x++)
-            for (int z = center.z - halfSize; z < center.z - halfSize + data.Width; z++)
-                indices.Add(new Vector2Int(x, z));
-
-            // 前方の壁を保存
-            for (int x = center.x - halfLength; x <= center.x + halfLength; x++)
-            for (int z = center.z + halfSize - data.Width + 1; z <= center.z + halfSize; z++)
-                indices.Add(new Vector2Int(x, z));
-
-            // 右の壁を保存
-            for (int x = center.x + halfSize - data.Width + 1; x <= center.x + halfSize; x++)
-            for (int z = center.z - halfLength; z <= center.z + halfLength; z++)
-                indices.Add(new Vector2Int(x, z));
-
-            // 左の壁を保存
-            for (int x = center.x - halfSize; x < center.x - halfSize + data.Width; x++)
-            for (int z = center.z - halfLength; z <= center.z + halfLength; z++)
-                indices.Add(new Vector2Int(x, z));
-            await Awaitable.MainThreadAsync();
-
-            return indices.ToArray();
+            var mostCenterIndex = data.Size / 2 - data.Width;
+            //右側の壁を
         }
     }
 }
