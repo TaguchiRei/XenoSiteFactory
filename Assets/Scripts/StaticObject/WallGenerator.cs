@@ -49,16 +49,21 @@ namespace StaticObject
 
             List<Vector2Int> wallIndex = new List<Vector2Int>();
 
-            //右側の壁の範囲を取得
+            //左右の壁の取得を行う
             for (int z = centerPos.z - mostOutsideIndex; z < centerPos.z + mostCenterIndex; z++)
             {
+                //右側の壁の取得
                 for (int x = centerPos.x + mostCenterIndex; x < data.Width + centerPos.x + mostCenterIndex; x++)
                 {
                     wallIndex.Add(new Vector2Int(x, z));
-                    Debug.Log($"座標 : {x}, {z}");
+                }
+                //左側の壁の取得
+                var zAndWidth = z + data.Width;
+                for (int x = centerPos.x - mostOutsideIndex; x < centerPos.x - mostCenterIndex; x++)
+                {
+                    wallIndex.Add(new Vector2Int(x, zAndWidth));
                 }
             }
-
             return wallIndex.ToArray();
         }
     }
