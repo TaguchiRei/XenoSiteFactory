@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using Manager;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace StaticObject
 {
     public static class WallGenerator
     {
+        private static Vector3 wallOffset = new(0.5f, 0, 0.5f);
+
         /// <summary>
         /// 壁を生成する
         /// </summary>
@@ -18,57 +21,64 @@ namespace StaticObject
             var height = data.Height;
 
             var wallLength = (size - width);
-            
+
             //中心から一定の値ずらす
-            walls[0].transform.position += Vector3.back * wallLength * 0.5f - Vector3.right * width * 0.5f;
-            walls[1].transform.position += Vector3.forward * wallLength * 0.5f + Vector3.right * width * 0.5f;
-            walls[2].transform.position += Vector3.right * wallLength * 0.5f - Vector3.forward * width * 0.5f;
-            walls[3].transform.position += Vector3.left * wallLength * 0.5f + Vector3.forward * width * 0.5f;
-            
+            walls[0].transform.position += Vector3.back * wallLength * 0.5f - Vector3.right * width * 0.5f - wallOffset;
+            walls[1].transform.position += Vector3.forward * wallLength * 0.5f + Vector3.right * width * 0.5f - wallOffset;
+            walls[2].transform.position += Vector3.right * wallLength * 0.5f - Vector3.forward * width * 0.5f - wallOffset;
+            walls[3].transform.position += Vector3.left * wallLength * 0.5f + Vector3.forward * width * 0.5f - wallOffset;
+
             //スケールを調整
             walls[0].transform.localScale = new Vector3(size - width, height, width);
             walls[1].transform.localScale = new Vector3(size - width, height, width);
             walls[2].transform.localScale = new Vector3(width, height, size - width);
             walls[3].transform.localScale = new Vector3(width, height, size - width);
         }
-        
+
         /// <summary>
-        /// 壁のインデックス(x,z)を取得する非同期メソッド
+        /// 壁のインデックス(x,z)を取得するメソッド
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static async Awaitable<Vector2Int[]> GetWallIndices(WallData data)
+        public static Vector2Int[] GetWallIndex(WallData data)
         {
-            await Awaitable.BackgroundThreadAsync();
-            int halfSize = data.Size / 2;
-            int wallLength = data.Size - data.Width;
-            int halfLength = wallLength / 2;
+            var centerPos = data.Position;
+            var mostOutsideIndex = data.Size / 2;//centerPosの値に足すと最も外側に近い部分の座標になる
+            var mostCenterIndex = mostOutsideIndex - data.Width;//centerPosの値に足すと最も内側に近い部分の座標になる
+            List<Vector2Int> wallIndex = new List<Vector2Int>();
 
-            Vector3Int center = data.Position;
-            List<Vector2Int> indices = new();
-
-            // 手前の壁を保存
-            for (int x = center.x - halfLength; x <= center.x + halfLength; x++)
-            for (int z = center.z - halfSize; z < center.z - halfSize + data.Width; z++)
-                indices.Add(new Vector2Int(x, z));
-
-            // 前方の壁を保存
-            for (int x = center.x - halfLength; x <= center.x + halfLength; x++)
-            for (int z = center.z + halfSize - data.Width + 1; z <= center.z + halfSize; z++)
-                indices.Add(new Vector2Int(x, z));
-
-            // 右の壁を保存
-            for (int x = center.x + halfSize - data.Width + 1; x <= center.x + halfSize; x++)
-            for (int z = center.z - halfLength; z <= center.z + halfLength; z++)
-                indices.Add(new Vector2Int(x, z));
-
-            // 左の壁を保存
-            for (int x = center.x - halfSize; x < center.x - halfSize + data.Width; x++)
-            for (int z = center.z - halfLength; z <= center.z + halfLength; z++)
-                indices.Add(new Vector2Int(x, z));
-            await Awaitable.MainThreadAsync();
-
-            return indices.ToArray();
+            //左右の壁の取得を行う
+            for (int z = centerPos.z - mostOutsideIndex; z < centerPos.z + mostCenterIndex; z++)
+            {
+                //右側の壁の取得
+                for (int x = centerPos.x + mostCenterIndex; x < centerPos.x + mostOutsideIndex; x++)
+                {
+                    wallIndex.Add(new Vector2Int(x, z));
+                }
+                //左側の壁の取得
+                var zAndWidth = z + data.Width;
+                for (int x = centerPos.x - mostOutsideIndex; x < centerPos.x - mostCenterIndex; x++)
+                {
+                    wallIndex.Add(new Vector2Int(x, zAndWidth));
+                }
+            }
+            //前後の壁の取得を行う
+            for (int x = centerPos.x - mostOutsideIndex; x < centerPos.x + mostCenterIndex; x++)
+            {
+                //手前の壁の取得
+                for (int z = centerPos.z - mostOutsideIndex; z < centerPos.z - mostCenterIndex; z++)
+                {
+                    wallIndex.Add(new Vector2Int(x, z));
+                }
+                //奥の壁の取得
+                var xAndWidth = x + data.Width;
+                for (int z = centerPos.z + mostCenterIndex; z < centerPos.z + mostOutsideIndex; z++)
+                {
+                    wallIndex.Add(new Vector2Int(xAndWidth, z));
+                }
+            }
+            
+            return wallIndex.ToArray();
         }
     }
 }
