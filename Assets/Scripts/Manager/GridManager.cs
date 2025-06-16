@@ -62,15 +62,17 @@ namespace Manager
 
             Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
-            var wallIndices = await WallGenerator.GetWallIndex(_wallData);
+            var wallIndices = WallGenerator.GetWallIndex(_wallData);
 
             foreach (var index in wallIndices)
             {
                 for (int y = 0; y < _wallData.Height; y++)
                 {
                     //XY平面上で表現されたグリッドにZ軸の情報を足す。index.yはZ軸情報
-                    grid[index.x, y] |= 1u << index.y;
+                    grid[index.x, y] |= _oneDUlong << index.y;
                 }
+
+                Debug.Log($"InputIndex {index.x} {index.y}");
             }
 
             grid = FillGridDUlongBase(grid, putUnitDataList);
