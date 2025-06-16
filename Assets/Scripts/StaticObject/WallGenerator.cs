@@ -40,7 +40,19 @@ namespace StaticObject
         public static Vector2Int[] GetWallIndex(WallData data)
         {
             var mostCenterIndex = data.Size / 2 - data.Width;
-            //右側の壁を
+            var centerPos = data.Position;
+            var wallLength = data.Size - data.Width;
+            
+            List<Vector2Int> wallIndex = new List<Vector2Int>();
+            
+            //右側の壁の範囲を取得
+            for (int z = centerPos.z; z < centerPos.z - wallLength; z++)
+            {
+                for (int x = centerPos.x; x < centerPos.x + mostCenterIndex; x++)
+                {
+                    wallIndex.Add(new Vector2Int(x, z));
+                }
+            }
         }
     }
 }
