@@ -71,8 +71,6 @@ namespace Manager
                     //XY平面上で表現されたグリッドにZ軸の情報を足す。index.yはZ軸情報
                     grid[index.x, y] |= _oneDUlong << index.y;
                 }
-
-                Debug.Log($"InputIndex {index.x} {index.y}");
             }
 
             grid = FillGridDUlongBase(grid, putUnitDataList);

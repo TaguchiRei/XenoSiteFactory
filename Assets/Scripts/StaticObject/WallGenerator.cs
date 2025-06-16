@@ -65,6 +65,11 @@ namespace StaticObject
             //前後の壁の取得を行う
             for (int x = centerPos.x - mostOutsideIndex; x < centerPos.x + mostCenterIndex; x++)
             {
+                //手前の壁の取得
+                for (int z = centerPos.z - mostOutsideIndex; z < centerPos.z - mostCenterIndex; z++)
+                {
+                    wallIndex.Add(new Vector2Int(x, z));
+                }
                 //奥の壁の取得
                 var xAndWidth = x + data.Width;
                 for (int z = centerPos.z + mostCenterIndex; z < centerPos.z + mostOutsideIndex; z++)
