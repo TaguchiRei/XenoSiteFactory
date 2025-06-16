@@ -42,18 +42,16 @@ namespace StaticObject
         /// <returns></returns>
         public static Vector2Int[] GetWallIndex(WallData data)
         {
-            var mostOutsideIndex = data.Size / 2;
-            var mostCenterIndex = mostOutsideIndex - data.Width;
             var centerPos = data.Position;
-            var wallLength = data.Size - data.Width;
-
+            var mostOutsideIndex = data.Size / 2;//centerPosの値に足すと最も外側に近い部分の座標になる
+            var mostCenterIndex = mostOutsideIndex - data.Width;//centerPosの値に足すと最も内側に近い部分の座標になる
             List<Vector2Int> wallIndex = new List<Vector2Int>();
 
             //左右の壁の取得を行う
             for (int z = centerPos.z - mostOutsideIndex; z < centerPos.z + mostCenterIndex; z++)
             {
                 //右側の壁の取得
-                for (int x = centerPos.x + mostCenterIndex; x < data.Width + centerPos.x + mostCenterIndex; x++)
+                for (int x = centerPos.x + mostCenterIndex; x < centerPos.x + mostOutsideIndex; x++)
                 {
                     wallIndex.Add(new Vector2Int(x, z));
                 }
@@ -64,6 +62,17 @@ namespace StaticObject
                     wallIndex.Add(new Vector2Int(x, zAndWidth));
                 }
             }
+            //前後の壁の取得を行う
+            for (int x = centerPos.x - mostOutsideIndex; x < centerPos.x + mostCenterIndex; x++)
+            {
+                //奥の壁の取得
+                var xAndWidth = x + data.Width;
+                for (int z = centerPos.z + mostCenterIndex; z < centerPos.z + mostOutsideIndex; z++)
+                {
+                    wallIndex.Add(new Vector2Int(xAndWidth, z));
+                }
+            }
+            
             return wallIndex.ToArray();
         }
     }
