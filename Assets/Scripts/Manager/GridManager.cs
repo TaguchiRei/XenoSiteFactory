@@ -137,7 +137,7 @@ namespace Manager
                     {
                         for (int x = 0; x < Edge; x++)
                         {
-                            int bitPosition = CalculationBitPosition(x,y,z);
+                            int bitPosition = CalculationBitPosition(x, y, z);
                             if ((rotateShape & ((ulong)1 << bitPosition)) != 0)
                             {
                                 int gridZ = putUnitData.Position.y + z;
@@ -151,7 +151,13 @@ namespace Manager
             return grid;
         }
 
-        private bool CheckCanPutUnit(ulong shape, Vector3Int position)
+        /// <summary>
+        /// 指定の座標に指定のオブジェクトを配置できるかどうかを設定する。
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public bool CheckCanPutUnit(ulong shape, Vector3Int position)
         {
             for (int y = 0; y < Edge; y++)
             {
@@ -159,15 +165,17 @@ namespace Manager
                 {
                     for (int x = 0; x < Edge; x++)
                     {
-                        int bitPosition = CalculationBitPosition(x,y,z);
-                        int gridZ = position.y + z;
-                        if ((shape & (1ul << bitPosition)) != 0)
-                        {
-                            
-                        }
+                        int bitPosition = CalculationBitPosition(x, y, z);
+                        if ((shape & (1ul << bitPosition)) == 0) continue;
+                        if (position.x + x >= _gridSize || 
+                            position.z + z >= _gridSize || 
+                            position.y + y >= _height ||
+                            (DUlongGrid[position.x + x, position.y + y] & (_oneDUlong << (position.z + z))) != 0)
+                            return false;
                     }
                 }
             }
+            return true;
         }
 
         /// <summary>
@@ -201,7 +209,7 @@ namespace Manager
                 {
                     for (int x = 0; x < Edge; x++)
                     {
-                        int baseBit = CalculationBitPosition(x,y,z);
+                        int baseBit = CalculationBitPosition(x, y, z);
                         //回転させない場合はx + z * Edge + y * 16 でビットの位置が決まる
                         //回転後のbitの位置は座標にしてx = z 、y = y、z = 3 - xで求められる。
                         if (((shape >> baseBit) & 1UL) != 0)
@@ -230,7 +238,7 @@ namespace Manager
                 {
                     for (int x = 0; x < Edge; x++)
                     {
-                        int baseBit = CalculationBitPosition(x,y,z);
+                        int baseBit = CalculationBitPosition(x, y, z);
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
                             int bitPos = (3 - z) + (3 - x) * Edge + (y * 16);
@@ -257,7 +265,7 @@ namespace Manager
                 {
                     for (int x = 0; x < Edge; x++)
                     {
-                        int baseBit = CalculationBitPosition(x,y,z);
+                        int baseBit = CalculationBitPosition(x, y, z);
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
                             int bitPos = (3 - z) + (x * Edge) + (y * 16);
