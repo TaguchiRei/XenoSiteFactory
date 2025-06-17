@@ -37,7 +37,6 @@ namespace Manager
         private void GenerateTestData()
         {
             KeyLogger.LogWarning("This is Test Only Method");
-            //テスト用スクリプト
             PutUnitDataList = new List<PutUnitData>();
             for (int i = 0; i < 10; i++)
             {
@@ -78,31 +77,9 @@ namespace Manager
             await Awaitable.MainThreadAsync();
 
             DUlongGrid = grid;
-            GenerateCollider();
             _gridCreated = true;
         }
-
-
-        /// <summary>
-        /// コライダーの生成を担当する
-        /// </summary>
-        private void GenerateCollider()
-        {
-            for (int z = 0; z < _gridSize; z++)
-            {
-                for (int y = 0; y < _height; y++)
-                {
-                    for (int x = 0; x < _gridSize; x++)
-                    {
-                        if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
-                        {
-                            Instantiate(_gridCollider, new Vector3(x, y, z), Quaternion.identity).transform
-                                .SetParent(transform);
-                        }
-                    }
-                }
-            }
-        }
+        
 
         /// <summary>
         /// グリッドをPutUnitDataをもとに復元して返すメソッド。
