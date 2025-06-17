@@ -105,13 +105,13 @@ namespace Manager
                         rotateShape = unit.UnitShape;
                         break;
                     case UnitRotate.Right90:
-                        rotateShape = RotateRightUlongBase90(unit.UnitShape);
+                        rotateShape = BitShapeSupporter.RotateRightUlongBase90(unit.UnitShape);
                         break;
                     case UnitRotate.Right180:
-                        rotateShape = RotateRightUlongBase180(unit.UnitShape);
+                        rotateShape = BitShapeSupporter.RotateRightUlongBase180(unit.UnitShape);
                         break;
                     case UnitRotate.Right270:
-                        rotateShape = RotateRightUlongBase270(unit.UnitShape);
+                        rotateShape = BitShapeSupporter.RotateRightUlongBase270(unit.UnitShape);
                         break;
                 }
 
@@ -121,7 +121,7 @@ namespace Manager
                     {
                         for (int x = 0; x < Edge; x++)
                         {
-                            int bitPosition = CalculationBitPosition(x, y, z);
+                            int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                             if ((rotateShape & ((ulong)1 << bitPosition)) != 0)
                             {
                                 int gridZ = putUnitData.Position.y + z;
@@ -149,7 +149,7 @@ namespace Manager
                 {
                     for (int x = 0; x < Edge; x++)
                     {
-                        int bitPosition = CalculationBitPosition(x, y, z);
+                        int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) == 0) continue;
                         if (position.x + x >= _gridSize || 
                             position.z + z >= _gridSize || 

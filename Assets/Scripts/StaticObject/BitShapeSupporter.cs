@@ -4,20 +4,20 @@ namespace StaticObject
 {
     public static class BitShapeSupporter
     {
-        
+        private const int Edge = 4;
         /// <summary>
         /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる
         /// </summary>
         /// <param name="shape"></param>
         /// <returns></returns>
-        public static ulong RotateRightUlongBase90(ulong shape, Vector3Int Edge = new Vector3Int())
+        public static ulong RotateRightUlongBase90(ulong shape)
         {
             ulong returnShape = 0;
-            for (int y = 0; y < Edge.y; y++)
+            for (int y = 0; y < Edge; y++)
             {
-                for (int z = 0; z < Edge.z; z++)
+                for (int z = 0; z < Edge; z++)
                 {
-                    for (int x = 0; x < Edge.x; x++)
+                    for (int x = 0; x < Edge; x++)
                     {
                         int baseBit = CalculationBitPosition(x, y, z);
                         //回転させない場合はx + z * Edge + y * 16 でビットの位置が決まる
