@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DIContainer;
+using GamesKeystoneFramework.Attributes;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GamesKeystoneFramework.KeyMathBit;
 using Interface;
@@ -18,18 +19,24 @@ namespace Manager
 
         /// <summary> グリッドに設置されている物を保存する </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
-
-        /// <summary>一辺４の長さの４*４*４のデータを扱うため </summary>
-        private const int Edge = 4;
-
-        private static readonly Vector3 _wallOffset = new(0f, -0.5f, 0f);
+        
+        public int PutLayer
+        {
+            get;
+            private set;
+        }
+        
         private bool _gridCreated;
+        private InGameManager _inGameManager;
         private readonly DUlong _oneDUlong = new(0, 1);
         [SerializeField] private AllUnitData _allUnitData;
         [SerializeField] private GameObject _gridCollider;
+        [SerializeField] private int _layerLimit = 4;
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
-        [SerializeField, Range(Edge, 10)] private int _height;
+        [SerializeField, KeyReadOnly] private int _height = 4;
         [SerializeField] WallData _wallData;
+
+        private int _edge;
 
         /// <summary>
         /// テスト用のスクリプトなので今後削除予定です
@@ -45,8 +52,8 @@ namespace Manager
                 {
                     UnitId = id,
                     UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
-                    Position = new Vector2Int(Random.Range(0, _gridSize - Edge), Random.Range(0, _gridSize - Edge)),
-                    Direction = (UnitRotate)Random.Range(0, Edge)
+                    Position = new Vector2Int(Random.Range(0, _gridSize - _edge), Random.Range(0, _gridSize - _edge)),
+                    Direction = (UnitRotate)Random.Range(0, _edge)
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
             }
@@ -58,7 +65,7 @@ namespace Manager
         /// </summary>
         private async Awaitable GridManagerInitialize(List<PutUnitData> putUnitDataList)
         {
-            GenerateWall();
+            WallGenerator.GenerateWall(_wallData);
 
             Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
@@ -98,23 +105,23 @@ namespace Manager
                         rotateShape = unit.UnitShape;
                         break;
                     case UnitRotate.Right90:
-                        rotateShape = RotateRightUlongBase90(unit.UnitShape);
+                        rotateShape = BitShapeSupporter.RotateRightUlongBase90(unit.UnitShape);
                         break;
                     case UnitRotate.Right180:
-                        rotateShape = RotateRightUlongBase180(unit.UnitShape);
+                        rotateShape = BitShapeSupporter.RotateRightUlongBase180(unit.UnitShape);
                         break;
                     case UnitRotate.Right270:
-                        rotateShape = RotateRightUlongBase270(unit.UnitShape);
+                        rotateShape = BitShapeSupporter.RotateRightUlongBase270(unit.UnitShape);
                         break;
                 }
 
-                for (int y = 0; y < Edge; y++)
+                for (int y = 0; y < _edge; y++)
                 {
-                    for (int z = 0; z < Edge; z++)
+                    for (int z = 0; z < _edge; z++)
                     {
-                        for (int x = 0; x < Edge; x++)
+                        for (int x = 0; x < _edge; x++)
                         {
-                            int bitPosition = CalculationBitPosition(x, y, z);
+                            int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                             if ((rotateShape & ((ulong)1 << bitPosition)) != 0)
                             {
                                 int gridZ = putUnitData.Position.y + z;
@@ -136,13 +143,13 @@ namespace Manager
         /// <returns></returns>
         public bool CheckCanPutUnit(ulong shape, Vector3Int position)
         {
-            for (int y = 0; y < Edge; y++)
+            for (int y = 0; y < _edge; y++)
             {
-                for (int z = 0; z < Edge; z++)
+                for (int z = 0; z < _edge; z++)
                 {
-                    for (int x = 0; x < Edge; x++)
+                    for (int x = 0; x < _edge; x++)
                     {
-                        int bitPosition = CalculationBitPosition(x, y, z);
+                        int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) == 0) continue;
                         if (position.x + x >= _gridSize || 
                             position.z + z >= _gridSize || 
@@ -154,119 +161,35 @@ namespace Manager
             }
             return true;
         }
-
+        
         /// <summary>
-        /// 壁オブジェクトのインスタンス生成を担当する
+        /// レイヤーを一つ上げる
         /// </summary>
-        private void GenerateWall()
+        public void UpLayer()
         {
-            GameObject[] walls = new GameObject[Edge];
-            for (int i = 0; i < Edge; i++)
+            PutLayer++;
+            if (PutLayer > _layerLimit)
             {
-                walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position + _wallOffset, Quaternion.identity);
-                walls[i].name = "Wall" + i;
+                PutLayer = 1;
             }
-
-            WallGenerator.GenerateWalls(_wallData, walls);
         }
-
-        #region ユニットの形状を回転させるためのスクリプト
-
+        
         /// <summary>
-        /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる
+        /// レイヤーを一つ下げる
         /// </summary>
-        /// <param name="shape"></param>
-        /// <returns></returns>
-        private ulong RotateRightUlongBase90(ulong shape)
+        public void DownLayer()
         {
-            ulong returnShape = 0;
-            for (int y = 0; y < Edge; y++)
+            PutLayer--;
+            if (PutLayer <= 0)
             {
-                for (int z = 0; z < Edge; z++)
-                {
-                    for (int x = 0; x < Edge; x++)
-                    {
-                        int baseBit = CalculationBitPosition(x, y, z);
-                        //回転させない場合はx + z * Edge + y * 16 でビットの位置が決まる
-                        //回転後のbitの位置は座標にしてx = z 、y = y、z = 3 - xで求められる。
-                        if (((shape >> baseBit) & 1UL) != 0)
-                        {
-                            int bitPos = z + (3 - x) * 4 + (y * 16);
-                            returnShape |= (ulong)1 << bitPos;
-                        }
-                    }
-                }
+                PutLayer = _layerLimit;
             }
-
-            return returnShape;
         }
-
-        /// <summary>
-        /// ulong型で保存されるユニットの形状をy軸ベースで90度回転させる　
-        /// </summary>
-        /// <param name="shape"></param>
-        /// <returns></returns>
-        private ulong RotateRightUlongBase180(ulong shape)
+        
+        public void PutMode()
         {
-            ulong returnShape = 0;
-            for (int y = 0; y < Edge; y++)
-            {
-                for (int z = 0; z < Edge; z++)
-                {
-                    for (int x = 0; x < Edge; x++)
-                    {
-                        int baseBit = CalculationBitPosition(x, y, z);
-                        if (((shape >> baseBit) & 1UL) != 0)
-                        {
-                            int bitPos = (3 - z) + (3 - x) * Edge + (y * 16);
-                            returnShape |= (ulong)1 << bitPos;
-                        }
-                    }
-                }
-            }
-
-            return returnShape;
-        }
-
-        /// <summary>
-        /// ulong型で保存されるユニットの形状をy軸ベースで90度回転させる
-        /// </summary>
-        /// <param name="shape"></param>
-        /// <returns></returns>
-        private ulong RotateRightUlongBase270(ulong shape)
-        {
-            ulong returnShape = 0;
-            for (int y = 0; y < Edge; y++)
-            {
-                for (int z = 0; z < Edge; z++)
-                {
-                    for (int x = 0; x < Edge; x++)
-                    {
-                        int baseBit = CalculationBitPosition(x, y, z);
-                        if (((shape >> baseBit) & 1UL) != 0)
-                        {
-                            int bitPos = (3 - z) + (x * Edge) + (y * 16);
-                            returnShape |= (ulong)1 << bitPos;
-                        }
-                    }
-                }
-            }
-
-            return returnShape;
-        }
-
-        #endregion
-
-        /// <summary>
-        /// ビット座標を計算して返す
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
-        /// <returns></returns>
-        private int CalculationBitPosition(int x, int y, int z)
-        {
-            return x + z * 4 + y * 16;
+            DiContainer.Instance.TryGet(out _inGameManager);
+            _inGameManager.PutModeChange();
         }
 
         private void OnDrawGizmos()
@@ -295,6 +218,8 @@ namespace Manager
         public void Initialize()
         {
             Debug.Log("GridManager initialized");
+            _edge = BitShapeSupporter.GetEdge();
+            PutLayer = 1;
             GenerateTestData();
             _ = GridManagerInitialize(PutUnitDataList);
         }

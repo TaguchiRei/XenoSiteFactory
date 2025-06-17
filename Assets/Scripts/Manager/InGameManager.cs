@@ -18,7 +18,6 @@ namespace Manager
         
         private PauseManager _pauseManager;
         private GridManager _gridManager;
-        private UnitPutManager _unitPutManager;
         private IEnumerator _oneDayCycleEnumerator;
         private PlayerOperationManager _playerOperationManager;
         [SerializeField] private string _inGameSceneName;
@@ -80,13 +79,11 @@ namespace Manager
         {
             if (DiContainer.Instance.TryGet(out _pauseManager) && 
                 DiContainer.Instance.TryGet(out _gridManager) &&
-                DiContainer.Instance.TryGet(out _playerOperationManager) && 
-                DiContainer.Instance.TryGet(out _unitPutManager))
+                DiContainer.Instance.TryGet(out _playerOperationManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
                 _playerOperationManager.Initialize();
-                _unitPutManager.Initialize();
                 KeyLogger.Log("Initialize Success", this);
             }
             else
