@@ -43,7 +43,7 @@ namespace Player
             Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
             var mask = LayerMask.GetMask($"Layer{_unitPutManager.PutLayer}Collider");
-            if (Physics.Raycast(ray, out RaycastHit hit, 50f, mask))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
             {
                 var hitNormal = hit.normal;
                 var hitPos = hit.point;

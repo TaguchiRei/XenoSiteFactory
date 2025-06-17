@@ -603,7 +603,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821dfc82dacbef44f92a67836a0d6412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointerOffset: -1.6
+  pointerOffset: -0.9
 --- !u!1 &1061856133
 GameObject:
   m_ObjectHideFlags: 0

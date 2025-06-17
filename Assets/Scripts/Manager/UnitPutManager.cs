@@ -1,8 +1,6 @@
-using System;
 using DIContainer;
 using Interface;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Manager
 {
