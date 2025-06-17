@@ -14,6 +14,9 @@ namespace Manager
         }
 
 
+        /// <summary>
+        /// レイヤーを一つ上げる
+        /// </summary>
         public void UpLayer()
         {
             PutLayer++;
@@ -23,6 +26,9 @@ namespace Manager
             }
         }
 
+        /// <summary>
+        /// レイヤーを一つ下げる
+        /// </summary>
         public void DownLayer()
         {
             PutLayer--;
