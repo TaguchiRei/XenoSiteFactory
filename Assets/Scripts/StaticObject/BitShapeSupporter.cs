@@ -98,5 +98,10 @@ namespace StaticObject
         {
             return x + z * 4 + y * 16;
         }
+
+        public static int GetEdge()
+        {
+            return Edge;
+        }
     }
 }

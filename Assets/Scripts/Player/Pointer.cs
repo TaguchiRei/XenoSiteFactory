@@ -32,7 +32,6 @@ namespace Player
                 return;
             }
             _playerOperationManager.OnMouseMoveAction += GetMousePosition;
-            KeyLogger.Log(_gridManager.PutLayer.ToString());
         }
 
 

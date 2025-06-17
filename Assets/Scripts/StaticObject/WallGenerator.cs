@@ -14,7 +14,7 @@ namespace StaticObject
         /// </summary>
         /// <param name="data"></param>
         /// <param name="walls"></param>
-        public static void GenerateWalls(WallData data, GameObject[] walls)
+        private static void GenerateWallObjects(WallData data, GameObject[] walls)
         {
             var size = data.Size;
             var width = data.Width;
@@ -79,6 +79,19 @@ namespace StaticObject
             }
             
             return wallIndex.ToArray();
+        }
+        /// <summary>
+        /// 壁オブジェクトのインスタンス生成を担当する
+        /// </summary>
+        public static void GenerateWall(WallData wallData)
+        {
+            GameObject[] walls = new GameObject[4];
+            for (int i = 0; i < 4; i++)
+            {
+                walls[i] = Object.Instantiate(wallData.wallPrefab, wallData.Position + Vector3.down * 0.5f, Quaternion.identity);
+                walls[i].name = "Wall" + i;
+            }
+            GenerateWallObjects(wallData, walls);
         }
     }
 }

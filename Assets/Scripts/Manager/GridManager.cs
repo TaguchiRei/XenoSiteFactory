@@ -27,7 +27,6 @@ namespace Manager
 
         /// <summary>一辺４の長さの４*４*４のデータを扱うため </summary>
         private const int Edge = 4;
-        private static readonly Vector3 _wallOffset = new(0f, -0.5f, 0f);
         private bool _gridCreated;
         private InGameManager _inGameManager;
         private readonly DUlong _oneDUlong = new(0, 1);
@@ -65,7 +64,7 @@ namespace Manager
         /// </summary>
         private async Awaitable GridManagerInitialize(List<PutUnitData> putUnitDataList)
         {
-            GenerateWall();
+            WallGenerator.GenerateWall(_wallData);
 
             Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
@@ -160,21 +159,6 @@ namespace Manager
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// 壁オブジェクトのインスタンス生成を担当する
-        /// </summary>
-        private void GenerateWall()
-        {
-            GameObject[] walls = new GameObject[Edge];
-            for (int i = 0; i < Edge; i++)
-            {
-                walls[i] = Instantiate(_wallData.wallPrefab, _wallData.Position + _wallOffset, Quaternion.identity);
-                walls[i].name = "Wall" + i;
-            }
-
-            WallGenerator.GenerateWalls(_wallData, walls);
         }
         
         /// <summary>
