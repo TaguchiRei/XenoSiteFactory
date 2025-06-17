@@ -85,6 +85,7 @@ namespace StaticObject
         /// </summary>
         public static void GenerateWall(WallData wallData)
         {
+            //壁は四方を囲んでいるため４
             GameObject[] walls = new GameObject[4];
             for (int i = 0; i < 4; i++)
             {

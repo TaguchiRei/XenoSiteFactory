@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DIContainer;
+using GamesKeystoneFramework.Attributes;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GamesKeystoneFramework.KeyMathBit;
 using Interface;
@@ -24,9 +25,7 @@ namespace Manager
             get;
             private set;
         }
-
-        /// <summary>一辺４の長さの４*４*４のデータを扱うため </summary>
-        private const int Edge = 4;
+        
         private bool _gridCreated;
         private InGameManager _inGameManager;
         private readonly DUlong _oneDUlong = new(0, 1);
@@ -34,8 +33,10 @@ namespace Manager
         [SerializeField] private GameObject _gridCollider;
         [SerializeField] private int _layerLimit = 4;
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
-        [SerializeField, Range(Edge, 10)] private int _height;
+        [SerializeField, KeyReadOnly] private int _height = 4;
         [SerializeField] WallData _wallData;
+
+        private int _edge;
 
         /// <summary>
         /// テスト用のスクリプトなので今後削除予定です
@@ -51,8 +52,8 @@ namespace Manager
                 {
                     UnitId = id,
                     UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
-                    Position = new Vector2Int(Random.Range(0, _gridSize - Edge), Random.Range(0, _gridSize - Edge)),
-                    Direction = (UnitRotate)Random.Range(0, Edge)
+                    Position = new Vector2Int(Random.Range(0, _gridSize - _edge), Random.Range(0, _gridSize - _edge)),
+                    Direction = (UnitRotate)Random.Range(0, _edge)
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
             }
@@ -114,11 +115,11 @@ namespace Manager
                         break;
                 }
 
-                for (int y = 0; y < Edge; y++)
+                for (int y = 0; y < _edge; y++)
                 {
-                    for (int z = 0; z < Edge; z++)
+                    for (int z = 0; z < _edge; z++)
                     {
-                        for (int x = 0; x < Edge; x++)
+                        for (int x = 0; x < _edge; x++)
                         {
                             int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                             if ((rotateShape & ((ulong)1 << bitPosition)) != 0)
@@ -142,11 +143,11 @@ namespace Manager
         /// <returns></returns>
         public bool CheckCanPutUnit(ulong shape, Vector3Int position)
         {
-            for (int y = 0; y < Edge; y++)
+            for (int y = 0; y < _edge; y++)
             {
-                for (int z = 0; z < Edge; z++)
+                for (int z = 0; z < _edge; z++)
                 {
-                    for (int x = 0; x < Edge; x++)
+                    for (int x = 0; x < _edge; x++)
                     {
                         int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) == 0) continue;
@@ -217,6 +218,7 @@ namespace Manager
         public void Initialize()
         {
             Debug.Log("GridManager initialized");
+            _edge = BitShapeSupporter.GetEdge();
             PutLayer = 1;
             GenerateTestData();
             _ = GridManagerInitialize(PutUnitDataList);
