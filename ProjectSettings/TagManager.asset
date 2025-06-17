@@ -12,10 +12,10 @@ TagManager:
   - Water
   - UI
   - GridCollider
-  - 
-  - 
-  - 
-  - 
+  - Layer1Collider
+  - Layer2Collider
+  - Layer3Collider
+  - Layer4Collider
   - 
   - 
   - 
