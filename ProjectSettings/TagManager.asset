@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -12,10 +13,10 @@ TagManager:
   - Water
   - UI
   - GridCollider
-  - 
-  - 
-  - 
-  - 
+  - Layer1Collider
+  - Layer2Collider
+  - Layer3Collider
+  - Layer4Collider
   - 
   - 
   - 
