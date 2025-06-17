@@ -4,6 +4,7 @@ namespace StaticObject
 {
     public static class BitShapeSupporter
     {
+        /// <summary> Edgeは64ビットを4*4*4としてとらえたときの一辺を表す </summary>
         private const int Edge = 4;
         /// <summary>
         /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる
