@@ -22,7 +22,15 @@ namespace Manager
                 PutLayer = 1;
             }
         }
-        
+
+        public void DownLayer()
+        {
+            PutLayer--;
+            if (PutLayer <= 0)
+            {
+                PutLayer = layerLimit;
+            }
+        }
         
         public void Register()
         {
