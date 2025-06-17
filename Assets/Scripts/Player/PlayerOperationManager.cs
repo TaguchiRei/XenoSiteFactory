@@ -121,15 +121,6 @@ namespace Player
             inputSystemActions = new InputSystem_Actions();
             inputSystemActions.Player.SetCallbacks(this);
             inputSystemActions.Enable();
-
-            if (DiContainer.Instance.TryGet(out inGameManager))
-            {
-                KeyLogger.Log("inGameManager is already set", this);
-            }
-            else
-            {
-                KeyLogger.Log("inGameManager is not find");
-            }
         }
     }
 }

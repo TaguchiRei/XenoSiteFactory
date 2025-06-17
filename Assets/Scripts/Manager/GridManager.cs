@@ -299,14 +299,14 @@ namespace Manager
             _ = GridManagerInitialize(PutUnitDataList);
         }
 
-        void IManager.Register()
+        public void Register()
         {
             DiContainer.Instance.Register(this);
         }
 
         private void Awake()
         {
-            DiContainer.Instance.Register(this);
+            Register();
         }
     }
 

@@ -1,27 +1,28 @@
-using System;
 using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 namespace Player
 {
     public class Pointer : MonoBehaviour, IPauseable
     {
         public bool IsPaused { get; set; }
-        [SerializeField, Range(-1f, 1f)] private float pointerOffset;
+        [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
         
         InGameManager _inGameManager;
         PlayerOperationManager _playerOperationManager;
+        UnitPutManager _unitPutManager;
         
         
         private void Start()
         {
-            if(DiContainer.Instance.TryGet(out _inGameManager) && DiContainer.Instance.TryGet(out _playerOperationManager))
+            if(DiContainer.Instance.TryGet(out _inGameManager) &&
+               DiContainer.Instance.TryGet(out _playerOperationManager) &&
+               DiContainer.Instance.TryGet(out _unitPutManager))
             {
                 KeyLogger.Log("GetManagerClass");
             }
@@ -31,6 +32,7 @@ namespace Player
                 return;
             }
             _playerOperationManager.OnMouseMoveAction += GetMousePosition;
+            KeyLogger.Log(_unitPutManager.PutLayer.ToString());
         }
 
 
@@ -40,8 +42,8 @@ namespace Player
             if(IsPaused) return;
             Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
-            var mask = LayerMask.GetMask($"LayerCollider");
-            if (Physics.Raycast(ray, out RaycastHit hit, 20f, mask))
+            var mask = LayerMask.GetMask($"Layer{_unitPutManager.PutLayer}Collider");
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
             {
                 var hitNormal = hit.normal;
                 var hitPos = hit.point;
