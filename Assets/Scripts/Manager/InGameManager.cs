@@ -18,6 +18,7 @@ namespace Manager
         
         private PauseManager _pauseManager;
         private GridManager _gridManager;
+        private UnitPutManager _unitPutManager;
         private IEnumerator _oneDayCycleEnumerator;
         private PlayerOperationManager _playerOperationManager;
         [SerializeField] private string _inGameSceneName;
@@ -25,6 +26,8 @@ namespace Manager
         [SerializeField] private UnityEvent _OpenMenuEvent = new UnityEvent();
         [SerializeField] private UnityEvent _CloseMenuEvent = new UnityEvent();
         [SerializeField] private UnityEvent _DayEndEvent = new UnityEvent();
+        
+        public bool PutMode{ get; private set; }
 
         private void Start()
         {
@@ -60,15 +63,30 @@ namespace Manager
             _pauseManager.Resume();
         }
 
+        public void PutModeChange()
+        {
+            PutMode = !PutMode;
+            if (PutMode)
+            {
+                _pauseManager.Pause();
+            }
+            else
+            {
+                _pauseManager.Resume();
+            }
+        }
+
         public void Initialize()
         {
             if (DiContainer.Instance.TryGet(out _pauseManager) && 
                 DiContainer.Instance.TryGet(out _gridManager) &&
-                DiContainer.Instance.TryGet(out _playerOperationManager))
+                DiContainer.Instance.TryGet(out _playerOperationManager) && 
+                DiContainer.Instance.TryGet(out _unitPutManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
                 _playerOperationManager.Initialize();
+                _unitPutManager.Initialize();
                 KeyLogger.Log("Initialize Success", this);
             }
             else

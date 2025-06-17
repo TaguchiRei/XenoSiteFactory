@@ -1,12 +1,15 @@
+using System;
 using DIContainer;
 using Interface;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Manager
 {
     public class UnitPutManager : MonoBehaviour, IManager
     {
-        [SerializeField] private int layerLimit = 4;
+        [SerializeField] private int _layerLimit = 4;
+        private InGameManager _inGameManager;
         public int PutLayer
         {
             get;
@@ -15,7 +18,9 @@ namespace Manager
 
         public void PutMode()
         {
-            
+            if (_inGameManager == null) DiContainer.Instance.TryGet(out _inGameManager);
+            if(_inGameManager == null) return;
+            _inGameManager?.PutModeChange();
         }
         
         /// <summary>
@@ -24,7 +29,7 @@ namespace Manager
         public void UpLayer()
         {
             PutLayer++;
-            if (PutLayer > layerLimit)
+            if (PutLayer > _layerLimit)
             {
                 PutLayer = 1;
             }
@@ -38,18 +43,22 @@ namespace Manager
             PutLayer--;
             if (PutLayer <= 0)
             {
-                PutLayer = layerLimit;
+                PutLayer = _layerLimit;
             }
         }
         
         public void Register()
         {
-            DiContainer.Instance.Register<IManager>(this);
+            DiContainer.Instance.Register(this);
         }
 
         public void Initialize()
         {
             PutLayer = 1;
+        }
+
+        public void Awake()
+        {
             Register();
         }
     }

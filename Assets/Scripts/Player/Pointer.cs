@@ -10,7 +10,7 @@ namespace Player
     public class Pointer : MonoBehaviour, IPauseable
     {
         public bool IsPaused { get; set; }
-        [SerializeField, Range(-1f, 1f)] private float pointerOffset;
+        [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
         
         InGameManager _inGameManager;
@@ -32,6 +32,7 @@ namespace Player
                 return;
             }
             _playerOperationManager.OnMouseMoveAction += GetMousePosition;
+            KeyLogger.Log(_unitPutManager.PutLayer.ToString());
         }
 
 

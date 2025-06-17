@@ -36,6 +36,7 @@ namespace DIContainer
 
         public void Register<T>(T instance)
         {
+            Debug.Log($"Registered Instance {typeof(T).Name}");
             _container[typeof(T)] = instance;
         }
 
@@ -53,7 +54,7 @@ namespace DIContainer
             }
             else
             {
-                KeyLogger.Log($"type {typeof(T).Name} not found");
+                KeyLogger.Log($"{typeof(T).Name} is not found");
                 instance = default;
                 return false;
             }
