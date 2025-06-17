@@ -45,6 +45,7 @@ namespace Manager
 
         public void Initialize()
         {
+            PutLayer = 1;
             Register();
         }
     }
