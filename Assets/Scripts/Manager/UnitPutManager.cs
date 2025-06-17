@@ -13,7 +13,11 @@ namespace Manager
             private set;
         }
 
-
+        public void PutMode()
+        {
+            
+        }
+        
         /// <summary>
         /// レイヤーを一つ上げる
         /// </summary>
