@@ -18,15 +18,22 @@ namespace Manager
 
         /// <summary> グリッドに設置されている物を保存する </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
+        
+        public int PutLayer
+        {
+            get;
+            private set;
+        }
 
         /// <summary>一辺４の長さの４*４*４のデータを扱うため </summary>
         private const int Edge = 4;
-
         private static readonly Vector3 _wallOffset = new(0f, -0.5f, 0f);
         private bool _gridCreated;
+        private InGameManager _inGameManager;
         private readonly DUlong _oneDUlong = new(0, 1);
         [SerializeField] private AllUnitData _allUnitData;
         [SerializeField] private GameObject _gridCollider;
+        [SerializeField] private int _layerLimit = 4;
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
         [SerializeField, Range(Edge, 10)] private int _height;
         [SerializeField] WallData _wallData;
@@ -268,6 +275,36 @@ namespace Manager
         {
             return x + z * 4 + y * 16;
         }
+        
+        /// <summary>
+        /// レイヤーを一つ上げる
+        /// </summary>
+        public void UpLayer()
+        {
+            PutLayer++;
+            if (PutLayer > _layerLimit)
+            {
+                PutLayer = 1;
+            }
+        }
+        
+        /// <summary>
+        /// レイヤーを一つ下げる
+        /// </summary>
+        public void DownLayer()
+        {
+            PutLayer--;
+            if (PutLayer <= 0)
+            {
+                PutLayer = _layerLimit;
+            }
+        }
+        
+        public void PutMode()
+        {
+            DiContainer.Instance.TryGet(out _inGameManager);
+            _inGameManager.PutModeChange();
+        }
 
         private void OnDrawGizmos()
         {
@@ -295,6 +332,7 @@ namespace Manager
         public void Initialize()
         {
             Debug.Log("GridManager initialized");
+            PutLayer = 1;
             GenerateTestData();
             _ = GridManagerInitialize(PutUnitDataList);
         }

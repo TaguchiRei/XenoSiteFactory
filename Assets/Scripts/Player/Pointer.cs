@@ -15,14 +15,14 @@ namespace Player
         
         InGameManager _inGameManager;
         PlayerOperationManager _playerOperationManager;
-        UnitPutManager _unitPutManager;
+        GridManager _gridManager;
         
         
         private void Start()
         {
             if(DiContainer.Instance.TryGet(out _inGameManager) &&
                DiContainer.Instance.TryGet(out _playerOperationManager) &&
-               DiContainer.Instance.TryGet(out _unitPutManager))
+               DiContainer.Instance.TryGet(out _gridManager))
             {
                 KeyLogger.Log("GetManagerClass");
             }
@@ -32,7 +32,7 @@ namespace Player
                 return;
             }
             _playerOperationManager.OnMouseMoveAction += GetMousePosition;
-            KeyLogger.Log(_unitPutManager.PutLayer.ToString());
+            KeyLogger.Log(_gridManager.PutLayer.ToString());
         }
 
 
@@ -42,7 +42,7 @@ namespace Player
             if(IsPaused) return;
             Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
-            var mask = LayerMask.GetMask($"Layer{_unitPutManager.PutLayer}Collider");
+            var mask = LayerMask.GetMask($"Layer{_gridManager.PutLayer}Collider");
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
             {
                 var hitNormal = hit.normal;
