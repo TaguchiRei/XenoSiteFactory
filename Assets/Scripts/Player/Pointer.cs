@@ -40,7 +40,8 @@ namespace Player
             if(IsPaused) return;
             Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            var mask = LayerMask.GetMask($"LayerCollider");
+            if (Physics.Raycast(ray, out RaycastHit hit, 20f, mask))
             {
                 var hitNormal = hit.normal;
                 var hitPos = hit.point;
