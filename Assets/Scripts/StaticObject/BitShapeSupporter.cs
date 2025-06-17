@@ -6,6 +6,8 @@ namespace StaticObject
     {
         /// <summary> Edgeは64ビットを4*4*4としてとらえたときの一辺を表す </summary>
         private const int Edge = 4;
+        private const int LastEdgeIndex = Edge - 1;
+        
         /// <summary>
         /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる
         /// </summary>
@@ -25,7 +27,7 @@ namespace StaticObject
                         //回転後のbitの位置は座標にしてx = z 、y = y、z = 3 - xで求められる。
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
-                            int bitPos = z + (3 - x) * 4 + (y * 16);
+                            int bitPos = z + (LastEdgeIndex - x) * 4 + (y * 16);
                             returnShape |= (ulong)1 << bitPos;
                         }
                     }
@@ -52,7 +54,7 @@ namespace StaticObject
                         int baseBit = CalculationBitPosition(x, y, z);
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
-                            int bitPos = (3 - z) + (3 - x) * Edge + (y * 16);
+                            int bitPos = (LastEdgeIndex - z) + (LastEdgeIndex - x) * Edge + (y * Edge * Edge);
                             returnShape |= (ulong)1 << bitPos;
                         }
                     }
@@ -79,7 +81,8 @@ namespace StaticObject
                         int baseBit = CalculationBitPosition(x, y, z);
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
-                            int bitPos = (3 - z) + (x * Edge) + (y * 16);
+                            
+                            int bitPos = (LastEdgeIndex - z) + (x * Edge) + (y * Edge * Edge);
                             returnShape |= (ulong)1 << bitPos;
                         }
                     }
@@ -97,7 +100,7 @@ namespace StaticObject
         /// <returns></returns>
         public static int CalculationBitPosition(int x, int y, int z)
         {
-            return x + z * 4 + y * 16;
+            return x + z * Edge + y * Edge * Edge;
         }
 
         public static int GetEdge()
