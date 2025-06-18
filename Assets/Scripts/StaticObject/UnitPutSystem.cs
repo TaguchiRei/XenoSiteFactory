@@ -8,25 +8,15 @@ namespace StaticObject
     {
         private static UnitResourceManager _resourceManager;
         
-        public static GridManager.UnitData SelectUnitData
+        public static int SelectUnitID
         {
             get;
             private set;
         }
 
-        public static GameObject SelectUnitObject
+        public static void SetSelectUnitData(int id)
         {
-            get;
-            private set;
-        }
-
-        public static void SetSelectNumber(GridManager.UnitType type,int id)
-        {
-            if (_resourceManager == null)
-            {
-                DiContainer.Instance.TryGet(out _resourceManager);
-            }
-            SelectUnitData = _resourceManager.GetUnitData(type, id);
+            SelectUnitID = id;
         }
     }
 }

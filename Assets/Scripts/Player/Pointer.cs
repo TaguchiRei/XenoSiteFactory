@@ -2,6 +2,7 @@ using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
+using StaticObject;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using GridManager = Manager.GridManager;
@@ -13,17 +14,17 @@ namespace Player
         public bool IsPaused { get; set; }
         [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
-        InGameManager _inGameManager;
         PlayerOperationManager _playerOperationManager;
         GridManager _gridManager;
+        UnitResourceManager _unitResourceManager;
         
         
         
         private void Start()
         {
-            if(DiContainer.Instance.TryGet(out _inGameManager) &&
-               DiContainer.Instance.TryGet(out _playerOperationManager) &&
-               DiContainer.Instance.TryGet(out _gridManager))
+            if(DiContainer.Instance.TryGet(out _playerOperationManager) &&
+               DiContainer.Instance.TryGet(out _gridManager) &&
+               DiContainer.Instance.TryGet(out _unitResourceManager))
             {
                 KeyLogger.Log("GetManagerClass");
             }
@@ -53,7 +54,14 @@ namespace Player
                 transform.rotation = Quaternion.FromToRotation(Vector3.up, hitNormal);
                 //pointerOffsetとtransformをかけて法線方向に多少ずらす。
                 transform.position = pointerPos + transform.up * pointerOffset;
+                
+                PointerAppearance();
             }
+        }
+
+        private void PointerAppearance()
+        {
+            
         }
 
 

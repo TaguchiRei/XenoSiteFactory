@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DIContainer;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using UnityEngine;
 using XenoScriptableObject;
@@ -10,6 +11,7 @@ namespace Manager
     {
         private byte[] _numbersOfUnits;
         private AllUnitData _allUnits;
+        private GameObject[] _units;
         public void Register()
         {
             DiContainer.Instance.Register(this);
@@ -22,7 +24,17 @@ namespace Manager
 
         public void Initialize()
         {
-            
+            foreach (var unitType in _allUnits.UnitTypeArray)
+            {
+                foreach (var unit in unitType.AllUnit)
+                {
+                    if (unit.UnitObject == null)
+                    {
+                        KeyLogger.LogWarning("unit object is null");
+                    }
+                    Instantiate(unit.UnitObject);
+                }
+            }
         }
 
         /// <summary>
