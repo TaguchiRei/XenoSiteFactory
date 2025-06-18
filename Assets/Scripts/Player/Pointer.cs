@@ -13,16 +13,13 @@ namespace Player
         public bool IsPaused { get; set; }
         [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
-        
-        InGameManager _inGameManager;
         PlayerOperationManager _playerOperationManager;
         GridManager _gridManager;
         
         
         private void Start()
         {
-            if(DiContainer.Instance.TryGet(out _inGameManager) &&
-               DiContainer.Instance.TryGet(out _playerOperationManager) &&
+            if(DiContainer.Instance.TryGet(out _playerOperationManager) &&
                DiContainer.Instance.TryGet(out _gridManager))
             {
                 KeyLogger.Log("GetManagerClass");
