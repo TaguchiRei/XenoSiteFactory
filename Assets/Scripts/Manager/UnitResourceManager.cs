@@ -2,15 +2,22 @@ using System.Collections.Generic;
 using DIContainer;
 using Interface;
 using UnityEngine;
+using XenoScriptableObject;
 
 namespace Manager
 {
     public class UnitResourceManager : MonoBehaviour,IManager
     {
         private byte[] _numbersOfUnits;
+        private AllUnitData _allUnits;
         public void Register()
         {
             DiContainer.Instance.Register(this);
+        }
+
+        public void Awake()
+        {
+            Register();
         }
 
         public void Initialize()
@@ -36,6 +43,11 @@ namespace Manager
         public void RemoveResource(int id, int amount)
         {
             
+        }
+
+        public GridManager.UnitData GetUnitData(GridManager.UnitType unitType, int id)
+        {
+            return _allUnits.UnitTypeArray[(byte) unitType].AllUnit[id];
         }
     }
 }

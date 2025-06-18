@@ -30,6 +30,7 @@ namespace Manager
             public UnitType UnitType;
             public Vector2Int[] EnterPositions;
             public Vector2Int[] ExitPositions;
+            public GameObject UnitObject;
         }
 
         [Serializable]
