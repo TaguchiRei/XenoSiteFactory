@@ -6,6 +6,7 @@ using GamesKeystoneFramework.KeyMathBit;
 using Interface;
 using StaticObject;
 using UnityEngine;
+using UnityEngine.Rendering;
 using XenoScriptableObject;
 using Random = UnityEngine.Random;
 
@@ -18,13 +19,9 @@ namespace Manager
 
         /// <summary> グリッドに設置されている物を保存する </summary>
         public List<PutUnitData> PutUnitDataList { get; private set; }
-        
-        public int PutLayer
-        {
-            get;
-            private set;
-        }
-        
+
+        public int PutLayer { get; private set; }
+
         private bool _gridCreated;
         private InGameManager _inGameManager;
         private readonly DUlong _oneDUlong = new(0, 1);
@@ -51,7 +48,10 @@ namespace Manager
                 {
                     UnitId = id,
                     UnitType = _allUnitData.UnitTypeArray[0].AllUnit[id].UnitType,
-                    Position = new Vector2Int(Random.Range(0, _gridSize - _edge), Random.Range(0, _gridSize - _edge)),
+                    Position = new Vector3Int(
+                        Random.Range(0, _gridSize - _edge),
+                        0,
+                        Random.Range(0, _gridSize - _edge)),
                     Direction = (UnitRotate)Random.Range(0, _edge)
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
@@ -85,7 +85,7 @@ namespace Manager
             DUlongGrid = grid;
             _gridCreated = true;
         }
-        
+
 
         /// <summary>
         /// グリッドをPutUnitDataをもとに復元して返すメソッド。
@@ -123,7 +123,7 @@ namespace Manager
                             int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                             if ((rotateShape & ((ulong)1 << bitPosition)) != 0)
                             {
-                                int gridZ = putUnitData.Position.y + z;
+                                int gridZ = putUnitData.Position.z + z;
                                 grid[putUnitData.Position.x + x, y] |= _oneDUlong << gridZ;
                             }
                         }
@@ -150,16 +150,18 @@ namespace Manager
                     {
                         int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) == 0) continue;
-                        if (position.x + x >= _gridSize || 
-                            position.z + z >= _gridSize || 
+                        if (position.x + x >= _gridSize ||
+                            position.z + z >= _gridSize ||
                             position.y + y >= _height ||
                             (DUlongGrid[position.x + x, position.y + y] & (_oneDUlong << (position.z + z))) != 0)
                             return false;
                     }
                 }
             }
+
             return true;
         }
+
         /// <summary>
         /// 特定の座標にオブジェクトのデータを保存するするスクリプト
         /// </summary>
@@ -176,11 +178,14 @@ namespace Manager
                         int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) == 0) continue;
                         DUlongGrid[position.x + x, position.y + y] |= _oneDUlong << (position.z + z);
+                        PutUnitData data = new PutUnitData();
+                        data.Direction = UnitPutSupport.SelectedUnitRotate;
+                        data.Position = new Vector3Int();
                     }
                 }
             }
         }
-        
+
         /// <summary>
         /// レイヤーを一つ上げる
         /// </summary>
@@ -192,7 +197,7 @@ namespace Manager
                 PutLayer = 1;
             }
         }
-        
+
         /// <summary>
         /// レイヤーを一つ下げる
         /// </summary>
@@ -204,7 +209,7 @@ namespace Manager
                 PutLayer = _layerLimit;
             }
         }
-        
+
         public void PutMode()
         {
             DiContainer.Instance.TryGet(out _inGameManager);

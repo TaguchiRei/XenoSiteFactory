@@ -19,7 +19,7 @@ namespace Manager
             public int UnitId;
 
             public UnitType UnitType;
-            public Vector2Int Position; // X, Z座標を表す
+            public Vector3Int Position; // X, Z座標を表す
             public UnitRotate Direction;
         }
 
