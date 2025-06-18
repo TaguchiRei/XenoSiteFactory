@@ -160,6 +160,26 @@ namespace Manager
             }
             return true;
         }
+        /// <summary>
+        /// 特定の座標にオブジェクトのデータを保存するするスクリプト
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="position"></param>
+        public void PutUnitOnGrid(ulong shape, Vector3Int position)
+        {
+            for (int y = 0; y < _edge; y++)
+            {
+                for (int z = 0; z < _edge; z++)
+                {
+                    for (int x = 0; x < _edge; x++)
+                    {
+                        int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
+                        if ((shape & (1ul << bitPosition)) == 0) continue;
+                        DUlongGrid[position.x + x, position.y + y] |= _oneDUlong << (position.z + z);
+                    }
+                }
+            }
+        }
         
         /// <summary>
         /// レイヤーを一つ上げる
