@@ -14,7 +14,7 @@ namespace StaticObject
         /// </summary>
         /// <param name="data"></param>
         /// <param name="walls"></param>
-        private static void GenerateWallObjects(WallData data, GameObject[] walls)
+        private static void GenerateWallObjects(GridManager.WallData data, GameObject[] walls)
         {
             var size = data.Size;
             var width = data.Width;
@@ -40,7 +40,7 @@ namespace StaticObject
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static Vector2Int[] GetWallIndex(WallData data)
+        public static Vector2Int[] GetWallIndex(GridManager.WallData data)
         {
             var centerPos = data.Position;
             var mostOutsideIndex = data.Size / 2;//centerPosの値に足すと最も外側に近い部分の座標になる
@@ -83,7 +83,7 @@ namespace StaticObject
         /// <summary>
         /// 壁オブジェクトのインスタンス生成を担当する
         /// </summary>
-        public static void GenerateWall(WallData wallData)
+        public static void GenerateWall(GridManager.WallData wallData)
         {
             //壁は四方を囲んでいるため４
             GameObject[] walls = new GameObject[4];

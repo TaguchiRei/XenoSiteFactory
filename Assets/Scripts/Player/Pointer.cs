@@ -4,6 +4,7 @@ using Interface;
 using Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using GridManager = Manager.GridManager;
 
 namespace Player
 {

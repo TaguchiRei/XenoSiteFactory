@@ -13,6 +13,6 @@ namespace XenoScriptableObject
     [Serializable]
     public class UnitDataArray
     {
-        public UnitData[] AllUnit;
+        public GridManager.UnitData[] AllUnit;
     }
 }
