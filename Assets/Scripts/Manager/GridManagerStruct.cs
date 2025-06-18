@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Manager
 {
@@ -20,7 +21,7 @@ namespace Manager
 
             public UnitType UnitType;
             public Vector3Int Position; // X, Z座標を表す
-            public UnitRotate Direction;
+            public UnitRotate Rotation;
         }
 
         [Serializable]

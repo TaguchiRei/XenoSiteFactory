@@ -52,7 +52,7 @@ namespace Manager
                         Random.Range(0, _gridSize - _edge),
                         0,
                         Random.Range(0, _gridSize - _edge)),
-                    Direction = (UnitRotate)Random.Range(0, _edge)
+                    Rotation = (UnitRotate)Random.Range(0, _edge)
                 });
                 KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
             }
@@ -68,9 +68,9 @@ namespace Manager
 
             await Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
-            var wallIndices = WallGenerator.GetWallIndex(_wallData);
+            var wallIndex = WallGenerator.GetWallIndex(_wallData);
 
-            foreach (var index in wallIndices)
+            foreach (var index in wallIndex)
             {
                 for (int y = 0; y < _wallData.Height; y++)
                 {
@@ -98,7 +98,7 @@ namespace Manager
                 var unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
                 ulong rotateShape = 0;
 
-                switch (putUnitData.Direction)
+                switch (putUnitData.Rotation)
                 {
                     case UnitRotate.Default:
                         rotateShape = unit.UnitShape;
@@ -135,7 +135,7 @@ namespace Manager
         }
 
         /// <summary>
-        /// 指定の座標に指定のオブジェクトを配置できるかどうかを設定する。
+        /// 指定の座標に指定のオブジェクトを配置できるかどうかを確認する
         /// </summary>
         /// <param name="shape"></param>
         /// <param name="position"></param>
@@ -179,8 +179,11 @@ namespace Manager
                         if ((shape & (1ul << bitPosition)) == 0) continue;
                         DUlongGrid[position.x + x, position.y + y] |= _oneDUlong << (position.z + z);
                         PutUnitData data = new PutUnitData();
-                        data.Direction = UnitPutSupport.SelectedUnitRotate;
+                        data.Rotation = UnitPutSupport.SelectedUnitRotate;
                         data.Position = new Vector3Int();
+                        data.UnitId = UnitPutSupport.SelectedUnitID;
+                        data.UnitType = UnitPutSupport.SelectedUnitType;
+                        PutUnitDataList.Add(data);
                     }
                 }
             }
