@@ -178,11 +178,13 @@ namespace Manager
                         int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) == 0) continue;
                         DUlongGrid[position.x + x, position.y + y] |= _oneDUlong << (position.z + z);
-                        PutUnitData data = new PutUnitData();
-                        data.Rotation = UnitPutSupport.SelectedUnitRotate;
-                        data.Position = new Vector3Int();
-                        data.UnitId = UnitPutSupport.SelectedUnitID;
-                        data.UnitType = UnitPutSupport.SelectedUnitType;
+                        PutUnitData data = new()
+                        {
+                            Rotation = UnitPutSupport.SelectedUnitRotate,
+                            Position = new Vector3Int(),
+                            UnitId = UnitPutSupport.SelectedUnitID,
+                            UnitType = UnitPutSupport.SelectedUnitType
+                        };
                         PutUnitDataList.Add(data);
                     }
                 }
