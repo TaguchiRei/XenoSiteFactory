@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DIContainer;
 using Interface;
 using UnityEngine;
@@ -6,12 +7,33 @@ namespace Manager
 {
     public class UnitResourceManager : MonoBehaviour,IManager
     {
+        private byte[] _numbersOfUnits;
         public void Register()
         {
             DiContainer.Instance.Register(this);
         }
 
         public void Initialize()
+        {
+            
+        }
+
+        /// <summary>
+        /// リソースを追加するためのメソッド
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="amount"></param>
+        public void AddResource(int id, int amount)
+        {
+            
+        }
+
+        /// <summary>
+        /// リソースを消費するためのメソッド
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="amount"></param>
+        public void RemoveResource(int id, int amount)
         {
             
         }
