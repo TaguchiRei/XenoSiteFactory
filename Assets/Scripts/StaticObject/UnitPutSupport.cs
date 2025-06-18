@@ -4,10 +4,15 @@ using UnityEngine;
 
 namespace StaticObject
 {
-    public static class UnitPutSystem
+    public static class UnitPutSupport
     {
-        private static UnitResourceManager _resourceManager;
-        
+        public static Vector3Int SelectedPosition;
+
+        public static bool SelectMode
+        {
+            get;
+            set;
+        }
         public static int SelectUnitID
         {
             get;
