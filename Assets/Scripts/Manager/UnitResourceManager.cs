@@ -11,8 +11,8 @@ namespace Manager
     public class UnitResourceManager : MonoBehaviour,IManager
     {
         private byte[] _numbersOfUnits;
-        private AllUnitData _allUnits;
         private GameObject[] _units;
+        [SerializeField] private AllUnitData _allUnits;
         public void Register()
         {
             DiContainer.Instance.Register(this);

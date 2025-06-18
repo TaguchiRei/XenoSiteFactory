@@ -259,8 +259,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1241500384}
-        m_TargetAssemblyTypeName: Manager.UnitPutManager, Assembly-CSharp
+      - m_Target: {fileID: 962066674}
+        m_TargetAssemblyTypeName: Manager.GridManager, Assembly-CSharp
         m_MethodName: UpLayer
         m_Mode: 1
         m_Arguments:
@@ -656,6 +656,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _allUnitData: {fileID: 11400000, guid: 73de3c5aebba1da4ead7ea5de025f608, type: 2}
   _gridCollider: {fileID: 8084553370101708582, guid: 8e4e276718c248c499e61638e32236a7, type: 3}
+  _layerLimit: 4
   _gridSize: 128
   _height: 4
   _wallData:
@@ -690,7 +691,7 @@ GameObject:
   - component: {fileID: 1241500383}
   - component: {fileID: 1241500384}
   m_Layer: 0
-  m_Name: UnitPutManager
+  m_Name: UnitResourceManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -723,6 +724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 511e0eea5ef2d034f96bc50fb4864df0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _allUnits: {fileID: 11400000, guid: 73de3c5aebba1da4ead7ea5de025f608, type: 2}
 --- !u!1 &1284689061
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,8 +944,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1241500384}
-        m_TargetAssemblyTypeName: Manager.UnitPutManager, Assembly-CSharp
+      - m_Target: {fileID: 962066674}
+        m_TargetAssemblyTypeName: Manager.GridManager, Assembly-CSharp
         m_MethodName: PutMode
         m_Mode: 1
         m_Arguments:
@@ -1223,8 +1225,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1241500384}
-        m_TargetAssemblyTypeName: Manager.UnitPutManager, Assembly-CSharp
+      - m_Target: {fileID: 962066674}
+        m_TargetAssemblyTypeName: Manager.GridManager, Assembly-CSharp
         m_MethodName: DownLayer
         m_Mode: 1
         m_Arguments:

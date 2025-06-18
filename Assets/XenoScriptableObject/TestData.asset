@@ -14,39 +14,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UnitTypeArray:
   - AllUnit:
-    - UnitShape: 28945
+    - UnitShape: 67044351
       UnitType: 0
       EnterPositions:
       - {x: 0, y: 0}
       ExitPositions:
       - {x: 0, y: 0}
+      UnitObject: {fileID: 919132149155446097, guid: d83a1944804b57d4f9a1e33dc0f80e78, type: 3}
     - UnitShape: 242286591
       UnitType: 0
       EnterPositions:
       - {x: 0, y: 0}
       ExitPositions:
       - {x: 0, y: 0}
+      UnitObject: {fileID: 0}
     - UnitShape: 3355508716
       UnitType: 0
       EnterPositions:
       - {x: 0, y: 0}
       ExitPositions:
       - {x: 0, y: 0}
+      UnitObject: {fileID: 0}
     - UnitShape: 4007659383
       UnitType: 0
       EnterPositions:
       - {x: 0, y: 0}
       ExitPositions:
       - {x: 0, y: 0}
+      UnitObject: {fileID: 0}
     - UnitShape: 18446469608226424416
       UnitType: 0
       EnterPositions:
       - {x: 0, y: 0}
       ExitPositions:
       - {x: 0, y: 0}
+      UnitObject: {fileID: 0}
     - UnitShape: 18446620969478492169
       UnitType: 0
       EnterPositions:
       - {x: 0, y: 0}
       ExitPositions:
       - {x: 0, y: 0}
+      UnitObject: {fileID: 0}
