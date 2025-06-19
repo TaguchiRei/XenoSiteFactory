@@ -154,6 +154,14 @@ namespace Manager
                             position.y + y >= _height ||
                             (DUlongGrid[position.x + x, position.y + y] & (_oneDUlong << (position.z + z))) != 0)
                             return false;
+                        if (y == 0 && position.y != 0)
+                        {
+                            var checkHeight = position.y + y - 1;
+                            if ((DUlongGrid[position.x + x, checkHeight] & (_oneDUlong << (position.z + z))) == 0)
+                            {
+                                return false;
+                            }
+                        }
                     }
                 }
             }
