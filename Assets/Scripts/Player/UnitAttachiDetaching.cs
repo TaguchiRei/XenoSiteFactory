@@ -23,7 +23,6 @@ namespace Player
 
         private void OnInteract(InputAction.CallbackContext context)
         {
-            KeyLogger.Log("OnInteract");
             if (!context.started) return;
             //オブジェクトを設置する処理を書く
             var data = _unitResourceManager.GetUnitData(UnitPutSupport.SelectedUnitType,
@@ -37,6 +36,7 @@ namespace Player
                     GridManager.UnitRotate.Right270 => BitShapeSupporter.RotateRightUlongBase270(data.UnitShape),
                     _ => data.UnitShape
                 };
+                UnitPutSupport.CreatePrefab(data.UnitObject,UnitPutSupport.SelectedPosition,UnitPutSupport.SelectedUnitRotate);
                 _gridManager.PutUnitOnGrid(shape, UnitPutSupport.SelectedPosition);
             }
         }

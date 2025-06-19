@@ -162,7 +162,7 @@ namespace Manager
         }
 
         /// <summary>
-        /// 特定の座標にオブジェクトのデータを保存するするスクリプト
+        /// 特定の座標にオブジェクトのデータを保存しインスタンスを生成する
         /// </summary>
         /// <param name="shape"></param>
         /// <param name="position"></param>

@@ -34,7 +34,8 @@ namespace StaticObject
                 GridManager.UnitRotate.Default => Quaternion.identity,
                 GridManager.UnitRotate.Right90 => Quaternion.AngleAxis(90, Vector3.up),
                 GridManager.UnitRotate.Right180 => Quaternion.AngleAxis(180, Vector3.up),
-                GridManager.UnitRotate.Right270 => Quaternion.AngleAxis(270, Vector3.up)
+                GridManager.UnitRotate.Right270 => Quaternion.AngleAxis(270, Vector3.up),
+                _ => Quaternion.identity
             };
             Object.Instantiate(prefab, position, rotation);
         }
