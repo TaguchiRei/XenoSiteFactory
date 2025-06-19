@@ -1,6 +1,8 @@
+using System;
 using DIContainer;
 using Manager;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace StaticObject
 {
@@ -23,6 +25,18 @@ namespace StaticObject
         public static void ChangeRotation(GridManager.UnitRotate unitRotate)
         {
             SelectedUnitRotate = unitRotate;
+        }
+
+        public static void CreatePrefab(GameObject prefab,Vector3 position, GridManager.UnitRotate rotate)
+        {
+            Quaternion rotation = rotate switch
+            {
+                GridManager.UnitRotate.Default => Quaternion.identity,
+                GridManager.UnitRotate.Right90 => Quaternion.AngleAxis(90, Vector3.up),
+                GridManager.UnitRotate.Right180 => Quaternion.AngleAxis(180, Vector3.up),
+                GridManager.UnitRotate.Right270 => Quaternion.AngleAxis(270, Vector3.up)
+            };
+            Object.Instantiate(prefab, position, rotation);
         }
     }
 }
