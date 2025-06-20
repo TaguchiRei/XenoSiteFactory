@@ -238,7 +238,7 @@ namespace Manager
 
         public void PutMode()
         {
-            DiContainer.Instance.TryGet(out _inGameManager);
+            DiContainer.Instance.TryGetClass(out _inGameManager);
             _inGameManager.PutModeChange();
         }
 

@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using XenoScriptableObject;
 
 namespace DIContainer
 {
     public class DiContainer : MonoBehaviour
     {
         [SerializeField] private string managerSceneName;
+        
+        [SerializeField] private ScriptableObject[] _scriptableObjects;
 
         private Dictionary<Type, object> _container;
 
@@ -45,7 +48,7 @@ namespace DIContainer
             _container.Remove(typeof(T));
         }
 
-        public bool TryGet<T>(out T instance)
+        public bool TryGetClass<T>(out T instance)
         {
             if (_container.ContainsKey(typeof(T)))
             {
@@ -59,5 +62,32 @@ namespace DIContainer
                 return false;
             }
         }
+
+        public bool TryGetAllUnitData(out AllUnitData data)
+        {
+            if (_allUnitData != null)
+            {
+                data = _allUnitData;
+                return true;
+            }
+            
+            data = null;
+            return false;
+        }
+
+        public bool TryGetScriptableObject<T>(out T scriptableObjects) where T : class
+        {
+            foreach (var scriptableObject in _scriptableObjects)
+            {
+                if (scriptableObject is T obj)
+                {
+                    scriptableObjects = obj;
+                    return true;
+                }
+            }
+            scriptableObjects = null;
+            return false;
+        }
+        
     }
 }
