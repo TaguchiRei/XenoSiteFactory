@@ -95,6 +95,7 @@ namespace Manager
             foreach (var putUnitData in unitDataList)
             {
                 var unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
+                
                 ulong rotateShape = 0;
 
                 switch (putUnitData.Rotation)
@@ -165,8 +166,16 @@ namespace Manager
                     }
                 }
             }
-
             return true;
+        }
+
+        private void AllUnitInstanceGenerate(List<PutUnitData> putUnitDataList)
+        {
+            foreach (var putUnitData in putUnitDataList)
+            {
+                var unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
+                UnitPutSupport.CreatePrefab(unit.UnitObject, putUnitData.Position, putUnitData.Rotation);
+            }
         }
 
         /// <summary>
