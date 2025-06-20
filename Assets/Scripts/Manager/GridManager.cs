@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using DIContainer;
 using GamesKeystoneFramework.Attributes;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
@@ -262,7 +263,6 @@ namespace Manager
         /// </summary>
         public void Initialize()
         {
-            Debug.Log("GridManager initialized");
             DiContainer.Instance.TryGetScriptableObject(out _allUnitData);
             _edge = BitShapeSupporter.GetEdge();
             PutLayer = 1;
