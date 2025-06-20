@@ -76,7 +76,7 @@ namespace Manager
                     grid[index.x, y] |= _oneDUlong << index.y;
                 }
             }
-            grid = FillGridDUlongBase(grid, putUnitDataList, _allUnitData);
+            grid = FillGridDUlongBase(grid, putUnitDataList);
             GenerateAllUnitInstance(putUnitDataList);
             DUlongGrid = grid;
             _gridCreated = true;
@@ -87,11 +87,11 @@ namespace Manager
         /// グリッドをPutUnitDataをもとに復元して返すメソッド。
         /// </summary>
         /// <returns></returns>
-        private DUlong[,] FillGridDUlongBase(DUlong[,] grid, List<PutUnitData> unitDataList, AllUnitData allUnitData)
+        private DUlong[,] FillGridDUlongBase(DUlong[,] grid, List<PutUnitData> unitDataList)
         {
             foreach (var putUnitData in unitDataList)
             {
-                var unit = allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
+                var unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
                 
                 ulong rotateShape = 0;
 

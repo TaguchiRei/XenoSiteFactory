@@ -10,7 +10,7 @@ namespace Manager
     {
         private byte[] _numbersOfUnits;
         private GameObject[] _units;
-        [SerializeField] private AllUnitData _allUnits;
+        private AllUnitData _allUnits;
         public void Register()
         {
             DiContainer.Instance.Register(this);
@@ -23,6 +23,7 @@ namespace Manager
 
         public void Initialize()
         {
+            DiContainer.Instance.TryGetScriptableObject(out _allUnits);
             foreach (var unitType in _allUnits.UnitTypeArray)
             {
                 foreach (var unit in unitType.AllUnit)
