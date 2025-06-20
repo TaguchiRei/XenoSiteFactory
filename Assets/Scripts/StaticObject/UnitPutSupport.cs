@@ -1,6 +1,5 @@
-using System;
-using DIContainer;
 using Manager;
+using Unity.Mathematics;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -37,7 +36,9 @@ namespace StaticObject
                 GridManager.UnitRotate.Right270 => Quaternion.AngleAxis(270, Vector3.up),
                 _ => Quaternion.identity
             };
-            Object.Instantiate(prefab, position, rotation);
+            Object.Instantiate(prefab, position, Quaternion.identity)
+                .transform.GetChild(0)
+                .transform.rotation = rotation;
         }
     }
 }
