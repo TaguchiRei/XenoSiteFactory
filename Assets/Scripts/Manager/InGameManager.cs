@@ -25,6 +25,8 @@ namespace Manager
         [SerializeField] private UnityEvent _OpenMenuEvent = new UnityEvent();
         [SerializeField] private UnityEvent _CloseMenuEvent = new UnityEvent();
         [SerializeField] private UnityEvent _DayEndEvent = new UnityEvent();
+        
+        public bool PutMode{ get; private set; }
 
         private void Start()
         {
@@ -60,11 +62,24 @@ namespace Manager
             _pauseManager.Resume();
         }
 
+        public void PutModeChange()
+        {
+            PutMode = !PutMode;
+            if (PutMode)
+            {
+                _pauseManager.Pause();
+            }
+            else
+            {
+                _pauseManager.Resume();
+            }
+        }
+
         public void Initialize()
         {
-            if (DiContainer.Instance.TryGet(out _pauseManager) && 
-                DiContainer.Instance.TryGet(out _gridManager) &&
-                DiContainer.Instance.TryGet(out _playerOperationManager))
+            if (DiContainer.Instance.TryGetClass(out _pauseManager) && 
+                DiContainer.Instance.TryGetClass(out _gridManager) &&
+                DiContainer.Instance.TryGetClass(out _playerOperationManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();

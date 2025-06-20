@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using XenoScriptableObject;
 
 namespace DIContainer
 {
     public class DiContainer : MonoBehaviour
     {
         [SerializeField] private string managerSceneName;
+        
+        [SerializeField] private ScriptableObject[] _scriptableObjects;
 
         private Dictionary<Type, object> _container;
 
@@ -36,6 +39,7 @@ namespace DIContainer
 
         public void Register<T>(T instance)
         {
+            Debug.Log($"Registered Instance {typeof(T).Name}");
             _container[typeof(T)] = instance;
         }
 
@@ -44,19 +48,31 @@ namespace DIContainer
             _container.Remove(typeof(T));
         }
 
-        public bool TryGet<T>(out T instance)
+        public bool TryGetClass<T>(out T instance) where T : class
         {
             if (_container.ContainsKey(typeof(T)))
             {
                 instance = (T)_container[typeof(T)];
                 return true;
             }
-            else
+
+            KeyLogger.Log($"{typeof(T).Name} is not found");
+            instance = null;
+            return false;
+        }
+
+        public bool TryGetScriptableObject<T>(out T scriptableObjects) where T : class
+        {
+            foreach (var scriptableObject in _scriptableObjects)
             {
-                KeyLogger.Log($"type {typeof(T).Name} not found");
-                instance = default;
-                return false;
+                if (scriptableObject is T obj)
+                {
+                    scriptableObjects = obj;
+                    return true;
+                }
             }
+            scriptableObjects = null;
+            return false;
         }
     }
 }

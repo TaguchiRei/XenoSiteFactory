@@ -1,27 +1,30 @@
-using System;
 using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
+using StaticObject;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
+using GridManager = Manager.GridManager;
 
 namespace Player
 {
     public class Pointer : MonoBehaviour, IPauseable
     {
         public bool IsPaused { get; set; }
-        [SerializeField, Range(-1f, 1f)] private float pointerOffset;
+        [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
-        
-        InGameManager _inGameManager;
         PlayerOperationManager _playerOperationManager;
+        GridManager _gridManager;
+        UnitResourceManager _unitResourceManager;
+        
         
         
         private void Start()
         {
-            if(DiContainer.Instance.TryGet(out _inGameManager) && DiContainer.Instance.TryGet(out _playerOperationManager))
+            if(DiContainer.Instance.TryGetClass(out _playerOperationManager) &&
+               DiContainer.Instance.TryGetClass(out _gridManager) &&
+               DiContainer.Instance.TryGetClass(out _unitResourceManager))
             {
                 KeyLogger.Log("GetManagerClass");
             }
@@ -40,18 +43,26 @@ namespace Player
             if(IsPaused) return;
             Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
-            var mask = LayerMask.GetMask($"LayerCollider");
-            if (Physics.Raycast(ray, out RaycastHit hit, 20f, mask))
+            var mask = LayerMask.GetMask($"Layer{_gridManager.PutLayer}Collider");
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
             {
                 var hitNormal = hit.normal;
                 var hitPos = hit.point;
                 //そのまま値を使うとタイルが埋まる(望ましくないほうに小数点が切り捨て、切り上げられるられるなど)が発生したので法線方向に少しだけ修正
                 hitPos += hitNormal * 0.1f;
-                var pointerPos = new Vector3(Mathf.Round(hitPos.x), Mathf.Round(hitPos.y), Mathf.Round(hitPos.z));
+                var pointerPos = new Vector3Int((int)Mathf.Round(hitPos.x), (int)Mathf.Round(hitPos.y), (int)Mathf.Round(hitPos.z));
                 transform.rotation = Quaternion.FromToRotation(Vector3.up, hitNormal);
                 //pointerOffsetとtransformをかけて法線方向に多少ずらす。
                 transform.position = pointerPos + transform.up * pointerOffset;
+                //座標を保存
+                UnitPutSupport.SelectedPosition = pointerPos;
+                PointerAppearance();
             }
+        }
+
+        private void PointerAppearance()
+        {
+            
         }
 
 
