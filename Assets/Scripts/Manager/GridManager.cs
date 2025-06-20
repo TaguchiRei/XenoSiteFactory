@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using DIContainer;
 using GamesKeystoneFramework.Attributes;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
@@ -7,6 +8,7 @@ using Interface;
 using StaticObject;
 using UnityEngine;
 using XenoScriptableObject;
+using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 namespace Manager
@@ -23,8 +25,8 @@ namespace Manager
 
         private bool _gridCreated;
         private InGameManager _inGameManager;
+        private AllUnitData _allUnitData;
         private readonly DUlong _oneDUlong = new(0, 1);
-        [SerializeField] private AllUnitData _allUnitData;
         [SerializeField] private GameObject _gridCollider;
         [SerializeField] private int _layerLimit = 4;
         [SerializeField, Range(20, 128)] private int _gridSize = 20;
@@ -61,14 +63,11 @@ namespace Manager
         /// グリッドマネージャーの初期化を行う。
         /// グリッド情報生成、壁の生成、占有座標へのコライダー配置等
         /// </summary>
-        private async Awaitable GridManagerInitialize(List<PutUnitData> putUnitDataList)
+        private void GridManagerInitialize(List<PutUnitData> putUnitDataList)
         {
             WallGenerator.GenerateWall(_wallData);
-
-            await Awaitable.BackgroundThreadAsync();
             DUlong[,] grid = new DUlong[_gridSize, _height];
             var wallIndex = WallGenerator.GetWallIndex(_wallData);
-
             foreach (var index in wallIndex)
             {
                 for (int y = 0; y < _wallData.Height; y++)
@@ -77,10 +76,7 @@ namespace Manager
                     grid[index.x, y] |= _oneDUlong << index.y;
                 }
             }
-
-            grid = FillGridDUlongBase(grid, putUnitDataList);
-            await Awaitable.MainThreadAsync();
-            
+            grid = FillGridDUlongBase(grid, putUnitDataList, _allUnitData);
             GenerateAllUnitInstance(putUnitDataList);
             DUlongGrid = grid;
             _gridCreated = true;
@@ -91,11 +87,11 @@ namespace Manager
         /// グリッドをPutUnitDataをもとに復元して返すメソッド。
         /// </summary>
         /// <returns></returns>
-        private DUlong[,] FillGridDUlongBase(DUlong[,] grid, List<PutUnitData> unitDataList)
+        private DUlong[,] FillGridDUlongBase(DUlong[,] grid, List<PutUnitData> unitDataList, AllUnitData allUnitData)
         {
             foreach (var putUnitData in unitDataList)
             {
-                var unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
+                var unit = allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
                 
                 ulong rotateShape = 0;
 
@@ -238,7 +234,7 @@ namespace Manager
 
         public void PutMode()
         {
-            DiContainer.Instance.TryGet(out _inGameManager);
+            DiContainer.Instance.TryGetClass(out _inGameManager);
             _inGameManager.PutModeChange();
         }
 
@@ -267,11 +263,11 @@ namespace Manager
         /// </summary>
         public void Initialize()
         {
-            Debug.Log("GridManager initialized");
+            DiContainer.Instance.TryGetScriptableObject(out _allUnitData);
             _edge = BitShapeSupporter.GetEdge();
             PutLayer = 1;
             GenerateTestData();
-            _ = GridManagerInitialize(PutUnitDataList);
+            GridManagerInitialize(PutUnitDataList);
         }
 
         public void Register()

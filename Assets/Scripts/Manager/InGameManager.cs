@@ -77,9 +77,9 @@ namespace Manager
 
         public void Initialize()
         {
-            if (DiContainer.Instance.TryGet(out _pauseManager) && 
-                DiContainer.Instance.TryGet(out _gridManager) &&
-                DiContainer.Instance.TryGet(out _playerOperationManager))
+            if (DiContainer.Instance.TryGetClass(out _pauseManager) && 
+                DiContainer.Instance.TryGetClass(out _gridManager) &&
+                DiContainer.Instance.TryGetClass(out _playerOperationManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
