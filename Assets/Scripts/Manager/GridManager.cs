@@ -80,7 +80,8 @@ namespace Manager
 
             grid = FillGridDUlongBase(grid, putUnitDataList);
             await Awaitable.MainThreadAsync();
-
+            
+            GenerateAllUnitInstance(putUnitDataList);
             DUlongGrid = grid;
             _gridCreated = true;
         }
@@ -169,7 +170,11 @@ namespace Manager
             return true;
         }
 
-        private void AllUnitInstanceGenerate(List<PutUnitData> putUnitDataList)
+        /// <summary>
+        /// すべてのユニットのインスタンスを生成する
+        /// </summary>
+        /// <param name="putUnitDataList"></param>
+        private void GenerateAllUnitInstance(List<PutUnitData> putUnitDataList)
         {
             foreach (var putUnitData in putUnitDataList)
             {
