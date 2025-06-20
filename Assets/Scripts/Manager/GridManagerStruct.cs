@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Manager
 {
@@ -19,8 +20,8 @@ namespace Manager
             public int UnitId;
 
             public UnitType UnitType;
-            public Vector2Int Position; // X, Z座標を表す
-            public UnitRotate Direction;
+            public Vector3Int Position; // X, Z座標を表す
+            public UnitRotate Rotation;
         }
 
         [Serializable]
@@ -30,6 +31,7 @@ namespace Manager
             public UnitType UnitType;
             public Vector2Int[] EnterPositions;
             public Vector2Int[] ExitPositions;
+            public GameObject UnitObject;
         }
 
         [Serializable]
