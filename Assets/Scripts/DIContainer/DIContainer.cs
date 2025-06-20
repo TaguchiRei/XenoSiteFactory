@@ -63,18 +63,6 @@ namespace DIContainer
             }
         }
 
-        public bool TryGetAllUnitData(out AllUnitData data)
-        {
-            if (_allUnitData != null)
-            {
-                data = _allUnitData;
-                return true;
-            }
-            
-            data = null;
-            return false;
-        }
-
         public bool TryGetScriptableObject<T>(out T scriptableObjects) where T : class
         {
             foreach (var scriptableObject in _scriptableObjects)
