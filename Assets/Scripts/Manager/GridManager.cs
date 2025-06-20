@@ -55,7 +55,7 @@ namespace Manager
                         Random.Range(0, _gridSize - _edge)),
                     Rotation = (UnitRotate)Random.Range(0, _edge)
                 });
-                KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position}");
+                KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position} UnitRotation{PutUnitDataList[i].Rotation}");
             }
         }
 

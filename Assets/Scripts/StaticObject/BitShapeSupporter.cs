@@ -25,7 +25,7 @@ namespace StaticObject
                         //回転後のbitの位置は座標にしてx = z 、y = y、z = 3 - xで求められる。
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
-                            int bitPos = z + (LastEdgeIndex - x) * 4 + (y * 16);
+                            int bitPos = z + (LastEdgeIndex - x) * 4 + (y * Edge * Edge);
                             returnShape |= (ulong)1 << bitPos;
                         }
                     }
@@ -52,7 +52,7 @@ namespace StaticObject
                         int baseBit = CalculationBitPosition(x, y, z);
                         if (((shape >> baseBit) & 1UL) != 0)
                         {
-                            int bitPos = (LastEdgeIndex - z) + (LastEdgeIndex - x) * Edge + (y * Edge * Edge);
+                            int bitPos = (LastEdgeIndex - x) + (LastEdgeIndex - z) * Edge + (y * Edge * Edge);
                             returnShape |= (ulong)1 << bitPos;
                         }
                     }
