@@ -7,7 +7,7 @@ using XenoScriptableObject;
 
 namespace DIContainer
 {
-    public class DiContainer : MonoBehaviour
+    public class ServiceLocator : MonoBehaviour
     {
         [SerializeField] private string managerSceneName;
         
@@ -15,7 +15,7 @@ namespace DIContainer
 
         private Dictionary<Type, object> _container;
 
-        public static DiContainer Instance;
+        public static ServiceLocator Instance;
 
         private void Awake()
         {

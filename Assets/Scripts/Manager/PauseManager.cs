@@ -36,7 +36,7 @@ namespace Manager
 
         public void Register()
         {
-            DiContainer.Instance.Register(this);
+            ServiceLocator.Instance.Register(this);
         }
 
         public void Initialize()

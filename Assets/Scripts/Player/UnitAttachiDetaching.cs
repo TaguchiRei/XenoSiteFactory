@@ -14,9 +14,9 @@ namespace Player
 
         private void Start()
         {
-            DiContainer.Instance.TryGetClass(out _playerOperationManager);
-            DiContainer.Instance.TryGetClass(out _unitResourceManager);
-            DiContainer.Instance.TryGetClass(out _gridManager);
+            ServiceLocator.Instance.TryGetClass(out _playerOperationManager);
+            ServiceLocator.Instance.TryGetClass(out _unitResourceManager);
+            ServiceLocator.Instance.TryGetClass(out _gridManager);
             _playerOperationManager.OnInteractAction += OnInteract;
         }
 

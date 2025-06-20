@@ -234,7 +234,7 @@ namespace Manager
 
         public void PutMode()
         {
-            DiContainer.Instance.TryGetClass(out _inGameManager);
+            ServiceLocator.Instance.TryGetClass(out _inGameManager);
             _inGameManager.PutModeChange();
         }
 
@@ -263,7 +263,7 @@ namespace Manager
         /// </summary>
         public void Initialize()
         {
-            DiContainer.Instance.TryGetScriptableObject(out _allUnitData);
+            ServiceLocator.Instance.TryGetScriptableObject(out _allUnitData);
             _edge = BitShapeSupporter.GetEdge();
             PutLayer = 1;
             GenerateTestData();
@@ -272,7 +272,7 @@ namespace Manager
 
         public void Register()
         {
-            DiContainer.Instance.Register(this);
+            ServiceLocator.Instance.Register(this);
         }
 
         private void Awake()

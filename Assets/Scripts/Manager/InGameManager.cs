@@ -47,7 +47,7 @@ namespace Manager
         
         public void Register()
         {
-            DiContainer.Instance.Register(this);
+            ServiceLocator.Instance.Register(this);
         }
 
         public void OpenMenu()
@@ -77,9 +77,9 @@ namespace Manager
 
         public void Initialize()
         {
-            if (DiContainer.Instance.TryGetClass(out _pauseManager) && 
-                DiContainer.Instance.TryGetClass(out _gridManager) &&
-                DiContainer.Instance.TryGetClass(out _playerOperationManager))
+            if (ServiceLocator.Instance.TryGetClass(out _pauseManager) && 
+                ServiceLocator.Instance.TryGetClass(out _gridManager) &&
+                ServiceLocator.Instance.TryGetClass(out _playerOperationManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
