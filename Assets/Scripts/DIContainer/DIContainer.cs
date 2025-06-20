@@ -48,19 +48,17 @@ namespace DIContainer
             _container.Remove(typeof(T));
         }
 
-        public bool TryGetClass<T>(out T instance)
+        public bool TryGetClass<T>(out T instance) where T : class
         {
             if (_container.ContainsKey(typeof(T)))
             {
                 instance = (T)_container[typeof(T)];
                 return true;
             }
-            else
-            {
-                KeyLogger.Log($"{typeof(T).Name} is not found");
-                instance = default;
-                return false;
-            }
+
+            KeyLogger.Log($"{typeof(T).Name} is not found");
+            instance = null;
+            return false;
         }
 
         public bool TryGetScriptableObject<T>(out T scriptableObjects) where T : class
@@ -76,6 +74,5 @@ namespace DIContainer
             scriptableObjects = null;
             return false;
         }
-        
     }
 }
