@@ -24,6 +24,7 @@ namespace Manager
         public void Initialize()
         {
             ServiceLocator.Instance.TryGetScriptableObject(out _allUnits);
+            /*
             foreach (var unitType in _allUnits.UnitTypeArray)
             {
                 foreach (var unit in unitType.AllUnit)
@@ -35,6 +36,7 @@ namespace Manager
                     Instantiate(unit.UnitObject);
                 }
             }
+            */
         }
 
         /// <summary>

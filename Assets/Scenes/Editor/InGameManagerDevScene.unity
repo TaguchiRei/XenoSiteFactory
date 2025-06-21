@@ -654,7 +654,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a1193f91c20ec449d01562548da36a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _allUnitData: {fileID: 11400000, guid: 73de3c5aebba1da4ead7ea5de025f608, type: 2}
   _gridCollider: {fileID: 8084553370101708582, guid: 8e4e276718c248c499e61638e32236a7, type: 3}
   _layerLimit: 4
   _gridSize: 128
@@ -724,7 +723,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 511e0eea5ef2d034f96bc50fb4864df0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _allUnits: {fileID: 11400000, guid: 73de3c5aebba1da4ead7ea5de025f608, type: 2}
 --- !u!1 &1284689061
 GameObject:
   m_ObjectHideFlags: 0
@@ -1086,7 +1084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}

@@ -19,6 +19,7 @@ namespace Manager
         private PauseManager _pauseManager;
         private GridManager _gridManager;
         private IEnumerator _oneDayCycleEnumerator;
+        private UnitResourceManager _unitResourceManager;
         private PlayerOperationManager _playerOperationManager;
         [SerializeField] private string _inGameSceneName;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
@@ -79,10 +80,12 @@ namespace Manager
         {
             if (ServiceLocator.Instance.TryGetClass(out _pauseManager) && 
                 ServiceLocator.Instance.TryGetClass(out _gridManager) &&
-                ServiceLocator.Instance.TryGetClass(out _playerOperationManager))
+                ServiceLocator.Instance.TryGetClass(out _playerOperationManager) &&
+                ServiceLocator.Instance.TryGetClass(out _unitResourceManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
+                _unitResourceManager.Initialize();
                 _playerOperationManager.Initialize();
                 KeyLogger.Log("Initialize Success", this);
             }
