@@ -3,6 +3,7 @@ using DIContainer;
 using GamesKeystoneFramework.Attributes;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GamesKeystoneFramework.KeyMathBit;
+using GridSupport;
 using StaticObject;
 using UnityEngine;
 using XenoScriptableObject;
@@ -55,7 +56,8 @@ namespace Manager
                         Random.Range(0, _gridSize - _edge)),
                     Rotation = (UnitRotate)Random.Range(0, _edge)
                 });
-                KeyLogger.Log($"ID{id}  UnitPosition{PutUnitDataList[i].Position} UnitRotation{PutUnitDataList[i].Rotation}");
+                KeyLogger.Log(
+                    $"ID{id}  UnitPosition{PutUnitDataList[i].Position} UnitRotation{PutUnitDataList[i].Rotation}");
             }
         }
 
@@ -76,6 +78,7 @@ namespace Manager
                     grid[index.x, y] |= _oneDUlong << index.y;
                 }
             }
+
             grid = FillGridDUlongBase(grid, putUnitDataList);
             GenerateAllUnitInstance(putUnitDataList);
             DUlongGrid = grid;
@@ -92,7 +95,7 @@ namespace Manager
             foreach (var putUnitData in unitDataList)
             {
                 var unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
-                
+
                 ulong rotateShape = 0;
 
                 switch (putUnitData.Rotation)
@@ -163,6 +166,7 @@ namespace Manager
                     }
                 }
             }
+
             return true;
         }
 
@@ -243,19 +247,13 @@ namespace Manager
             if (!_gridCreated) return;
 
             Gizmos.color = Color.green;
-            for (int z = 0; z < _gridSize; z++)
+            UnitCalculationSupport.CalculateUnits(_gridSize, _height, _gridSize, (x, y, z) =>
             {
-                for (int y = 0; y < _height; y++)
+                if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                 {
-                    for (int x = 0; x < _gridSize; x++)
-                    {
-                        if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
-                        {
-                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
-                        }
-                    }
+                    Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
                 }
-            }
+            });
         }
 
         /// <summary>
