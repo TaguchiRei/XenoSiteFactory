@@ -7,9 +7,8 @@ namespace GridSupport
     public static class UnitCalculationSupport
     {
         /// <summary>
-        /// ３重のforループの計算をする
-        /// xz平面上に高さyがあるという計算純なので内部のループ順が
-        /// YZXとなっている。
+        /// ３重のforループの計算をするメソッド。
+        /// xz平面上に高さyがあるという計算なので内部のループ順がYZXとなっている。
         /// 辺の長さ(edge)をもとにループする
         /// </summary>
         /// <param name="action">引数はｘｙｚの順</param>
@@ -30,7 +29,7 @@ namespace GridSupport
 
         /// <summary>
         /// forの三十ループの計算をする
-        /// xz平面上に高さyがあるという計算純なので内部のループ順が
+        /// xz平面上に高さyがあるという計算なので内部のループ順が
         /// YZXとなっている。
         /// 入力した値に基づきループする
         /// </summary>
