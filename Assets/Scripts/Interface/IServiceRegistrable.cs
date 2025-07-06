@@ -3,15 +3,13 @@ using DIContainer;
 namespace Interface
 {
     /// <summary>
-    /// マネージャークラスであることを保証し、DIContainerに登録する
+    /// サービスロケーターに登録することを保証する
     /// </summary>
     public interface IServiceRegistrable
     {
         /// <summary>
-        /// DIContainerに登録
+        /// サービスロケーターに登録するためのメソッド
         /// </summary>
         void Register();
-        
-        void Initialize();
     }
 }
