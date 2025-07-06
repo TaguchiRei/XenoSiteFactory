@@ -22,9 +22,9 @@ namespace Player
         
         private void Start()
         {
-            if(DiContainer.Instance.TryGetClass(out _playerOperationManager) &&
-               DiContainer.Instance.TryGetClass(out _gridManager) &&
-               DiContainer.Instance.TryGetClass(out _unitResourceManager))
+            if(ServiceLocator.Instance.TryGetClass(out _playerOperationManager) &&
+               ServiceLocator.Instance.TryGetClass(out _gridManager) &&
+               ServiceLocator.Instance.TryGetClass(out _unitResourceManager))
             {
                 KeyLogger.Log("GetManagerClass");
             }

@@ -22,7 +22,7 @@ namespace Player
 
         private void Awake()
         {
-            DiContainer.Instance.Register(this);
+            ServiceLocator.Instance.Register(this);
         }
 
         #region Player
@@ -113,7 +113,7 @@ namespace Player
 
         public void Register()
         {
-            DiContainer.Instance.Register(this);
+            ServiceLocator.Instance.Register(this);
         }
 
         public void Initialize()

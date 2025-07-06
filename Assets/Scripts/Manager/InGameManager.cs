@@ -18,6 +18,7 @@ namespace Manager
         
         private PauseManager _pauseManager;
         private GridManager _gridManager;
+        private UnitResourceManager _unitResourceManager;
         private PlayerOperationManager _playerOperationManager;
         private UnitResourceManager _unitResourceManager;
         private IEnumerator _oneDayCycleEnumerator;
@@ -48,7 +49,7 @@ namespace Manager
         
         public void Register()
         {
-            DiContainer.Instance.Register(this);
+            ServiceLocator.Instance.Register(this);
         }
 
         public void OpenMenu()
@@ -85,6 +86,7 @@ namespace Manager
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
+                _unitResourceManager.Initialize();
                 _playerOperationManager.Initialize();
                 _unitResourceManager.Initialize();
                 KeyLogger.Log("Initialize Success", this);

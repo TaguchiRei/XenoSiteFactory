@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 1638573850}
   - component: {fileID: 1638573849}
   m_Layer: 0
-  m_Name: DIContainer
+  m_Name: ServiceLocator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
