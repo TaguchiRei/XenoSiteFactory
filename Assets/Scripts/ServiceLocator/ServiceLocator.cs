@@ -36,10 +36,10 @@ namespace DIContainer
             if(!string.IsNullOrEmpty(managerSceneName)) SceneManager.LoadScene(managerSceneName, LoadSceneMode.Single);
         }
 
-        public void Register<T>(T instance)
+        public void Register(Type type ,object instance)
         {
-            Debug.Log($"Registered Instance {typeof(T).Name}");
-            _container[typeof(T)] = instance;
+            KeyLogger.Log($"Registered Instance {type.Name}");
+            _container[type] = instance;
         }
 
         public void Unregister<T>()
