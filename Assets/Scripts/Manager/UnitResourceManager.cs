@@ -59,6 +59,7 @@ namespace Manager
 
         public GridManager.UnitData GetUnitData(GridManager.UnitType unitType, int id)
         {
+            Debug.Log(_allUnits == null);
             return _allUnits.UnitTypeArray[(byte) unitType].AllUnit[id];
         }
     }

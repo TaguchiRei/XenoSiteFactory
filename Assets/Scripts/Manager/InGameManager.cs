@@ -18,8 +18,9 @@ namespace Manager
         
         private PauseManager _pauseManager;
         private GridManager _gridManager;
-        private IEnumerator _oneDayCycleEnumerator;
         private PlayerOperationManager _playerOperationManager;
+        private UnitResourceManager _unitResourceManager;
+        private IEnumerator _oneDayCycleEnumerator;
         [SerializeField] private string _inGameSceneName;
         [SerializeField] private UnityEvent _dayStartEvent = new UnityEvent();
         [SerializeField] private UnityEvent _OpenMenuEvent = new UnityEvent();
@@ -79,13 +80,15 @@ namespace Manager
         {
             if (DiContainer.Instance.TryGetClass(out _pauseManager) && 
                 DiContainer.Instance.TryGetClass(out _gridManager) &&
-                DiContainer.Instance.TryGetClass(out _playerOperationManager))
+                DiContainer.Instance.TryGetClass(out _playerOperationManager) &&
+                DiContainer.Instance.TryGetClass(out _unitResourceManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
                 _playerOperationManager.Initialize();
+                _unitResourceManager.Initialize();
                 KeyLogger.Log("Initialize Success", this);
-            }
+            }   
             else
             {
                 KeyLogger.Log("Initialize Failed", this);
