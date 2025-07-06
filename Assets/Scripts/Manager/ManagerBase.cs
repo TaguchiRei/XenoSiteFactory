@@ -8,11 +8,11 @@ namespace Manager
     /// マネージャークラスのベースクラス。
     /// Awakeでサービスロケーターに登録する
     /// </summary>
-    public abstract class ManagerBase : MonoBehaviour, IServiceRegistrable
+    public abstract class ManagerBase<T> : MonoBehaviour, IServiceRegistrable
     {
         public void Register()
         {
-            ServiceLocator.Instance.Register(this);
+            ServiceLocator.Instance.Register();
         }
 
         private void Awake()
