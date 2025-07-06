@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Manager
 {
-    public class PauseManager : MonoBehaviour, IManager
+    public class PauseManager : MonoBehaviour, IServiceRegistrable
     {
         
         private List<IPauseable> _pausables = new();

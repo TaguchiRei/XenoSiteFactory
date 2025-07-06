@@ -6,7 +6,7 @@ using XenoScriptableObject;
 
 namespace Manager
 {
-    public class UnitResourceManager : MonoBehaviour,IManager
+    public class UnitResourceManager : MonoBehaviour,IServiceRegistrable
     {
         private byte[] _numbersOfUnits;
         private GameObject[] _units;

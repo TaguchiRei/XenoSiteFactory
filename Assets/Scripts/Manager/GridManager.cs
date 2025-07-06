@@ -13,7 +13,7 @@ using Random = UnityEngine.Random;
 
 namespace Manager
 {
-    public partial class GridManager : MonoBehaviour, IManager
+    public partial class GridManager : MonoBehaviour, IServiceRegistrable
     {
         /// <summary> グリッドが占有されているエリアを保存する </summary>
         public DUlong[,] DUlongGrid { get; private set; }

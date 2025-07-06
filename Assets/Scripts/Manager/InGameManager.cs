@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 
 namespace Manager
 {
-    public class InGameManager : MonoBehaviour, IManager
+    public class InGameManager : MonoBehaviour, IServiceRegistrable
     { 
         public int Day { get; private set; }
         public InGameState DayState { get; private set; }

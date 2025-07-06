@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-    public class PlayerOperationManager : MonoBehaviour, IManager, InputSystem_Actions.IPlayerActions,
+    public class PlayerOperationManager : MonoBehaviour, IServiceRegistrable, InputSystem_Actions.IPlayerActions,
         InputSystem_Actions.IUIActions
     {
         public Action<InputAction.CallbackContext> OnMoveAction;

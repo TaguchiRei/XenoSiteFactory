@@ -5,7 +5,7 @@ namespace Interface
     /// <summary>
     /// マネージャークラスであることを保証し、DIContainerに登録する
     /// </summary>
-    public interface IManager
+    public interface IServiceRegistrable
     {
         /// <summary>
         /// DIContainerに登録
