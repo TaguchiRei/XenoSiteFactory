@@ -1,19 +1,19 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using DIContainer;
 using GamesKeystoneFramework.Attributes;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GamesKeystoneFramework.KeyMathBit;
-using Interface;
 using StaticObject;
 using UnityEngine;
 using XenoScriptableObject;
-using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 namespace Manager
 {
-    public partial class GridManager : MonoBehaviour, IServiceRegistrable
+    /// <summary>
+    /// グリッドの変化を管理するクラス
+    /// </summary>
+    public partial class GridManager : ManagerBase
     {
         /// <summary> グリッドが占有されているエリアを保存する </summary>
         public DUlong[,] DUlongGrid { get; private set; }
@@ -261,23 +261,13 @@ namespace Manager
         /// <summary>
         /// 初期化時に呼び出される
         /// </summary>
-        public void Initialize()
+        public override void Initialize()
         {
             ServiceLocator.Instance.TryGetScriptableObject(out _allUnitData);
             _edge = BitShapeSupporter.GetEdge();
             PutLayer = 1;
             GenerateTestData();
             GridManagerInitialize(PutUnitDataList);
-        }
-
-        public void Register()
-        {
-            ServiceLocator.Instance.Register(this);
-        }
-
-        private void Awake()
-        {
-            Register();
         }
     }
 }
