@@ -6,12 +6,9 @@ using UnityEngine;
 
 namespace Manager
 {
-    public class PauseManager : MonoBehaviour, IManager
+    public class PauseManager : ManagerBase<PauseManager>
     {
-        
         private List<IPauseable> _pausables = new();
-        
-        
 
         public void AddPauseObject(IPauseable pausable)
         {
@@ -34,12 +31,7 @@ namespace Manager
             }
         }
 
-        public void Register()
-        {
-            ServiceLocator.Instance.Register(this);
-        }
-
-        public void Initialize()
+        public override void Initialize()
         {
             
         }

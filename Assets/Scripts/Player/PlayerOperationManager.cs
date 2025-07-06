@@ -8,7 +8,8 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-    public class PlayerOperationManager : MonoBehaviour, IManager, InputSystem_Actions.IPlayerActions,
+    public class PlayerOperationManager : ManagerBase<PlayerOperationManager>,
+        InputSystem_Actions.IPlayerActions,
         InputSystem_Actions.IUIActions
     {
         public Action<InputAction.CallbackContext> OnMoveAction;
@@ -19,11 +20,6 @@ namespace Player
         
         private InputSystem_Actions inputSystemActions;
         private InGameManager inGameManager;
-
-        private void Awake()
-        {
-            ServiceLocator.Instance.Register(this);
-        }
 
         #region Player
         public void OnMove(InputAction.CallbackContext context)
@@ -111,12 +107,7 @@ namespace Player
 
         #endregion
 
-        public void Register()
-        {
-            ServiceLocator.Instance.Register(this);
-        }
-
-        public void Initialize()
+        public override void Initialize()
         {
             inputSystemActions = new InputSystem_Actions();
             inputSystemActions.Player.SetCallbacks(this);

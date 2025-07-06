@@ -1,27 +1,22 @@
+using System;
 using DIContainer;
-using GamesKeystoneFramework.KeyDebug.KeyLog;
-using Interface;
 using UnityEngine;
 using XenoScriptableObject;
 
 namespace Manager
 {
-    public class UnitResourceManager : MonoBehaviour,IManager
+    public class UnitResourceManager : ManagerBase<UnitResourceManager>
     {
         private byte[] _numbersOfUnits;
         private GameObject[] _units;
         private AllUnitData _allUnits;
-        public void Register()
-        {
-            ServiceLocator.Instance.Register(this);
-        }
-
+        
         public void Awake()
         {
             Register();
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             ServiceLocator.Instance.TryGetScriptableObject(out _allUnits);
             /*
@@ -61,7 +56,6 @@ namespace Manager
 
         public GridManager.UnitData GetUnitData(GridManager.UnitType unitType, int id)
         {
-            Debug.Log(_allUnits == null);
             return _allUnits.UnitTypeArray[(byte) unitType].AllUnit[id];
         }
     }
