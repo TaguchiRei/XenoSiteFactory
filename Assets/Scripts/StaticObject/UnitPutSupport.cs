@@ -5,6 +5,9 @@ using Object = UnityEngine.Object;
 
 namespace StaticObject
 {
+    /// <summary>
+    /// ユニットの設置を補助する静的クラス
+    /// </summary>
     public static class UnitPutSupport
     {
         public static Vector3Int SelectedPosition;

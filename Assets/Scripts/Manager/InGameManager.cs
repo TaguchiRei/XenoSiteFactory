@@ -10,12 +10,10 @@ using UnityEngine.SceneManagement;
 
 namespace Manager
 {
-    public class InGameManager : MonoBehaviour, IServiceRegistrable
+    public class InGameManager : ManagerBase<InGameManager>
     { 
         public int Day { get; private set; }
         public InGameState DayState { get; private set; }
-        
-        
         private PauseManager _pauseManager;
         private GridManager _gridManager;
         private UnitResourceManager _unitResourceManager;
@@ -46,11 +44,6 @@ namespace Manager
             DayState = InGameState.DayEnd;
         }
         
-        public void Register()
-        {
-            ServiceLocator.Instance.Register(this);
-        }
-
         public void OpenMenu()
         {
             DayState = InGameState.Menu;
@@ -76,7 +69,7 @@ namespace Manager
             }
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             if (ServiceLocator.Instance.TryGetClass(out _pauseManager) && 
                 ServiceLocator.Instance.TryGetClass(out _gridManager) &&
@@ -97,11 +90,6 @@ namespace Manager
             _oneDayCycleEnumerator = OneDayCycle();
             _oneDayCycleEnumerator.MoveNext();
             DayState = InGameState.Observe;
-        }
-
-        public void Awake()
-        {
-            Register();
         }
 
         /// <summary>

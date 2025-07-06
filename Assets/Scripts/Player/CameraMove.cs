@@ -20,16 +20,18 @@ namespace Player
         private void Start()
         {
             _rotation = transform.eulerAngles;
-            ServiceLocator.Instance.TryGetClass(out _inGameManager);
-            ServiceLocator.Instance.TryGetClass(out PlayerOperationManager playerOperationManager);
+            var a = ServiceLocator.Instance.TryGetClass(out _inGameManager);
+            var b = ServiceLocator.Instance.TryGetClass(out PlayerOperationManager playerOperationManager);
             playerOperationManager.OnMoveAction += OnMoveInput;
             playerOperationManager.OnNextAction += OnNextInput;
             playerOperationManager.OnPreviousAction += OnPreviousInput;
+            Debug.Log(a.ToString() + b.ToString());
         }
 
         //前後左右へのカメラ移動、
         private void FixedUpdate()
         {
+            if (_inGameManager == null) return;
             if (_inGameManager.DayState != 0) return;
             transform.position += _moveDirection * _speed;
         }

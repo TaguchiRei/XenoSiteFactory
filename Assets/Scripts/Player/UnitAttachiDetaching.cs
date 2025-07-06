@@ -1,5 +1,4 @@
 using DIContainer;
-using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Manager;
 using StaticObject;
 using UnityEngine;
@@ -21,6 +20,10 @@ namespace Player
             _playerOperationManager.OnInteractAction += OnInteract;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         private void OnInteract(InputAction.CallbackContext context)
         {
             if (!context.started) return;

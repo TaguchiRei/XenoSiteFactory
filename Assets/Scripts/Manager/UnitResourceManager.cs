@@ -1,27 +1,21 @@
 using DIContainer;
-using GamesKeystoneFramework.KeyDebug.KeyLog;
-using Interface;
 using UnityEngine;
 using XenoScriptableObject;
 
 namespace Manager
 {
-    public class UnitResourceManager : MonoBehaviour,IServiceRegistrable
+    public class UnitResourceManager : ManagerBase<UnitResourceManager>
     {
         private byte[] _numbersOfUnits;
         private GameObject[] _units;
         private AllUnitData _allUnits;
-        public void Register()
-        {
-            ServiceLocator.Instance.Register(this);
-        }
-
+        
         public void Awake()
         {
             Register();
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             ServiceLocator.Instance.TryGetScriptableObject(out _allUnits);
             /*

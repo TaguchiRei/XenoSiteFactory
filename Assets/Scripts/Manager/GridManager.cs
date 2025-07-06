@@ -13,7 +13,7 @@ namespace Manager
     /// <summary>
     /// グリッドの変化を管理するクラス
     /// </summary>
-    public partial class GridManager : ManagerBase
+    public partial class GridManager : ManagerBase<GridManager>
     {
         /// <summary> グリッドが占有されているエリアを保存する </summary>
         public DUlong[,] DUlongGrid { get; private set; }
