@@ -25,7 +25,6 @@ namespace Player
             playerOperationManager.OnMoveAction += OnMoveInput;
             playerOperationManager.OnNextAction += OnNextInput;
             playerOperationManager.OnPreviousAction += OnPreviousInput;
-            Debug.Log(a.ToString() + b.ToString());
         }
 
         //前後左右へのカメラ移動、
