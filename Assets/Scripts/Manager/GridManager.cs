@@ -142,30 +142,31 @@ namespace Manager
         /// <returns></returns>
         public bool CheckCanPutUnit(ulong shape, Vector3Int position)
         {
-            for (int y = 0; y < _edge; y++)
+            bool result = true;
+            UnitCalculationSupport.CalculateUnits((x, y, z) =>
             {
-                for (int z = 0; z < _edge; z++)
+                int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
+                if ((shape & (1ul << bitPosition)) != 0)
                 {
-                    for (int x = 0; x < _edge; x++)
+                    //範囲内チェックとビットがたっているかのチェック
+                    if (position.x + x >= _gridSize || position.z + z >= _gridSize || position.y + y >= _height ||
+                        (DUlongGrid[position.x + x, position.y + y] & (_oneDUlong << (position.z + z))) != 0)
                     {
-                        int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
-                        if ((shape & (1ul << bitPosition)) == 0) continue;
-                        if (position.x + x >= _gridSize ||
-                            position.z + z >= _gridSize ||
-                            position.y + y >= _height ||
-                            (DUlongGrid[position.x + x, position.y + y] & (_oneDUlong << (position.z + z))) != 0)
-                            return false;
-                        if (y == 0 && position.y != 0)
+                        result = false;
+                        return;
+                    }
+                    //地面に直接ふれておらず、ビットがたっていればfalseを返す
+                    if (y == 0 && position.y != 0)
+                    {
+                        var checkHeight = position.y - 1;
+                        if ((DUlongGrid[position.x + x, checkHeight] & (_oneDUlong << (position.z + z))) == 0)
                         {
-                            var checkHeight = position.y + y - 1;
-                            if ((DUlongGrid[position.x + x, checkHeight] & (_oneDUlong << (position.z + z))) == 0)
-                            {
-                                return false;
-                            }
+                            result = false;
+                            return;
                         }
                     }
                 }
-            }
+            });
 
             return true;
         }

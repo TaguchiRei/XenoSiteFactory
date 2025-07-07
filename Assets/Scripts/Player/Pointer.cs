@@ -41,9 +41,11 @@ namespace Player
         private void GetMousePosition(InputAction.CallbackContext context)
         {
             if(IsPaused) return;
+            
             Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
             var mask = LayerMask.GetMask($"Layer{_gridManager.PutLayer}Collider");
+            
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
             {
                 var hitNormal = hit.normal;

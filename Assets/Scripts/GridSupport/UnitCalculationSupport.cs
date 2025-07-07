@@ -33,17 +33,17 @@ namespace GridSupport
         /// YZXとなっている。
         /// 入力した値に基づきループする
         /// </summary>
-        /// <param name="i">y軸と対応</param>
-        /// <param name="j">z軸と対応</param>
-        /// <param name="k">x軸と対応</param>
+        /// <param name="i">x軸と対応</param>
+        /// <param name="j">y軸と対応</param>
+        /// <param name="k">z軸と対応</param>
         /// <param name="action"></param>
         public static void CalculateUnits(int i, int j, int k,Action<int, int ,int> action)
         {
-            for (int y = 0; y < i; y++)
+            for (int y = 0; y < j; y++)
             {
-                for (int z = 0; z < j; z++)
+                for (int z = 0; z < k; z++)
                 {
-                    for (int x = 0; x < k; x++)
+                    for (int x = 0; x < i; x++)
                     {
                         action(x, y, z);
                     }
