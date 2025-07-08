@@ -31,6 +31,7 @@ namespace Manager
             public Vector2Int[] EnterPositions;
             public Vector2Int[] ExitPositions;
             public GameObject UnitObject;
+            public Texture2D UnitPicture;
         }
 
         [Serializable]

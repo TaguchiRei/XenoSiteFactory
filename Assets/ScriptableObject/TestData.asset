@@ -21,6 +21,7 @@ MonoBehaviour:
       ExitPositions:
       - {x: 0, y: 0}
       UnitObject: {fileID: 919132149155446097, guid: 62808cb6fb484f948994ddbfaae8f720, type: 3}
+      UnitPicture: {fileID: 2800000, guid: 07b04d9f40d8cde44911d380f706e1cf, type: 3}
     - UnitShape: 242286591
       UnitType: 0
       EnterPositions:
@@ -28,6 +29,7 @@ MonoBehaviour:
       ExitPositions:
       - {x: 0, y: 0}
       UnitObject: {fileID: 919132149155446097, guid: 59e99bf78c481b943bdc4cb2870dbf3a, type: 3}
+      UnitPicture: {fileID: 2800000, guid: 07b04d9f40d8cde44911d380f706e1cf, type: 3}
     - UnitShape: 3355508716
       UnitType: 0
       EnterPositions:
@@ -35,6 +37,7 @@ MonoBehaviour:
       ExitPositions:
       - {x: 0, y: 0}
       UnitObject: {fileID: 919132149155446097, guid: 1a80de2f6f11b2b4783bb1975ce0f98d, type: 3}
+      UnitPicture: {fileID: 2800000, guid: 07b04d9f40d8cde44911d380f706e1cf, type: 3}
     - UnitShape: 4007659383
       UnitType: 0
       EnterPositions:
@@ -42,6 +45,7 @@ MonoBehaviour:
       ExitPositions:
       - {x: 0, y: 0}
       UnitObject: {fileID: 919132149155446097, guid: b195dc7470ef42443bdc414202e4ef2c, type: 3}
+      UnitPicture: {fileID: 2800000, guid: 07b04d9f40d8cde44911d380f706e1cf, type: 3}
     - UnitShape: 18446469608226424416
       UnitType: 0
       EnterPositions:
@@ -49,6 +53,7 @@ MonoBehaviour:
       ExitPositions:
       - {x: 0, y: 0}
       UnitObject: {fileID: 919132149155446097, guid: bb267bab1e1ee404b9ce7935a33fc1fe, type: 3}
+      UnitPicture: {fileID: 2800000, guid: 07b04d9f40d8cde44911d380f706e1cf, type: 3}
     - UnitShape: 18446620969607340755
       UnitType: 0
       EnterPositions:
@@ -56,3 +61,4 @@ MonoBehaviour:
       ExitPositions:
       - {x: 0, y: 0}
       UnitObject: {fileID: 919132149155446097, guid: f63f93ac54409264291139775f7573ed, type: 3}
+      UnitPicture: {fileID: 2800000, guid: 07b04d9f40d8cde44911d380f706e1cf, type: 3}
