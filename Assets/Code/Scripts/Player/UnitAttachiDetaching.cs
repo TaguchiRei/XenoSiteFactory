@@ -1,4 +1,4 @@
-using DIContainer;
+using Service;
 using Manager;
 using StaticObject;
 using UnityEngine;

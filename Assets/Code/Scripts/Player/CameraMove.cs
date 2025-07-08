@@ -1,7 +1,7 @@
 using System.Collections;
 using DG.Tweening;
-using DIContainer;
 using Manager;
+using Service;
 using UnityEngine;
 using UnityEngine.InputSystem;
 

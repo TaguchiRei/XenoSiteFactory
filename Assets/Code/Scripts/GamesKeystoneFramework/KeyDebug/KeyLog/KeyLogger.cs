@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using ColorUtility = UnityEngine.ColorUtility;
+using Object = UnityEngine.Object;
 
 namespace GamesKeystoneFramework.KeyDebug.KeyLog
 {
@@ -57,6 +58,7 @@ namespace GamesKeystoneFramework.KeyDebug.KeyLog
             //_allLogs準備
 
             Log("<color=purple>KeyTester</color> <color=black>:</color> Initialized", Color.cyan);
+            Object.DontDestroyOnLoad(logCanvas.gameObject);
         }
 
         /// <summary>

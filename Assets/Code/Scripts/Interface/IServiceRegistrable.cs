@@ -1,5 +1,3 @@
-using DIContainer;
-
 namespace Interface
 {
     /// <summary>

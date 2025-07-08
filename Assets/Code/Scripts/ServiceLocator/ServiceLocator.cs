@@ -4,7 +4,7 @@ using GamesKeystoneFramework.KeyDebug.KeyLog;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace DIContainer
+namespace Service
 {
     public class ServiceLocator : MonoBehaviour
     {

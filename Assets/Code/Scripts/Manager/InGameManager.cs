@@ -1,6 +1,6 @@
 using System.Collections;
+using Service;
 using UnityEngine;
-using DIContainer;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Player;
 using UnityEngine.Events;
