@@ -142,11 +142,11 @@ namespace Manager
         /// <returns></returns>
         public bool CheckCanPutUnit(ulong shape, Vector3Int position)
         {
-            for (int z = 0; z < _edge; z++)
+            for (int x = 0; x < _edge; x++)
             {
                 for (int y = 0; y < _edge; y++)
                 {
-                    for (int x = 0; x < _edge; x++)
+                    for (int z = 0; z < _edge; z++)
                     {
                         int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) != 0)
@@ -196,11 +196,11 @@ namespace Manager
         /// <param name="position"></param>
         public void PutUnitOnGrid(ulong shape, Vector3Int position)
         {
-            for (int z = 0; z < _edge; z++)
+            for (int x = 0; x < _edge; x++)
             {
                 for (int y = 0; y < _edge; y++)
                 {
-                    for (int x = 0; x < _edge; x++)
+                    for (int z = 0; z < _edge; z++)
                     {
                         int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) == 0) continue;
@@ -253,11 +253,11 @@ namespace Manager
             if (!_gridCreated) return;
 
             Gizmos.color = Color.green;
-            for (int z = 0; z < _gridSize; z++)
+            for (int x = 0; x < _gridSize; x++)
             {
                 for (int y = 0; y < _height; y++)
                 {
-                    for (int x = 0; x < _gridSize; x++)
+                    for (int z = 0; z < _gridSize; z++)
                     {
                         if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
                         {
