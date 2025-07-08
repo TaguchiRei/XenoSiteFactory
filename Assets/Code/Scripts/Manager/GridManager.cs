@@ -114,9 +114,9 @@ namespace Manager
                         break;
                 }
 
-                for (int y = 0; y < _edge; y++)
+                for (int z = 0; z < _edge; z++)
                 {
-                    for (int z = 0; z < _edge; z++)
+                    for (int y = 0; y < _edge; y++)
                     {
                         for (int x = 0; x < _edge; x++)
                         {
@@ -142,31 +142,36 @@ namespace Manager
         /// <returns></returns>
         public bool CheckCanPutUnit(ulong shape, Vector3Int position)
         {
-            bool result = true;
-            UnitCalculationSupport.CalculateUnits((x, y, z) =>
+            for (int z = 0; z < _edge; z++)
             {
-                int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
-                if ((shape & (1ul << bitPosition)) != 0)
+                for (int y = 0; y < _edge; y++)
                 {
-                    //範囲内チェックとビットがたっているかのチェック
-                    if (position.x + x >= _gridSize || position.z + z >= _gridSize || position.y + y >= _height ||
-                        (DUlongGrid[position.x + x, position.y + y] & (_oneDUlong << (position.z + z))) != 0)
+                    for (int x = 0; x < _edge; x++)
                     {
-                        result = false;
-                        return;
-                    }
-                    //地面に直接ふれておらず、ビットがたっていればfalseを返す
-                    if (y == 0 && position.y != 0)
-                    {
-                        var checkHeight = position.y - 1;
-                        if ((DUlongGrid[position.x + x, checkHeight] & (_oneDUlong << (position.z + z))) == 0)
+                        int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
+                        if ((shape & (1ul << bitPosition)) != 0)
                         {
-                            result = false;
-                            return;
+                            //範囲内チェックとビットがたっているかのチェック
+                            if (position.x + x >= _gridSize || position.z + z >= _gridSize ||
+                                position.y + y >= _height ||
+                                (DUlongGrid[position.x + x, position.y + y] & (_oneDUlong << (position.z + z))) != 0)
+                            {
+                                return false;
+                            }
+
+                            //地面に直接ふれておらず、ビットがたっていればfalseを返す
+                            if (y == 0 && position.y != 0)
+                            {
+                                var checkHeight = position.y - 1;
+                                if ((DUlongGrid[position.x + x, checkHeight] & (_oneDUlong << (position.z + z))) == 0)
+                                {
+                                    return false;
+                                }
+                            }
                         }
                     }
                 }
-            });
+            }
 
             return true;
         }
@@ -191,9 +196,9 @@ namespace Manager
         /// <param name="position"></param>
         public void PutUnitOnGrid(ulong shape, Vector3Int position)
         {
-            for (int y = 0; y < _edge; y++)
+            for (int z = 0; z < _edge; z++)
             {
-                for (int z = 0; z < _edge; z++)
+                for (int y = 0; y < _edge; y++)
                 {
                     for (int x = 0; x < _edge; x++)
                     {
@@ -248,13 +253,19 @@ namespace Manager
             if (!_gridCreated) return;
 
             Gizmos.color = Color.green;
-            UnitCalculationSupport.CalculateUnits(_gridSize, _height, _gridSize, (x, y, z) =>
+            for (int z = 0; z < _gridSize; z++)
             {
-                if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
+                for (int y = 0; y < _height; y++)
                 {
-                    Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
+                    for (int x = 0; x < _gridSize; x++)
+                    {
+                        if ((DUlongGrid[x, y] & (_oneDUlong << z)) != new DUlong(0, 0))
+                        {
+                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
+                        }
+                    }
                 }
-            });
+            }
         }
 
         /// <summary>

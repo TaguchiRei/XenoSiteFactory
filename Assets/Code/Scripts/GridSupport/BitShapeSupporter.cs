@@ -18,15 +18,21 @@ namespace StaticObject
         {
             ulong returnShape = 0;
 
-            UnitCalculationSupport.CalculateUnits((x, y, z) =>
+            for (int x = 0; x < Edge; x++)
             {
-                int baseBit = CalculationBitPosition(x, y, z);
-                if (((shape >> baseBit) & 1UL) != 0)
+                for (int y = 0; y < Edge; y++)
                 {
-                    int bitPos = z + (LastEdgeIndex - x) * 4 + (y * Edge * Edge);
-                    returnShape |= (ulong)1 << bitPos;
+                    for (int z = 0; z < Edge; z++)
+                    {
+                        int baseBit = CalculationBitPosition(x, y, z);
+                        if (((shape >> baseBit) & 1UL) != 0)
+                        {
+                            int bitPos = z + (LastEdgeIndex - x) * 4 + (y * Edge * Edge);
+                            returnShape |= (ulong)1 << bitPos;
+                        }
+                    }
                 }
-            });
+            }
 
             return returnShape;
         }
@@ -40,15 +46,22 @@ namespace StaticObject
         public static ulong RotateRightUlongBase180(ulong shape)
         {
             ulong returnShape = 0;
-            UnitCalculationSupport.CalculateUnits((x, y, z) =>
+
+            for (int x = 0; x < Edge; x++)
             {
-                int baseBit = CalculationBitPosition(x, y, z);
-                if (((shape >> baseBit) & 1UL) != 0)
+                for (int y = 0; y < Edge; y++)
                 {
-                    int bitPos = (LastEdgeIndex - x) + (LastEdgeIndex - z) * Edge + (y * Edge * Edge);
-                    returnShape |= (ulong)1 << bitPos;
+                    for (int z = 0; z < Edge; z++)
+                    {
+                        int baseBit = CalculationBitPosition(x, y, z);
+                        if (((shape >> baseBit) & 1UL) != 0)
+                        {
+                            int bitPos = (LastEdgeIndex - x) + (LastEdgeIndex - z) * Edge + (y * Edge * Edge);
+                            returnShape |= (ulong)1 << bitPos;
+                        }
+                    }
                 }
-            });
+            }
 
             return returnShape;
         }
@@ -61,15 +74,22 @@ namespace StaticObject
         public static ulong RotateRightUlongBase270(ulong shape)
         {
             ulong returnShape = 0;
-            UnitCalculationSupport.CalculateUnits((x, y, z) =>
+
+            for (int x = 0; x < Edge; x++)
             {
-                int baseBit = CalculationBitPosition(x, y, z);
-                if (((shape >> baseBit) & 1UL) != 0)
+                for (int y = 0; y < Edge; y++)
                 {
-                    int bitPos = (LastEdgeIndex - z) + (x * Edge) + (y * Edge * Edge);
-                    returnShape |= (ulong)1 << bitPos;
+                    for (int z = 0; z < Edge; z++)
+                    {
+                        int baseBit = CalculationBitPosition(x, y, z);
+                        if (((shape >> baseBit) & 1UL) != 0)
+                        {
+                            int bitPos = (LastEdgeIndex - z) + (x * Edge) + (y * Edge * Edge);
+                            returnShape |= (ulong)1 << bitPos;
+                        }
+                    }
                 }
-            });
+            }
 
             return returnShape;
         }
