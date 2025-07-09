@@ -3,6 +3,7 @@ using Manager;
 using StaticObject;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Player
 {
@@ -10,12 +11,14 @@ namespace Player
     {
         private PlayerOperationManager _playerOperationManager;
         private UnitResourceManager _unitResourceManager;
+        private InGameManager _inGameManager;
         private GridManager _gridManager;
 
         private void Start()
         {
             ServiceLocator.Instance.TryGetClass(out _playerOperationManager);
             ServiceLocator.Instance.TryGetClass(out _unitResourceManager);
+            ServiceLocator.Instance.TryGetClass(out _inGameManager);
             ServiceLocator.Instance.TryGetClass(out _gridManager);
             _playerOperationManager.OnInteractAction += OnInteract;
         }
@@ -26,7 +29,7 @@ namespace Player
         /// <param name="context"></param>
         private void OnInteract(InputAction.CallbackContext context)
         {
-            if (!context.started) return;
+            if (!context.started && !_inGameManager.PutMode) return;
             //オブジェクトを設置する処理を書く
             var data = _unitResourceManager.GetUnitData(UnitPutSupport.SelectedUnitType,
                 UnitPutSupport.SelectedUnitID);
