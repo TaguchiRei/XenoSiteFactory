@@ -9,6 +9,7 @@ namespace Manager
     /// </summary>
     public class InGameUIManager : ManagerBase<InGameUIManager>
     {
+        private static readonly int SetMode = Animator.StringToHash("SetMode");
         [SerializeField] private GameObject _inGameUI;
         private Animator _inGameUIAnimator;
         private InGameManager _inGameManager;
@@ -22,7 +23,7 @@ namespace Manager
         public void PutModeButton()
         {
             _inGameManager.PutModeChange();
-            _inGameUIAnimator.SetBool("SetMode",_inGameManager.PutMode);
+            _inGameUIAnimator.SetBool(SetMode,_inGameManager.PutMode);
         }
     }
 }
