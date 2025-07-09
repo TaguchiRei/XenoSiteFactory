@@ -3,6 +3,7 @@ using Manager;
 using StaticObject;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Player
 {

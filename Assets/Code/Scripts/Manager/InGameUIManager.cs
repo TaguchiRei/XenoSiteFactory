@@ -19,9 +19,10 @@ namespace Manager
             ServiceLocator.Instance.TryGetClass(out _inGameManager);
         }
 
-        private void PutModeButton()
+        public void PutModeButton()
         {
             _inGameManager.PutModeChange();
+            _inGameUIAnimator.SetBool("SetMode",_inGameManager.PutMode);
         }
     }
 }
