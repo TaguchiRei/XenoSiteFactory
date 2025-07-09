@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 
 namespace GamesKeystoneFramework.Save
 {
@@ -20,7 +21,7 @@ namespace GamesKeystoneFramework.Save
         {
             string path = Application.persistentDataPath + $"/{fileName + dataNumber}.json";
 #if UNITY_EDITOR
-            Debug.Log(File.Exists(path) ? "File Exists" : "File Not Exists");
+            KeyLogger.Log(File.Exists(path) ? "File Exists" : "File Not Exists");
 #endif
             await  File.WriteAllTextAsync(path, JsonUtility.ToJson(this));
         }
@@ -31,16 +32,17 @@ namespace GamesKeystoneFramework.Save
             if (File.Exists(path))
             {
 #if UNITY_EDITOR
-                Debug.Log("File Exists");
+                KeyLogger.Log("File Exists");
 #endif
                 var json = await File.ReadAllTextAsync(path);
-                return Initialize();
+                return JsonUtility.FromJson<T>(json);
             }
 #if UNITY_EDITOR
-            Debug.Log("File Not Exists");
+            KeyLogger.Log("File Not Exists");
 #endif
             return default;
         }
+        
         /// <summary>
         /// セーブデータの初期化を行う
         /// </summary>
@@ -52,13 +54,13 @@ namespace GamesKeystoneFramework.Save
             if (File.Exists(path))
             {
 #if UNITY_EDITOR
-                Debug.Log("File Exists");
+                KeyLogger.Log("File Exists");
 #endif
             }
             else
             {
 #if UNITY_EDITOR
-                Debug.Log("File Not Exists");
+                KeyLogger.Log("File Not Exists");
 #endif
             }
             await File.WriteAllTextAsync(path, JsonUtility.ToJson(Initialize()));
