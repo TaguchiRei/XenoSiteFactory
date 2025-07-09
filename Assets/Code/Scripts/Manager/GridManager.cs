@@ -241,12 +241,6 @@ namespace Manager
             }
         }
 
-        public void PutMode()
-        {
-            ServiceLocator.Instance.TryGetClass(out _inGameManager);
-            _inGameManager.PutModeChange();
-        }
-
         private void OnDrawGizmos()
         {
             if (!_gridCreated) return;
