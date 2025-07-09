@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
+using Manager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +10,7 @@ namespace Service
     public class ServiceLocator : MonoBehaviour
     {
         [SerializeField] private string managerSceneName;
-        
+
         [SerializeField] private ScriptableObject[] _scriptableObjects;
 
         private Dictionary<Type, object> _container;
@@ -28,15 +29,16 @@ namespace Service
             {
                 Destroy(gameObject);
             }
-            KeyLogger.Log("Initialize Complete",this);
+
+            KeyLogger.Log("Initialize Complete", this);
         }
 
         private void Start()
         {
-            if(!string.IsNullOrEmpty(managerSceneName)) SceneManager.LoadScene(managerSceneName, LoadSceneMode.Single);
+            if (!string.IsNullOrEmpty(managerSceneName)) SceneManager.LoadScene(managerSceneName, LoadSceneMode.Single);
         }
 
-        public void Register(Type type ,object instance)
+        public void Register(Type type, object instance)
         {
             KeyLogger.Log($"Registered Instance {type.Name}");
             _container[type] = instance;
@@ -70,6 +72,7 @@ namespace Service
                     return true;
                 }
             }
+
             scriptableObjects = null;
             return false;
         }
