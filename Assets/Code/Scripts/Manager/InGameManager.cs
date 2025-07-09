@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using Service;
 using UnityEngine;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
@@ -78,7 +80,6 @@ namespace Manager
                 _gridManager.Initialize();
                 _unitResourceManager.Initialize();
                 _playerOperationManager.Initialize();
-                _unitResourceManager.Initialize();
                 KeyLogger.Log("Initialize Success", this);
             }
             else

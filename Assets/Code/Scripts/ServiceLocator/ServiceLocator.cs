@@ -62,46 +62,6 @@ namespace Service
             return false;
         }
 
-        public bool TryGetAllManagerClass(out List<(Type, object)> instances)
-        {
-            List<(Type, object)> result = new();
-            foreach (var kvp in _container)
-            {
-                if (IsDerivedFromManagerBase(kvp.Key))
-                {
-                    result.Add((kvp.Key, kvp.Value));
-                }
-            }
-
-            if (result.Count > 0)
-            {
-                instances = result;
-                return true;
-            }
-            else
-            {
-                instances = null;
-                return false;
-            }
-        }
-
-        bool IsDerivedFromManagerBase(Type targetType)
-        {
-            Type genericBase = typeof(ManagerBase<>);
-
-            while (targetType != null && targetType != typeof(object))
-            {
-                if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == genericBase)
-                {
-                    return true;
-                }
-
-                targetType = targetType.BaseType;
-            }
-
-            return false;
-        }
-
         public bool TryGetScriptableObject<T>(out T scriptableObjects) where T : class
         {
             foreach (var scriptableObject in _scriptableObjects)
