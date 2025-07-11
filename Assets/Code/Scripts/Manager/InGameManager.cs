@@ -80,6 +80,7 @@ namespace Manager
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
+                _inGameUiManager.Initialize();
                 _unitResourceManager.Initialize();
                 _playerOperationManager.Initialize();
                 _inGameUIManager.Initialize();
