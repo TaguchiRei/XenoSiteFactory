@@ -1,3 +1,4 @@
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Service;
 using Manager;
 using StaticObject;
@@ -11,6 +12,7 @@ namespace Player
     {
         private PlayerOperationManager _playerOperationManager;
         private UnitResourceManager _unitResourceManager;
+        private InGameUIManager _inGameUIManager;
         private InGameManager _inGameManager;
         private GridManager _gridManager;
 
@@ -18,6 +20,7 @@ namespace Player
         {
             ServiceLocator.Instance.TryGetClass(out _playerOperationManager);
             ServiceLocator.Instance.TryGetClass(out _unitResourceManager);
+            ServiceLocator.Instance.TryGetClass(out _inGameUIManager);
             ServiceLocator.Instance.TryGetClass(out _inGameManager);
             ServiceLocator.Instance.TryGetClass(out _gridManager);
             _playerOperationManager.OnInteractAction += OnInteract;
@@ -29,7 +32,12 @@ namespace Player
         /// <param name="context"></param>
         private void OnInteract(InputAction.CallbackContext context)
         {
-            if (!context.started && !_inGameManager.PutMode) return;
+            if (!context.started || !_inGameManager.PutMode) return;
+            if (!_inGameUIManager.CheckOnInputArea())
+            {
+                KeyLogger.Log("Not On Input Area");
+                return;
+            }
             //オブジェクトを設置する処理を書く
             var data = _unitResourceManager.GetUnitData(UnitPutSupport.SelectedUnitType,
                 UnitPutSupport.SelectedUnitID);

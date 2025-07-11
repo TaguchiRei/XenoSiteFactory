@@ -16,7 +16,7 @@ namespace Manager
         public InGameState DayState { get; private set; }
         private PauseManager _pauseManager;
         private GridManager _gridManager;
-        private InGameUIManager _inGameUiManager;
+        private InGameUIManager _inGameUIManager;
         private UnitResourceManager _unitResourceManager;
         private PlayerOperationManager _playerOperationManager;
         private IEnumerator _oneDayCycleEnumerator;
@@ -76,13 +76,14 @@ namespace Manager
                 ServiceLocator.Instance.TryGetClass(out _gridManager) &&
                 ServiceLocator.Instance.TryGetClass(out _playerOperationManager) &&
                 ServiceLocator.Instance.TryGetClass(out _unitResourceManager) &&
-                ServiceLocator.Instance.TryGetClass(out _inGameUiManager))
+                ServiceLocator.Instance.TryGetClass(out _inGameUIManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
                 _inGameUiManager.Initialize();
                 _unitResourceManager.Initialize();
                 _playerOperationManager.Initialize();
+                _inGameUIManager.Initialize();
                 KeyLogger.Log("Initialize Success", this);
             }
             else
@@ -93,6 +94,7 @@ namespace Manager
             _oneDayCycleEnumerator = OneDayCycle();
             _oneDayCycleEnumerator.MoveNext();
             DayState = InGameState.Observe;
+            PutMode = false;
         }
 
         /// <summary>

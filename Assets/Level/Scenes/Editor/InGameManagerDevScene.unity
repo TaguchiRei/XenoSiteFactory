@@ -1181,9 +1181,8 @@ GameObject:
   - component: {fileID: 1524428044}
   - component: {fileID: 1524428046}
   - component: {fileID: 1524428045}
-  - component: {fileID: 1524428047}
   m_Layer: 5
-  m_Name: InputField
+  m_Name: InputArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1246,19 +1245,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524428043}
   m_CullTransparentMesh: 1
---- !u!114 &1524428047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1524428043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <Mouse>/leftButton
 --- !u!1 &1628483754
 GameObject:
   m_ObjectHideFlags: 0
@@ -1289,6 +1275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inGameUI: {fileID: 2008202133}
+  _inputArea: {fileID: 1524428043}
 --- !u!4 &1628483756
 Transform:
   m_ObjectHideFlags: 0
