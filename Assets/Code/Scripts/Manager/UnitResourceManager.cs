@@ -1,4 +1,7 @@
+using System;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Service;
+using StaticObject;
 using UnityEngine;
 using XenoScriptableObject;
 
@@ -6,10 +9,10 @@ namespace Manager
 {
     public class UnitResourceManager : ManagerBase<UnitResourceManager>
     {
-        private byte[] _numbersOfUnits;
+        private byte[][] _numbersOfUnits;
         private GameObject[] _units;
         private AllUnitData _allUnits;
-        
+
         public void Awake()
         {
             Register();
@@ -18,44 +21,63 @@ namespace Manager
         public override void Initialize()
         {
             ServiceLocator.Instance.TryGetScriptableObject(out _allUnits);
-            /*
-            foreach (var unitType in _allUnits.UnitTypeArray)
+            KeyLogger.LogWarning("初期化でテスト専用のデータを割り当てています。", this);
+            _numbersOfUnits = new byte[_allUnits.UnitTypeArray.Length][];
+            for (int i = 0; i < _allUnits.UnitTypeArray.Length; i++)
             {
-                foreach (var unit in unitType.AllUnit)
+                _numbersOfUnits[i] = new byte[_allUnits.UnitTypeArray[i].AllUnit.Length];
+                for (int j = 0; j < _allUnits.UnitTypeArray[i].AllUnit.Length; j++)
                 {
-                    if (unit.UnitObject == null)
-                    {
-                        KeyLogger.LogWarning("unit object is null");
-                    }
-                    Instantiate(unit.UnitObject);
+                    _numbersOfUnits[i][j] = Byte.MaxValue;
                 }
             }
-            */
         }
 
         /// <summary>
         /// リソースを追加するためのメソッド
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="amount"></param>
-        public void AddResource(int id, int amount)
+        /// <param name="unitType">ユニットの種類のenum</param>
+        /// <param name="id">ユニットのID</param>
+        /// <param name="amount">ユニットを追加する個数</param>
+        public void AddResource(GridManager.UnitType unitType, int id, byte amount)
         {
-            
+            if (_numbersOfUnits[(int)unitType][id] == byte.MaxValue)
+            {
+                return;
+            }
+
+            _numbersOfUnits[(int)unitType][id] += amount;
         }
 
         /// <summary>
         /// リソースを消費するためのメソッド
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="amount"></param>
-        public void RemoveResource(int id, int amount)
+        /// <param name="unitType">ユニットの種類のenum</param>
+        /// <param name="id">ユニットのID</param>
+        /// <param name="amount">ユニットを消費する個数</param>
+        public bool RemoveResource(GridManager.UnitType unitType, int id, byte amount)
         {
-            
+            if (_numbersOfUnits[(int)unitType][id] > 0)
+            {
+                _numbersOfUnits[(int)unitType][id] =
+                    (byte)Math.Clamp(_numbersOfUnits[(int)unitType][id] - amount, 0, byte.MaxValue);
+                return true;
+            }
+
+            return false;
         }
 
         public GridManager.UnitData GetUnitData(GridManager.UnitType unitType, int id)
         {
-            return _allUnits.UnitTypeArray[(byte) unitType].AllUnit[id];
+            return _allUnits.UnitTypeArray[(byte)unitType].AllUnit[id];
+        }
+        
+        /// <summary>
+        /// 次に設置するユニットを変更する
+        /// </summary>
+        private void ChangeSettingUnit(GridManager.UnitType unitType, int id)
+        {
+            UnitPutSupport.SetSelectUnitData(id,unitType);
         }
     }
 }
