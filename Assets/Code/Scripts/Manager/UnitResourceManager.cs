@@ -75,9 +75,9 @@ namespace Manager
         /// <summary>
         /// 次に設置するユニットを変更する
         /// </summary>
-        private void ChangeSettingUnit(GridManager.UnitType unitType, int id)
+        public void ChangeSettingUnit(int id)
         {
-            UnitPutSupport.SetSelectUnitData(id,unitType);
+            UnitPutSupport.SetSelectUnitData(id,GridManager.UnitType.Manufacture);
         }
     }
 }
