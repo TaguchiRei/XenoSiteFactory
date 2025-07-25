@@ -12,7 +12,7 @@ namespace Manager
     {
         public void Register()
         {
-            ServiceLocator.Instance.Register(typeof(T), this);
+            ServiceLocatorL.Instance.Register(typeof(T), this);
         }
 
         private void Awake()

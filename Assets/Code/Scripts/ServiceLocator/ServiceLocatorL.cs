@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace Service
 {
-    public class ServiceLocator : MonoBehaviour
+    public class ServiceLocatorL : MonoBehaviour
     {
         [SerializeField] private string managerSceneName;
 
@@ -15,10 +15,11 @@ namespace Service
 
         private Dictionary<Type, object> _container;
 
-        public static ServiceLocator Instance;
+        public static ServiceLocatorL Instance;
 
         private void Awake()
         {
+            KeyLogger.Log("これは旧型のロケーターです");
             if (Instance == null)
             {
                 Instance = this;

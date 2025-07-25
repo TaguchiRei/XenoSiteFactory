@@ -74,12 +74,12 @@ namespace Manager
 
         public override void Initialize()
         {
-            if (ServiceLocator.Instance.TryGetClass(out _pauseManager) &&
-                ServiceLocator.Instance.TryGetClass(out _gridManager) &&
-                ServiceLocator.Instance.TryGetClass(out _playerOperationManager) &&
-                ServiceLocator.Instance.TryGetClass(out _unitResourceManager) &&
-                ServiceLocator.Instance.TryGetClass(out _inGameUIManager) &&
-                ServiceLocator.Instance.TryGetClass(out _turnManager))
+            if (ServiceLocatorL.Instance.TryGetClass(out _pauseManager) &&
+                ServiceLocatorL.Instance.TryGetClass(out _gridManager) &&
+                ServiceLocatorL.Instance.TryGetClass(out _playerOperationManager) &&
+                ServiceLocatorL.Instance.TryGetClass(out _unitResourceManager) &&
+                ServiceLocatorL.Instance.TryGetClass(out _inGameUIManager) &&
+                ServiceLocatorL.Instance.TryGetClass(out _turnManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
