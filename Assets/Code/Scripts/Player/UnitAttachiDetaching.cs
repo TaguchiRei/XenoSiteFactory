@@ -1,11 +1,9 @@
-using System;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Service;
 using Manager;
 using StaticObject;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace Player
 {

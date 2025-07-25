@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
-using UnityEngine;
 
 namespace Manager
 {
