@@ -1,36 +1,35 @@
 using Interface;
 using Manager;
-using Service;
-using UnityEngine;
 
-public class TurnManager : ManagerBase<TurnManager>, IPauseable
+namespace TurnSystem
 {
-    public bool IsPaused { get; set; }
-
-    private int _turnCount;
-
-
-    public void Pause()
+    public class TurnManager : ManagerBase<TurnManager>, IPauseable
     {
-        
-    }
+        public bool IsPaused { get; set; }
 
-    public void Resume()
-    {
-        
-    }
+        private int _turnCount;
 
-    /// <summary>
-    /// ƒ^[ƒ“‚ğˆê‚Âi‚ß‚é
-    /// </summary>
-    private void NextTurn()
-    {
-        _turnCount++;
-    }
+        public void Pause()
+        {
+            
+        }
 
-    public override void Initialize()
-    {
-        _turnCount = 0;
-        
+        public void Resume()
+        {
+            
+        }
+
+        /// <summary>
+        /// æ¬¡ã®ã‚¿ãƒ¼ãƒ³ã‚’å†ç”Ÿã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
+        /// </summary>
+        private void NextTurn()
+        {
+            _turnCount++;
+        }
+
+        public override void Initialize()
+        {
+            _turnCount = 0;
+        }
     }
 }
