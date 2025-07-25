@@ -5,7 +5,7 @@ namespace Interface
     /// <summary>
     /// 各ターン開始時に行う処理があることを保証する
     /// </summary>
-    interface ITurnStartHandler
+    public interface ITurnStartHandler
     {
         /// <summary>
         /// ターン開始時の処理
@@ -16,7 +16,7 @@ namespace Interface
     /// <summary>
     /// 各ターン中に行う処理があることを保証する
     /// </summary>
-    interface ITurnUpdateHandler
+    public interface ITurnUpdateHandler
     {
         /// <summary>
         /// ターン中の処理
@@ -27,7 +27,7 @@ namespace Interface
     /// <summary>
     /// 各ターン終了時に行う処理があることを保証する
     /// </summary>
-    interface ITurnEndHandler
+    public interface ITurnEndHandler
     {
         /// <summary>
         /// ターン終了時の処理
