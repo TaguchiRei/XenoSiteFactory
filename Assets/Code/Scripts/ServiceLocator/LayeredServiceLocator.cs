@@ -66,7 +66,7 @@ namespace Service
         /// プレゼンテーション層のインスタンス登録を解除
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void UnRegisterPresentation<T>() where T : IPresentationLayer
+        public void UnRegisterPresentation<T>(T instance) where T : IPresentationLayer
         {
             _presentationLayers.Remove(typeof(T));
         }
@@ -75,12 +75,12 @@ namespace Service
         /// ドメイン層のインスタンス登録を解除
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void UnRegisterDomain<T>() where T : IDomainLayer
+        public void UnRegisterDomain<T>(T instance) where T : IDomainLayer
         {
             _domainLayers.Remove(typeof(T));
         }
 
-        public void UnRegisterData<T>() where T : IDataLayer
+        public void UnRegisterData<T>(T instance) where T : IDataLayer
         {
             _dataLayers.Remove(typeof(T));
         }

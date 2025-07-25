@@ -1,9 +1,9 @@
+using System;
 using Service;
-using UnityEngine;
 
 namespace Interface
 {
-    public interface IPresentationLayer
+    public interface IPresentationLayer : IDisposable
     {
         void RegisterPresentation();
 
@@ -13,7 +13,7 @@ namespace Interface
         }
     }
 
-    public interface IDomainLayer
+    public interface IDomainLayer : IDisposable
     {
         void RegisterDomain();
 
@@ -23,9 +23,8 @@ namespace Interface
         }
     }
 
-    public interface IDataLayer
+    public interface IDataLayer : IDisposable
     {
         void RegisterData();
     }
-
 }

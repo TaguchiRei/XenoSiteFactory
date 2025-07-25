@@ -1,14 +1,15 @@
-using System.Collections.Generic;
 using GamesKeystoneFramework.KeyMathBit;
 using Interface;
-using Manager;
 using Service;
 using StaticObject;
 using UnityEngine;
 
 namespace GridSystem
 {
-    public class GridData : IDataLayer
+    /// <summary>
+    /// グリッドの占有情報を保存するクラス
+    /// </summary>
+    public class GridExistData : IDataLayer
     {
         /// <summary> グリッドが占有されているエリアを保存する </summary>
         private readonly DUlong[,] _dUlongGrid = new DUlong[128, 4];
@@ -36,6 +37,11 @@ namespace GridSystem
             }
         }
 
+        /// <summary>
+        /// グリッドから外したオブジェクトの情報を保存する
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="position"></param>
         public void RemoveGridData(ulong shape, Vector3Int position)
         {
             int edge = BitShapeSupporter.GetEdge();
@@ -54,15 +60,26 @@ namespace GridSystem
             }
         }
 
+        /// <summary>
+        /// グリッドデータをすべて取得する
+        /// </summary>
+        /// <returns></returns>
         public DUlong[,] GetGridData()
         {
             return _dUlongGrid;
         }
 
-
+        /// <summary>
+        /// サービスロケーターに登録する
+        /// </summary>
         public void RegisterData()
         {
             LayeredServiceLocator.Instance.RegisterData(this);
+        }
+
+        public void Dispose()
+        {
+            LayeredServiceLocator.Instance.UnRegisterData(this);
         }
     }
 }
