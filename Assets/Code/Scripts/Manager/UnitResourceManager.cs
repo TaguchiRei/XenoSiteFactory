@@ -20,7 +20,7 @@ namespace Manager
 
         public override void Initialize()
         {
-            ServiceLocator.Instance.TryGetScriptableObject(out _allUnits);
+            ServiceLocatorL.Instance.TryGetScriptableObject(out _allUnits);
             KeyLogger.LogWarning("初期化でテスト専用のデータを割り当てています。", this);
             _numbersOfUnits = new byte[_allUnits.UnitTypeArray.Length][];
             for (int i = 0; i < _allUnits.UnitTypeArray.Length; i++)

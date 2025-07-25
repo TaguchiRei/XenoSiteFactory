@@ -26,7 +26,7 @@ namespace Manager
         public override void Initialize()
         {
             _inGameUIAnimator = _inGameUI.GetComponent<Animator>();
-            ServiceLocator.Instance.TryGetClass(out _inGameManager);
+            ServiceLocatorL.Instance.TryGetClass(out _inGameManager);
             _raycaster = _inGameUI.GetComponent<GraphicRaycaster>();
             _uiElements = _inGameUI.GetComponentsInChildren<Button>();
         }

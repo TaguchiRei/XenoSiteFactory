@@ -266,7 +266,7 @@ namespace Manager
         /// </summary>
         public override void Initialize()
         {
-            ServiceLocator.Instance.TryGetScriptableObject(out _allUnitData);
+            ServiceLocatorL.Instance.TryGetScriptableObject(out _allUnitData);
             _edge = BitShapeSupporter.GetEdge();
             PutLayer = 1;
             GenerateTestData();

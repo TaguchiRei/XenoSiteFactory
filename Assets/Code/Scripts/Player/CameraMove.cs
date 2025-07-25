@@ -20,8 +20,8 @@ namespace Player
         private void Start()
         {
             _rotation = transform.eulerAngles;
-            var a = ServiceLocator.Instance.TryGetClass(out _inGameManager);
-            var b = ServiceLocator.Instance.TryGetClass(out PlayerOperationManager playerOperationManager);
+            var a = ServiceLocatorL.Instance.TryGetClass(out _inGameManager);
+            var b = ServiceLocatorL.Instance.TryGetClass(out PlayerOperationManager playerOperationManager);
             playerOperationManager.OnMoveAction += OnMoveInput;
             playerOperationManager.OnNextAction += OnNextInput;
             playerOperationManager.OnPreviousAction += OnPreviousInput;
