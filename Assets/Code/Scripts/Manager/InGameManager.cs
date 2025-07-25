@@ -5,6 +5,7 @@ using Service;
 using UnityEngine;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Player;
+using TurnSystem;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
@@ -16,6 +17,7 @@ namespace Manager
         public InGameState DayState { get; private set; }
         private PauseManager _pauseManager;
         private GridManager _gridManager;
+        private TurnManager _turnManager;
         private InGameUIManager _inGameUIManager;
         private UnitResourceManager _unitResourceManager;
         private PlayerOperationManager _playerOperationManager;
@@ -76,10 +78,12 @@ namespace Manager
                 ServiceLocator.Instance.TryGetClass(out _gridManager) &&
                 ServiceLocator.Instance.TryGetClass(out _playerOperationManager) &&
                 ServiceLocator.Instance.TryGetClass(out _unitResourceManager) &&
-                ServiceLocator.Instance.TryGetClass(out _inGameUIManager))
+                ServiceLocator.Instance.TryGetClass(out _inGameUIManager) &&
+                ServiceLocator.Instance.TryGetClass(out _turnManager))
             {
                 _pauseManager.Initialize();
                 _gridManager.Initialize();
+                _turnManager.Initialize();
                 _inGameUIManager.Initialize();
                 _unitResourceManager.Initialize();
                 _playerOperationManager.Initialize();

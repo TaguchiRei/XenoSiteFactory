@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
 using UnityEngine;
@@ -50,6 +51,7 @@ namespace TurnSystem
 
         private void TurnProcess()
         {
+            KeyLogger.Log("Turn Process", this);
             foreach (var handler in _turnStartHandlers)
             {
                 handler.TurnStart();
@@ -87,6 +89,9 @@ namespace TurnSystem
         public override void Initialize()
         {
             TurnCount = 0;
+            _turnStartHandlers = new List<ITurnStartHandler>();
+            _turnUpdateHandlers = new List<ITurnUpdateHandler>();
+            _turnEndHandlers = new List<ITurnEndHandler>();
         }
     }
 }
