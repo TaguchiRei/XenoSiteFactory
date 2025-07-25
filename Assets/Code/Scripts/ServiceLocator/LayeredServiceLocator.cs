@@ -63,6 +63,29 @@ namespace Service
         }
 
         /// <summary>
+        /// プレゼンテーション層のインスタンス登録を解除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public void UnRegisterPresentation<T>() where T : IPresentationLayer
+        {
+            _presentationLayers.Remove(typeof(T));
+        }
+
+        /// <summary>
+        /// ドメイン層のインスタンス登録を解除
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public void UnRegisterDomain<T>() where T : IDomainLayer
+        {
+            _domainLayers.Remove(typeof(T));
+        }
+
+        public void UnRegisterData<T>() where T : IDataLayer
+        {
+            _dataLayers.Remove(typeof(T));
+        }
+
+        /// <summary>
         /// プレゼンテーション層のインスタンスを取得
         /// </summary>
         /// <param name="instance"></param>
@@ -108,6 +131,7 @@ namespace Service
             if (_dataLayers.TryGetValue(typeof(T), out object result))
             {
                 instance = (T)result;
+                return true;
             }
             instance = default;
             return false;
