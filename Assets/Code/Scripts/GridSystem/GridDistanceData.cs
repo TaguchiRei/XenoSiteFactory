@@ -25,6 +25,23 @@ namespace GridSystem
             _manhattanDistance = manhattanDistance;
             _checkPositionOffset = new();
             _grid = new byte[GRID_WIDTH, GRID_HEIGHT, GRID_WIDTH];
+
+            for (int x = 0; x < _manhattanDistance; x++)
+            {
+                for (int y = 0; y < _manhattanDistance; y++)
+                {
+                    if (x + y > _manhattanDistance) continue;
+                    _checkPositionOffset.Add(new(x, 0, y));
+                }
+            }
+        }
+
+        /// <summary>
+        /// グリッドのデータを初期化する。
+        /// 中央からのマンハッタン距離で初期化を行う
+        /// </summary>
+        private void ResetGridData()
+        {
             int centerX = GRID_WIDTH / 2;
             int centerZ = GRID_WIDTH / 2;
             for (int z = 0; z < GRID_WIDTH; z++)
@@ -33,19 +50,8 @@ namespace GridSystem
                 {
                     for (int x = 0; x < GRID_WIDTH; x++)
                     {
-                        int dx = Mathf.Abs(x - centerX);
-                        int dz = Mathf.Abs(z - centerZ);
-                        _grid[x, y, z] = (byte)(dx + dz);
+                        _grid[x, y, z] = (byte)(Mathf.Abs(x - centerX) + Mathf.Abs(z - centerZ));
                     }
-                }
-            }
-
-            for (int x = 0; x < _manhattanDistance; x++)
-            {
-                for (int y = 0; y < _manhattanDistance; y++)
-                {
-                    if (x + y > _manhattanDistance) continue;
-                    _checkPositionOffset.Add(new(x, 0, y));
                 }
             }
         }
@@ -82,9 +88,27 @@ namespace GridSystem
             }
         }
 
+        /// <summary>
+        /// グリッドからオブジェクトを外した際の処理
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="setPosition"></param>
         public void RemoveGridData(ulong shape, Vector3Int setPosition)
         {
-            
+            //まず盤面の初期化を行う
+            int edge = BitShapeSupporter.GetEdge();
+            for (int x = 0; x < edge; x++)
+            {
+                for (int y = 0; y < edge; y++)
+                {
+                    for (int z = 0; z < edge; z++)
+                    {
+                        int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
+                        if ((shape & (1ul << bitPosition)) == 0) continue;
+                        ResetToDefaultDistanceData(new(setPosition.x + x, setPosition.y + y, setPosition.z + z));
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -92,9 +116,13 @@ namespace GridSystem
         /// </summary>
         private void ResetToDefaultDistanceData(Vector3Int position)
         {
+            int centerX = GRID_WIDTH / 2;
+            int centerZ = GRID_WIDTH / 2;
             foreach (var offset in _checkPositionOffset)
             {
-                
+                Vector3Int resetPosition = position + offset;
+                byte manhattan = (byte)(Mathf.Abs(resetPosition.x - centerX) + Mathf.Abs(resetPosition.z - centerZ));
+                _grid[resetPosition.x, resetPosition.y, resetPosition.z] = manhattan;
             }
         }
 
