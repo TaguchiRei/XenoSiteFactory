@@ -58,7 +58,6 @@ namespace GridSystem
         public void SetGridData(ulong shape, Vector3Int setPosition)
         {
             int edge = BitShapeSupporter.GetEdge();
-            DUlong oneDUlong = new DUlong(0, 1);
             for (int x = 0; x < edge; x++)
             {
                 for (int y = 0; y < edge; y++)
@@ -80,6 +79,22 @@ namespace GridSystem
                         }
                     }
                 }
+            }
+        }
+
+        public void RemoveGridData(ulong shape, Vector3Int setPosition)
+        {
+            
+        }
+
+        /// <summary>
+        /// 指定した座標から一定のマンハッタン距離の座標の距離情報を中心からのものにリセットする
+        /// </summary>
+        private void ResetToDefaultDistanceData(Vector3Int position)
+        {
+            foreach (var offset in _checkPositionOffset)
+            {
+                
             }
         }
 
