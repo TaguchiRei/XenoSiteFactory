@@ -2,6 +2,7 @@ using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Service;
 using Manager;
 using StaticObject;
+using UnitInfo;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -44,9 +45,9 @@ namespace Player
             {
                 ulong shape = UnitPutSupport.SelectedUnitRotate switch
                 {
-                    GridManager.UnitRotate.Right90 => BitShapeSupporter.RotateRightUlongBase90(data.UnitShape),
-                    GridManager.UnitRotate.Right180 => BitShapeSupporter.RotateRightUlongBase180(data.UnitShape),
-                    GridManager.UnitRotate.Right270 => BitShapeSupporter.RotateRightUlongBase270(data.UnitShape),
+                    UnitRotate.Right90 => BitShapeSupporter.RotateRightUlongBase90(data.UnitShape),
+                    UnitRotate.Right180 => BitShapeSupporter.RotateRightUlongBase180(data.UnitShape),
+                    UnitRotate.Right270 => BitShapeSupporter.RotateRightUlongBase270(data.UnitShape),
                     _ => data.UnitShape
                 };
                 UnitPutSupport.CreatePrefab(data.UnitObject,UnitPutSupport.SelectedPosition,UnitPutSupport.SelectedUnitRotate);

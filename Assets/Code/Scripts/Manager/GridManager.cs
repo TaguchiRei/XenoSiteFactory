@@ -7,13 +7,14 @@ using UnityEngine;
 using XenoScriptableObject;
 using Random = UnityEngine.Random;
 using Service;
+using UnitInfo;
 
 namespace Manager
 {
     /// <summary>
     /// グリッドの変化を管理するクラス
     /// </summary>
-    public partial class GridManager : ManagerBase<GridManager>
+    public class GridManager : ManagerBase<GridManager>
     {
         /// <summary> グリッドが占有されているエリアを保存する </summary>
         public DUlong[,] DUlongGrid { get; private set; }
