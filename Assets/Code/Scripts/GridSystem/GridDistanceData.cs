@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using GamesKeystoneFramework.KeyMathBit;
 using Interface;
 using Service;
 using StaticObject;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace GridSystem
@@ -13,6 +11,8 @@ namespace GridSystem
     /// </summary>
     public class GridDistanceData : IDataLayer
     {
+        #region 非公開フィールド
+
         private const int GRID_WIDTH = 128;
         private const int GRID_HEIGHT = 4;
 
@@ -21,7 +21,15 @@ namespace GridSystem
         private readonly List<Vector3Int> _checkPositionOffset;
         private readonly List<Vector3Int> _reexplorationPosOffset;
 
-        GridDistanceData(int manhattanDistance)
+        #endregion
+
+        #region コンストラクター
+
+        /// <summary>
+        /// クラスの初期化を行う
+        /// </summary>
+        /// <param name="manhattanDistance">ユニットの影響範囲</param>
+        private GridDistanceData(int manhattanDistance)
         {
             _manhattanDistance = manhattanDistance;
             _checkPositionOffset = new();
@@ -44,24 +52,20 @@ namespace GridSystem
             ResetGridData();
         }
 
+        #endregion
+
+        #region 公開メソッド
+
         /// <summary>
-        /// グリッドのデータを初期化する。
-        /// 中央からのマンハッタン距離で初期化を行う
+        /// 指定の座標が範囲内かどうかを調べる
         /// </summary>
-        private void ResetGridData()
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public bool IsInBounds(Vector3Int pos)
         {
-            int centerX = GRID_WIDTH / 2;
-            int centerZ = GRID_WIDTH / 2;
-            for (int z = 0; z < GRID_WIDTH; z++)
-            {
-                for (int y = 0; y < GRID_HEIGHT; y++)
-                {
-                    for (int x = 0; x < GRID_WIDTH; x++)
-                    {
-                        _grid[x, y, z] = (byte)(Mathf.Abs(x - centerX) + Mathf.Abs(z - centerZ));
-                    }
-                }
-            }
+            return pos.x >= 0 && pos.x < GRID_WIDTH &&
+                   pos.y >= 0 && pos.y < GRID_HEIGHT &&
+                   pos.z >= 0 && pos.z < GRID_WIDTH;
         }
 
         /// <summary>
@@ -110,6 +114,7 @@ namespace GridSystem
             }
 
             //次に距離の二倍で探索し、ゼロになっている箇所(オブジェクトが設置されている場所)から距離の再計算をする
+            List<Vector3Int> doubleRangeExistsPosition = new();
             for (int x = 0; x < edge; x++)
             {
                 for (int y = 0; y < edge; y++)
@@ -121,13 +126,90 @@ namespace GridSystem
                         int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
                         if ((shape & (1ul << bitPosition)) == 0) continue;
 
-                        foreach (var position in GetOffsetCellPositions(setPosition + new Vector3Int(x, y, z), _reexplorationPosOffset))
+                        foreach (var position in GetOffsetCellPositions(setPosition + new Vector3Int(x, y, z),
+                                     _reexplorationPosOffset))
                         {
                             if (_grid[position.x, position.y, position.z] == 0)
                             {
                                 SetDistanceData(position);
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 前後左右で最も距離データが近いマスのインデックスを取得
+        /// </summary>
+        /// <param name="checkPosition"></param>
+        /// <returns></returns>
+        public Vector3Int GetClosestPosition(Vector3Int checkPosition)
+        {
+            Vector3Int closestPosition = new(int.MaxValue, int.MaxValue, int.MaxValue);
+            byte distance = byte.MaxValue;
+            Vector3Int newPosition = checkPosition + Vector3Int.forward;
+
+            #region 前後左右で最も近いマスを探索
+            
+            if (IsInBounds(newPosition))
+            {
+                if (_grid[newPosition.x, newPosition.y, newPosition.z] < distance)
+                {
+                    distance = _grid[newPosition.x, newPosition.y, newPosition.z];
+                    closestPosition = new(newPosition.x, newPosition.y, newPosition.z);
+                }
+            }
+            newPosition = checkPosition + Vector3Int.back;
+            if (IsInBounds(newPosition))
+            {
+                if (_grid[newPosition.x, newPosition.y, newPosition.z] < distance)
+                {
+                    distance = _grid[newPosition.x, newPosition.y, newPosition.z];
+                    closestPosition = new(newPosition.x, newPosition.y, newPosition.z);
+                }
+            }
+            newPosition = checkPosition + Vector3Int.right;
+            if (IsInBounds(newPosition))
+            {
+                if (_grid[newPosition.x, newPosition.y, newPosition.z] < distance)
+                {
+                    distance = _grid[newPosition.x, newPosition.y, newPosition.z];
+                    closestPosition = new(newPosition.x, newPosition.y, newPosition.z);
+                }
+            }
+            newPosition = checkPosition + Vector3Int.left;
+            if (IsInBounds(newPosition))
+            {
+                if (_grid[newPosition.x, newPosition.y, newPosition.z] < distance)
+                {
+                    closestPosition = new(newPosition.x, newPosition.y, newPosition.z);
+                }
+            }
+            #endregion
+            
+            return closestPosition;
+        }
+
+        #endregion
+
+        #region 非公開メソッド
+
+        /// <summary>
+        /// グリッドのデータを初期化する。
+        /// 中央からのマンハッタン距離で初期化を行う
+        /// </summary>
+        private void ResetGridData()
+        {
+            int centerX = GRID_WIDTH / 2;
+            int centerZ = GRID_WIDTH / 2;
+            for (int z = 0; z < GRID_WIDTH; z++)
+            {
+                for (int y = 0; y < GRID_HEIGHT; y++)
+                {
+                    for (int x = 0; x < GRID_WIDTH; x++)
+                    {
+                        _grid[x, y, z] = (byte)(Mathf.Abs(x - centerX) + Mathf.Abs(z - centerZ));
                     }
                 }
             }
@@ -181,17 +263,9 @@ namespace GridSystem
             return replacedCells;
         }
 
-        /// <summary>
-        /// 指定の座標が範囲内かどうかを調べる
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <returns></returns>
-        public bool IsInBounds(Vector3Int pos)
-        {
-            return pos.x >= 0 && pos.x < GRID_WIDTH &&
-                   pos.y >= 0 && pos.y < GRID_HEIGHT &&
-                   pos.z >= 0 && pos.z < GRID_WIDTH;
-        }
+        #endregion
+
+        #region インターフェース実装
 
         public void Dispose()
         {
@@ -202,5 +276,7 @@ namespace GridSystem
         {
             LayeredServiceLocator.Instance.RegisterData(this);
         }
+
+        #endregion
     }
 }
