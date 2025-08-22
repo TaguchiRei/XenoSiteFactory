@@ -7,12 +7,7 @@ namespace GridSystem
 {
     public class PlacedObjectData : IDataLayer
     {
-        private List<PutUnitData> _putUnitDataList;
-
-        private PlacedObjectData()
-        {
-            _putUnitDataList = new List<PutUnitData>();
-        }
+        private readonly List<PutUnitData> _putUnitDataList = new();
 
         public void SetUnit(PutUnitData putUnitData)
         {

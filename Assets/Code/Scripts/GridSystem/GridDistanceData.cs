@@ -29,7 +29,7 @@ namespace GridSystem
         /// クラスの初期化を行う
         /// </summary>
         /// <param name="manhattanDistance">ユニットの影響範囲</param>
-        private GridDistanceData(int manhattanDistance)
+        public GridDistanceData(int manhattanDistance)
         {
             _manhattanDistance = manhattanDistance;
             _checkPositionOffset = new();
