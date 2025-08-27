@@ -31,7 +31,7 @@ namespace Service
 
             KeyLogger.Log("Initialize Complete", this);
         }
-        
+
         /// <summary>
         /// プレゼンテーション層のインスタンスを保存
         /// </summary>
@@ -98,7 +98,7 @@ namespace Service
                 instance = (T)result;
                 return true;
             }
-            
+
             instance = default;
             return false;
         }
@@ -116,6 +116,7 @@ namespace Service
                 instance = (T)result;
                 return true;
             }
+
             instance = default;
             return false;
         }
@@ -133,8 +134,48 @@ namespace Service
                 instance = (T)result;
                 return true;
             }
+
             instance = default;
             return false;
+        }
+
+        public bool TryGetScriptableObject<T>(out T instance) where T : ScriptableObject
+        {
+            foreach (var scriptableObject in _scriptableObjects)
+            {
+                T obj = scriptableObject as T;
+                if (obj != null)
+                {
+                    instance = obj;
+                    return true;
+                }
+            }
+
+            instance = null;
+            return false;
+        }
+
+        public bool TryGetAllScriptableObjectsOfType<T>(out List<T> list) where T : ScriptableObject
+        {
+            List<T> scriptableObjectList = new();
+            foreach (var scriptableObject in _scriptableObjects)
+            {
+                T obj = scriptableObject as T;
+                if (obj != null)
+                {
+                    scriptableObjectList.Add(obj);
+                }
+            }
+
+            list = scriptableObjectList;
+            if (scriptableObjectList.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
