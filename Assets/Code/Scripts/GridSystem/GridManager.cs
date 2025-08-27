@@ -5,6 +5,7 @@ using Service;
 using StaticObject;
 using UnitInfo;
 using UnityEngine;
+using XenoScriptableObject;
 
 namespace GridSystem
 {
@@ -12,12 +13,16 @@ namespace GridSystem
     {
         private const int GRID_SIZE = 128;
         private const int GRID_HEIGHT = 4;
+        private const ulong WALL_SHAPE = 268439552;
 
-        private readonly DUlong _oneDUlong;
+        [SerializeField] private WallData _wallData;
+        [SerializeField] private int _objectInfluenceRange;
 
-        private readonly GridExistData _gridExistData;
-        private readonly GridDistanceData _gridDistanceData;
-        private readonly PlacedObjectData _placedObjectData;
+        private DUlong _oneDUlong;
+        private GridExistData _gridExistData;
+        private AllUnitData _allUnitData;
+        private GridDistanceData _gridDistanceData;
+        private PlacedObjectData _placedObjectData;
 
         #region テスト用スクリプト
 
@@ -28,16 +33,31 @@ namespace GridSystem
 
         #endregion
 
-        public GridManager()
+        #region 公開メソッド
+
+        /// <summary>
+        /// グリッドのシステム全体の初期化を行う。
+        /// </summary>
+        /// <param name="gridExistData"></param>
+        /// <param name="gridDistanceData"></param>
+        /// <param name="placedObjectData"></param>
+        public void GridSystemInitialize(WallData wallData)
         {
-            _gridExistData = new();
-            _gridDistanceData = new(10);
-            _placedObjectData = new();
-            _gridDistanceData.RegisterData();
+            if (GetData(out _gridExistData) &&
+                GetData(out _gridDistanceData) &&
+                GetData(out _placedObjectData) &&
+                LayeredServiceLocator.Instance.TryGetScriptableObject(out _allUnitData))
+            {
+            }
+
             _gridDistanceData.RegisterData();
             _placedObjectData.RegisterData();
+            _wallData = wallData;
 
             _oneDUlong = new(0, 1);
+
+            GenerateWall();
+            PutAllUnit();
         }
 
         /// <summary>
@@ -54,12 +74,55 @@ namespace GridSystem
             _gridExistData.SetGridData(shape, position);
             _gridDistanceData.SetGridData(shape, position);
             _placedObjectData.SetUnit(putUnitData);
+            GenerateUnitInstance(putUnitData);
 
             return true;
         }
 
+        public bool TryRemoveUnit(Vector3Int position, PutUnitData putUnitData)
+        {
+            var shape = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId].UnitShape;
+            _gridExistData.RemoveGridData(shape, position);
+            _gridDistanceData.RemoveGridData(shape, position);
+            _placedObjectData.RemoveUnit(putUnitData);
+
+            return true;
+        }
+
+        #endregion
 
         #region 非公開メソッド
+
+        /// <summary>
+        /// すべてのユニットを一括で設置する
+        /// </summary>
+        /// <returns></returns>
+        private void PutAllUnit()
+        {
+            var edge = BitShapeSupporter.GetEdge();
+            foreach (var putUnitData in _placedObjectData.GetAllUnitData())
+            {
+                var unit = _allUnitData
+                    .UnitTypeArray[(int)putUnitData.UnitType]
+                    .AllUnit[putUnitData.UnitId];
+                ulong rotateShape = BitShapeSupporter.RotateRightUlongBase(unit.UnitShape, putUnitData.Rotation);
+
+                PutUnit(rotateShape, putUnitData.Position, putUnitData);
+            }
+        }
+
+        private void GenerateWall()
+        {
+            WallGenerator.GenerateWall(_wallData);
+            var wallIndex = WallGenerator.GetWallIndex(_wallData);
+            foreach (var index in wallIndex)
+            {
+                for (int y = 0; y < _wallData.Height; y++)
+                {
+                    _gridExistData.SetGridData(WALL_SHAPE, new Vector3Int(index.x, 0, index.y));
+                }
+            }
+        }
 
         private bool CheckCanPut(ulong shape, Vector3Int position)
         {
@@ -99,8 +162,15 @@ namespace GridSystem
             return true;
         }
 
+        private void GenerateUnitInstance(PutUnitData putUnitData)
+        {
+            var unit = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId];
+            UnitPutSupport.CreatePrefab(unit.UnitObject, putUnitData.Position, putUnitData.Rotation);
+        }
+
         #endregion
 
+        #region インターフェース実装
 
         public void Dispose()
         {
@@ -111,5 +181,14 @@ namespace GridSystem
         {
             LayeredServiceLocator.Instance.RegisterDomain(this);
         }
+
+        public bool GetData<T>(out T instance) where T : IDataLayer
+        {
+            var result = LayeredServiceLocator.Instance.TryGetDataLayer(out T instanceData);
+            instance = instanceData;
+            return result;
+        }
+
+        #endregion
     }
 }
