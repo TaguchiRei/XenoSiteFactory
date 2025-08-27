@@ -14,6 +14,11 @@ namespace GridSystem
             _putUnitDataList.Add(putUnitData);
         }
 
+        public void RemoveUnit(PutUnitData putUnitData)
+        {
+            _putUnitDataList.Remove(putUnitData);
+        }
+
         public List<PutUnitData> GetAllUnitData()
         {
             return new(_putUnitDataList);
