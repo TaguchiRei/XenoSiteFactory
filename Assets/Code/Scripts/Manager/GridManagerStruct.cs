@@ -9,7 +9,7 @@ namespace UnitInfo
     /// 設置済みユニットのデータ
     /// </summary>
     [Serializable]
-    public struct PutUnitData
+    public struct PutUnitData : IEquatable<PutUnitData>
     {
         /// <summary>
         /// スクリプタブルオブジェクト内の配列のインデックス番号と対応
@@ -19,6 +19,21 @@ namespace UnitInfo
         public UnitType UnitType;
         public Vector3Int Position; // X, Z座標を表す
         public UnitRotate Rotation;
+
+        public bool Equals(PutUnitData other)
+        {
+            return UnitId == other.UnitId && UnitType == other.UnitType && Position.Equals(other.Position) && Rotation == other.Rotation;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PutUnitData other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(UnitId, (int)UnitType, Position, (int)Rotation);
+        }
     }
 
     [Serializable]
