@@ -7,20 +7,14 @@ namespace Interface
     {
         void RegisterPresentation();
 
-        bool GetDomain<T>(out T instance) where T : IDomainLayer
-        {
-            return LayeredServiceLocator.Instance.TryGetDomainLayer(out instance);
-        }
+        bool GetDomain<T>(out T instance) where T : IDomainLayer;
     }
 
     public interface IDomainLayer : IDisposable
     {
         void RegisterDomain();
 
-        bool GetData<T>(out T instance) where T : IDataLayer
-        {
-            return LayeredServiceLocator.Instance.TryGetDataLayer(out instance);
-        }
+        public bool GetData<T>(out T instance) where T : IDataLayer;
     }
 
     public interface IDataLayer : IDisposable
