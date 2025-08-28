@@ -4,19 +4,20 @@ using Interface;
 using Service;
 using StaticObject;
 using UnitInfo;
+using Unity.VisualScripting;
 using UnityEngine;
 using XenoScriptableObject;
 
 namespace GridSystem
 {
-    public class GridManager : MonoBehaviour, IDomainLayer
+    public class GridManager : MonoBehaviour, IDomainLayer, IInitializable
     {
         private const int GRID_SIZE = 128;
         private const int GRID_HEIGHT = 4;
-        private const ulong WALL_SHAPE = 268439552;
 
         [SerializeField] private WallData _wallData;
         [SerializeField] private int _objectInfluenceRange;
+        [SerializeField] private ulong _wallShape = 268439552;
 
         private DUlong _oneDUlong;
         private GridExistData _gridExistData;
@@ -43,17 +44,16 @@ namespace GridSystem
         /// <param name="placedObjectData"></param>
         public void GridSystemInitialize(WallData wallData)
         {
-            if (GetData(out _gridExistData) &&
-                GetData(out _gridDistanceData) &&
-                GetData(out _placedObjectData) &&
-                LayeredServiceLocator.Instance.TryGetScriptableObject(out _allUnitData))
+            if (!GetData(out _gridExistData) ||
+                !GetData(out _gridDistanceData) ||
+                !GetData(out _placedObjectData) ||
+                !LayeredServiceLocator.Instance.TryGetScriptableObject(out _allUnitData))
             {
+                KeyLogger.LogError("GridManagerの初期化に失敗しました。");
+                return;
             }
-
-            _gridDistanceData.RegisterData();
-            _placedObjectData.RegisterData();
+            
             _wallData = wallData;
-
             _oneDUlong = new(0, 1);
 
             GenerateWall();
@@ -119,7 +119,7 @@ namespace GridSystem
             {
                 for (int y = 0; y < _wallData.Height; y++)
                 {
-                    _gridExistData.SetGridData(WALL_SHAPE, new Vector3Int(index.x, 0, index.y));
+                    _gridExistData.SetGridData(_wallShape, new Vector3Int(index.x, 0, index.y));
                 }
             }
         }
@@ -190,5 +190,10 @@ namespace GridSystem
         }
 
         #endregion
+
+        public void Initialize()
+        {
+            GridSystemInitialize(_wallData);
+        }
     }
 }
