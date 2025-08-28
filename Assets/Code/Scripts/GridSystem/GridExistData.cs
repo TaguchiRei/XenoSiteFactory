@@ -22,7 +22,7 @@ namespace GridSystem
         public void SetGridData(ulong shape, Vector3Int position)
         {
             int edge = BitShapeSupporter.GetEdge();
-            DUlong oneDUlong = new DUlong(0,1);
+            DUlong oneDUlong = new DUlong(0, 1);
             for (int x = 0; x < edge; x++)
             {
                 for (int y = 0; y < edge; y++)
@@ -81,5 +81,32 @@ namespace GridSystem
         {
             LayeredServiceLocator.Instance.UnRegisterData(this);
         }
+
+#if UNITY_EDITOR
+        private const int GRID_SIZE = 128;
+        private const int GRID_HEIGHT = 4;
+        private DUlong _oneDULong = new(0, 1);
+
+        private bool _createdGridData;
+        private void OnDrawGizmos()
+        {
+            if (!_createdGridData) return;
+
+            Gizmos.color = Color.green;
+            for (int x = 0; x < GRID_SIZE; x++)
+            {
+                for (int y = 0; y < GRID_HEIGHT; y++)
+                {
+                    for (int z = 0; z < GRID_SIZE; z++)
+                    {
+                        if ((_dUlongGrid[x, y] & (_oneDULong << z)) != new DUlong(0, 0))
+                        {
+                            Gizmos.DrawWireCube(new Vector3(x, y, z), Vector3.one);
+                        }
+                    }
+                }
+            }
+        }
+#endif
     }
 }
