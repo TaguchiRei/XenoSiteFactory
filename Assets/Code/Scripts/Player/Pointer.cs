@@ -1,11 +1,11 @@
 using Service;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
+using GridSystem;
 using Interface;
 using Manager;
 using StaticObject;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using GridManager = Manager.GridManager;
 
 namespace Player
 {
@@ -15,7 +15,7 @@ namespace Player
         [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
         PlayerOperationManager _playerOperationManager;
-        GridManager _gridManager;
+        private GridManager _gridManager;
         UnitResourceManager _unitResourceManager;
         
         
