@@ -15,7 +15,7 @@ namespace Player
         [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
         PlayerOperationManager _playerOperationManager;
-        private GridManager _gridManager;
+        private GridManagerL _gridManagerL;
         UnitResourceManager _unitResourceManager;
         
         
@@ -23,7 +23,7 @@ namespace Player
         private void Start()
         {
             if(ServiceLocatorL.Instance.TryGetClass(out _playerOperationManager) &&
-               ServiceLocatorL.Instance.TryGetClass(out _gridManager) &&
+               ServiceLocatorL.Instance.TryGetClass(out _gridManagerL) &&
                ServiceLocatorL.Instance.TryGetClass(out _unitResourceManager))
             {
                 KeyLogger.Log("GetManagerClass");
@@ -44,7 +44,7 @@ namespace Player
             
             Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
-            var mask = LayerMask.GetMask($"Layer{_gridManager.PutLayer}Collider");
+            var mask = LayerMask.GetMask($"Layer{_gridManagerL.PutLayer}Collider");
             
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
             {
