@@ -49,6 +49,8 @@ namespace XenositeFramework.Editor
                     SaveDataEnum enumValue = (SaveDataEnum)Enum.Parse(typeof(SaveDataEnum), type.Name);
                     _saveData.Add(enumValue, type);
                 }
+
+                if (_saveDataEnum == SaveDataEnum.None) return;
                 Type GenerateType = _saveData[_saveDataEnum];
                 _fieldInfos = GetAllSaveDataFields(GenerateType);
                 if (_fieldInfos != null && _fieldInfos.Length > 0)
@@ -63,6 +65,7 @@ namespace XenositeFramework.Editor
                     {
                         sb.Append($"using {addUsing};\n");
                     }
+
                     sb.Append("\nnamespace XenositeFramework.Editor\n{\n");
                     sb.Append($"[CreateAssetMenu(menuName = \"XenositeFramework/Editor/{className}\")]");
                     sb.Append("    public class " + className + " : ScriptableSaveData\n    {\n");
@@ -83,14 +86,16 @@ namespace XenositeFramework.Editor
                     {
                         Directory.CreateDirectory(dir);
                     }
+
                     File.WriteAllText(path, sb.ToString());
                     AssetDatabase.Refresh();
                     Debug.Log($"{className}.cs を生成しました。");
                 }
             }
+
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, GUILayout.Height(position.height - 180));
             _usingSerializedObject.Update();
-            EditorGUILayout.PropertyField(_usingSerializedProperty,new GUIContent("必要なusingを入力"),true);
+            EditorGUILayout.PropertyField(_usingSerializedProperty, new GUIContent("必要なusingを入力"), true);
             _usingSerializedObject.ApplyModifiedProperties();
             if (_saveData != null && _saveData.Count > 0)
             {
@@ -106,10 +111,11 @@ namespace XenositeFramework.Editor
 
                 if (GUILayout.Button("セーブデータのあるディレクトリを取得"))
                 {
-                    Debug.Log($"クリップボードに保存しました。: {Application.persistentDataPath}" );
+                    Debug.Log($"クリップボードに保存しました。: {Application.persistentDataPath}");
 
                     GUIUtility.systemCopyBuffer = Application.persistentDataPath;
                 }
+
                 EditorGUILayout.EndHorizontal();
                 _saveDataEnum = (SaveDataEnum)EditorGUILayout.EnumPopup("Select SaveDataType", _saveDataEnum);
 
@@ -117,11 +123,16 @@ namespace XenositeFramework.Editor
                 {
                     _scriptableSaveData = (ScriptableSaveData)EditorGUILayout.ObjectField(
                         "セーブデータ", _scriptableSaveData, typeof(ScriptableObject), false);
-                    if (_scriptableSaveData == null) return;
+                    if (_scriptableSaveData == null)
+                    {
+                        EditorGUILayout.EndScrollView();
+                        return;
+                    }
                     if (_serializedObject == null || _serializedObject.targetObject != _scriptableSaveData)
                     {
                         _serializedObject = new SerializedObject(_scriptableSaveData);
                     }
+
                     _serializedObject.Update();
                     SerializedProperty property = _serializedObject.GetIterator();
                     bool expanded = true;
@@ -131,9 +142,11 @@ namespace XenositeFramework.Editor
                         EditorGUILayout.PropertyField(property, true);
                         expanded = false;
                     }
+
                     _serializedObject.ApplyModifiedProperties();
                 }
             }
+
             EditorGUILayout.EndScrollView();
         }
 
