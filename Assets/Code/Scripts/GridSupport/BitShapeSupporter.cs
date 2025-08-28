@@ -1,4 +1,5 @@
 using GridSupport;
+using UnitInfo;
 
 namespace StaticObject
 {
@@ -8,6 +9,27 @@ namespace StaticObject
         private const int Edge = 4;
 
         private const int LastEdgeIndex = Edge - 1;
+
+        public static ulong RotateRightUlongBase(ulong shape, UnitRotate rotate)
+        {
+            var returnShape = shape;
+            switch (rotate)
+            {
+                case UnitRotate.Default:
+                    break;
+                case UnitRotate.Right90:
+                    returnShape = BitShapeSupporter.RotateRightUlongBase90(shape);
+                    break;
+                case UnitRotate.Right180:
+                    returnShape = BitShapeSupporter.RotateRightUlongBase180(shape);
+                    break;
+                case UnitRotate.Right270:
+                    returnShape = BitShapeSupporter.RotateRightUlongBase270(shape);
+                    break;
+            }
+
+            return returnShape;
+        }
 
         /// <summary>
         /// ulong型で保存されるユニットの形状をｙ軸ベースで90度回転させる

@@ -1,31 +1,24 @@
+using System;
 using Service;
-using UnityEngine;
 
 namespace Interface
 {
-    public interface IPresentationLayer
+    public interface IPresentationLayer : IDisposable
     {
         void RegisterPresentation();
 
-        bool GetDomain<T>(out T instance) where T : IDomainLayer
-        {
-            return LayeredServiceLocator.Instance.TryGetDomainLayer(out instance);
-        }
+        bool GetDomain<T>(out T instance) where T : IDomainLayer;
     }
 
-    public interface IDomainLayer
+    public interface IDomainLayer : IDisposable
     {
         void RegisterDomain();
 
-        bool GetData<T>(out T instance) where T : IDataLayer
-        {
-            return LayeredServiceLocator.Instance.TryGetDataLayer(out instance);
-        }
+        public bool GetData<T>(out T instance) where T : IDataLayer;
     }
 
-    public interface IDataLayer
+    public interface IDataLayer : IDisposable
     {
         void RegisterData();
     }
-
 }

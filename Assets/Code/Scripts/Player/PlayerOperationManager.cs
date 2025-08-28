@@ -124,5 +124,10 @@ namespace Player
             inputSystemActions.Player.SetCallbacks(this);
             inputSystemActions.Enable();
         }
+
+        private void OnDisable()
+        {
+            inputSystemActions.Disable();
+        }
     }
 }

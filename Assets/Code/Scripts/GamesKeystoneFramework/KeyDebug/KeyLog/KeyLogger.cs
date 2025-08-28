@@ -48,7 +48,7 @@ namespace GamesKeystoneFramework.KeyDebug.KeyLog
             }
             catch (Exception e)
             {
-                Debug.Log("Fonts/DefaultJapaneseFontAsset Not Found");
+                Debug.Log($"Fonts/DefaultJapaneseFontAsset Not Found : {e}");
                 throw;
             }
 

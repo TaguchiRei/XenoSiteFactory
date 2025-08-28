@@ -2,6 +2,7 @@ using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Service;
 using Manager;
 using StaticObject;
+using UnitInfo;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,7 +14,7 @@ namespace Player
         private UnitResourceManager _unitResourceManager;
         private InGameUIManager _inGameUIManager;
         private InGameManager _inGameManager;
-        private GridManager _gridManager;
+        private GridManagerL _gridManagerL;
 
         private void Start()
         {
@@ -21,7 +22,7 @@ namespace Player
             ServiceLocatorL.Instance.TryGetClass(out _unitResourceManager);
             ServiceLocatorL.Instance.TryGetClass(out _inGameUIManager);
             ServiceLocatorL.Instance.TryGetClass(out _inGameManager);
-            ServiceLocatorL.Instance.TryGetClass(out _gridManager);
+            ServiceLocatorL.Instance.TryGetClass(out _gridManagerL);
             _playerOperationManager.OnInteractAction += OnInteract;
         }
 
@@ -40,17 +41,17 @@ namespace Player
             //オブジェクトを設置する処理を書く
             var data = _unitResourceManager.GetUnitData(UnitPutSupport.SelectedUnitType,
                 UnitPutSupport.SelectedUnitID);
-            if (_gridManager.CheckCanPutUnit(data.UnitShape, UnitPutSupport.SelectedPosition))
+            if (_gridManagerL.CheckCanPutUnit(data.UnitShape, UnitPutSupport.SelectedPosition))
             {
                 ulong shape = UnitPutSupport.SelectedUnitRotate switch
                 {
-                    GridManager.UnitRotate.Right90 => BitShapeSupporter.RotateRightUlongBase90(data.UnitShape),
-                    GridManager.UnitRotate.Right180 => BitShapeSupporter.RotateRightUlongBase180(data.UnitShape),
-                    GridManager.UnitRotate.Right270 => BitShapeSupporter.RotateRightUlongBase270(data.UnitShape),
+                    UnitRotate.Right90 => BitShapeSupporter.RotateRightUlongBase90(data.UnitShape),
+                    UnitRotate.Right180 => BitShapeSupporter.RotateRightUlongBase180(data.UnitShape),
+                    UnitRotate.Right270 => BitShapeSupporter.RotateRightUlongBase270(data.UnitShape),
                     _ => data.UnitShape
                 };
                 UnitPutSupport.CreatePrefab(data.UnitObject,UnitPutSupport.SelectedPosition,UnitPutSupport.SelectedUnitRotate);
-                _gridManager.PutUnitOnGrid(shape, UnitPutSupport.SelectedPosition);
+                _gridManagerL.PutUnitOnGrid(shape, UnitPutSupport.SelectedPosition);
             }
         }
     }

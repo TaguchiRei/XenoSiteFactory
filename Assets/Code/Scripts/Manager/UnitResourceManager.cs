@@ -2,6 +2,7 @@ using System;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Service;
 using StaticObject;
+using UnitInfo;
 using UnityEngine;
 using XenoScriptableObject;
 
@@ -39,7 +40,7 @@ namespace Manager
         /// <param name="unitType">ユニットの種類のenum</param>
         /// <param name="id">ユニットのID</param>
         /// <param name="amount">ユニットを追加する個数</param>
-        public void AddResource(GridManager.UnitType unitType, int id, byte amount)
+        public void AddResource(UnitType unitType, int id, byte amount)
         {
             if (_numbersOfUnits[(int)unitType][id] == byte.MaxValue)
             {
@@ -55,7 +56,7 @@ namespace Manager
         /// <param name="unitType">ユニットの種類のenum</param>
         /// <param name="id">ユニットのID</param>
         /// <param name="amount">ユニットを消費する個数</param>
-        public bool RemoveResource(GridManager.UnitType unitType, int id, byte amount)
+        public bool RemoveResource(UnitType unitType, int id, byte amount)
         {
             if (_numbersOfUnits[(int)unitType][id] > 0)
             {
@@ -67,7 +68,7 @@ namespace Manager
             return false;
         }
 
-        public GridManager.UnitData GetUnitData(GridManager.UnitType unitType, int id)
+        public UnitData GetUnitData(UnitType unitType, int id)
         {
             return _allUnits.UnitTypeArray[(byte)unitType].AllUnit[id];
         }
@@ -77,7 +78,7 @@ namespace Manager
         /// </summary>
         public void ChangeSettingUnit(int id)
         {
-            UnitPutSupport.SetSelectUnitData(id,GridManager.UnitType.Manufacture);
+            UnitPutSupport.SetSelectUnitData(id,UnitType.Manufacture);
         }
     }
 }

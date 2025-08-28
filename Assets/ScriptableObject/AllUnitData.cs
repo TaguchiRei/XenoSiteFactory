@@ -1,5 +1,6 @@
 using System;
 using Manager;
+using UnitInfo;
 using UnityEngine;
 
 namespace XenoScriptableObject
@@ -13,6 +14,6 @@ namespace XenoScriptableObject
     [Serializable]
     public class UnitDataArray
     {
-        public GridManager.UnitData[] AllUnit;
+        public UnitData[] AllUnit;
     }
 }
