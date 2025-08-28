@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using GamesKeystoneFramework.Save;
 using UnityEditor;
 using UnityEngine;
@@ -10,8 +12,10 @@ namespace XenositeFramework.Editor
 {
     public class SaveDataGenerator : EditorWindow
     {
-        private Type[] _types;
-        private SaveDataEnum saveDataEnum;
+        private Dictionary<SaveDataEnum,Type> _saveData = new();
+        private SaveDataEnum _saveDataEnum;
+        private FieldInfo[] _fieldInfos;
+        private List<(SerializedObject serializedObject, SerializedProperty serializedProperty)> _serialized = new();
         
         [MenuItem("Window/XenositeFramework/SaveDataGenerator")]
         public static void ShowWindow()
@@ -23,15 +27,38 @@ namespace XenositeFramework.Editor
         {
             if (GUILayout.Button("FindSaveData"))
             {
-                _types = GetAllSaveData();
-                string[] classNames = _types.Select(t => t.Name).ToArray();
+                _saveData.Clear();
+                _serialized.Clear();
+                var types = GetAllSaveData();
+                string[] classNames = types.Select(t => t.Name).ToArray();
                 GenerateEnum(classNames);
+                foreach (var type in types)
+                {
+                    SaveDataEnum enumValue = (SaveDataEnum)Enum.Parse(typeof(SaveDataEnum), type.Name);
+                    _saveData.Add(enumValue, type);
+                }
+                Type GenerateType = _saveData[_saveDataEnum];
+                _fieldInfos = GetAllSaveDataFields(GenerateType);
+                foreach (var info in _fieldInfos)
+                {
+                    
+                }
             }
 
-            if (_types != null && _types.Length > 0)
+            if (_saveData != null && _saveData.Count > 0)
             {
-                
+                _saveDataEnum =  (SaveDataEnum)EditorGUILayout.EnumPopup("Select SaveDataType", _saveDataEnum);
+
+                if (_saveDataEnum != SaveDataEnum.None)
+                {
+                    
+                }
             }
+        }
+
+        public FieldInfo[] GetAllSaveDataFields(Type type)
+        {
+            return type.GetFields(BindingFlags.Public | BindingFlags.Instance);
         }
 
         private Type[] GetAllSaveData()
@@ -62,22 +89,24 @@ namespace XenositeFramework.Editor
             }).ToArray();
         }
 
-        public static void GenerateEnum(string[] values)
-        {        
-            string content = "namespace XenositeFramework.Editor\n{\n";
-            content += "    public enum SaveDataEnum\n    {\n";
+        private void GenerateEnum(string[] values)
+        {
+            StringBuilder content = new StringBuilder();
+            content.Append("namespace XenositeFramework.Editor\n{\n");
+            content.Append("    public enum SaveDataEnum\n    {\n");
+            content.Append("        None,\n");
 
             for (int i = 0; i < values.Length; i++)
             {
-                content += "        " + values[i];
-                if (i < values.Length - 1) content += ",";
-                content += "\n";
+                content.Append("        " + values[i]);
+                if (i < values.Length - 1) content.Append(",");
+                content.Append("\n");
             }
 
-            content += "    }\n";
-            content += "}";
+            content.Append("    }\n");
+            content.Append("}");
 
-            File.WriteAllText("Assets/Code/XenositeFramework/Enums/SaveDataEnum.cs", content);
+            File.WriteAllText("Assets/Code/XenositeFramework/Enums/SaveDataEnum.cs", content.ToString());
             AssetDatabase.Refresh();
         }
     }
