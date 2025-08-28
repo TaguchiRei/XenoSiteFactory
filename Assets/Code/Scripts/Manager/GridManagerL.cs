@@ -14,7 +14,7 @@ namespace Manager
     /// <summary>
     /// グリッドの変化を管理するクラス
     /// </summary>
-    public class GridManager : ManagerBase<GridManager>
+    public class GridManagerL : ManagerBase<GridManagerL>
     {
         /// <summary> グリッドが占有されているエリアを保存する </summary>
         public DUlong[,] DUlongGrid { get; private set; }
