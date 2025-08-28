@@ -18,7 +18,7 @@ namespace GamesKeystoneFramework.Save
         /// </summary>
         /// <param name="dataNumber"></param>
         /// <param name="fileName"></param>
-        public async UniTask Save(int dataNumber, string fileName = "SaveData")
+        public async UniTask Save(int dataNumber = 0, string fileName = "SaveData")
         {
             string path = Application.persistentDataPath + $"/{fileName + dataNumber}.dat";
 #if UNITY_EDITOR
