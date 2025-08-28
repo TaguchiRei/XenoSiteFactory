@@ -18,22 +18,15 @@ namespace Player
         public int Money;
         public List<PutUnitData> _putUnitDataList;
 
-        public PlayerData(
-            string playerName = "",
-            int days = 0,
-            int unit = 0,
-            int xenosite = 0, 
-            int items = 0,
-            int money = 0,
-            List<PutUnitData> putUnitDataList = null)
+        public PlayerData()
         {
-            PlayerName = playerName;
-            Days = days;
-            Unit = unit;
-            Xenosite = xenosite;
-            Items = items;
-            Money = money;
-            _putUnitDataList = putUnitDataList;
+            PlayerName = "Sinner";
+            Days = 0;
+            Unit = 0;
+            Xenosite = 0;
+            Items = 0;
+            Money = 0;
+            _putUnitDataList = new List<PutUnitData>();
         }
         
         public void Dispose()
@@ -48,16 +41,14 @@ namespace Player
 
         protected override PlayerData Initialize()
         {
-            var initializedPlayerData = new PlayerData
-                (
-                    playerName:"Sinner",
-                    days: 0,
-                    unit: 0,
-                    xenosite: 0,
-                    items: 0,
-                    money: 0,
-                    new()
-                    );
+            var initializedPlayerData = new PlayerData();
+            initializedPlayerData.PlayerName = "Sinner";
+            initializedPlayerData.Days = 0;
+            initializedPlayerData.Unit = 0;
+            initializedPlayerData.Xenosite = 0;
+            initializedPlayerData.Items = 0;
+            initializedPlayerData.Money = 0;
+            _putUnitDataList = new List<PutUnitData>();
             return initializedPlayerData;
         }
     }

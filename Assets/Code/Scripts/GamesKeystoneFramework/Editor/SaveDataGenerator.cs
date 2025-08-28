@@ -15,7 +15,7 @@ namespace XenositeFramework.Editor
         private Dictionary<SaveDataEnum,Type> _saveData = new();
         private SaveDataEnum _saveDataEnum;
         private FieldInfo[] _fieldInfos;
-        private List<(SerializedObject serializedObject, SerializedProperty serializedProperty)> _serialized = new();
+        private List<(SerializedObject serializedObject, SerializedProperty serializedProperty)> _serializedObject = new();
         
         [MenuItem("Window/XenositeFramework/SaveDataGenerator")]
         public static void ShowWindow()
@@ -28,7 +28,7 @@ namespace XenositeFramework.Editor
             if (GUILayout.Button("FindSaveData"))
             {
                 _saveData.Clear();
-                _serialized.Clear();
+                _serializedObject.Clear();
                 var types = GetAllSaveData();
                 string[] classNames = types.Select(t => t.Name).ToArray();
                 GenerateEnum(classNames);
