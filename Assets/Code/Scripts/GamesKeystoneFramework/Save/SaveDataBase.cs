@@ -10,7 +10,7 @@ namespace GamesKeystoneFramework.Save
     /// セーブデータはここを継承したクラスに変数を作って保存する
     /// </summary>
     [Serializable]
-    public abstract class SaveDataBase<T>
+    public abstract class SaveDataBase<T>where T : SaveDataBase<T>
     {
         /// <summary>
         /// セーブする際はこれを呼び出す
