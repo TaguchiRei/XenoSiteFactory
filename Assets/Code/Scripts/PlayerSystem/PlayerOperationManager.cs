@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
@@ -13,58 +14,58 @@ namespace PlayerSystem
         InputSystem_Actions.IUIActions,
         IPresentationLayer
     {
-        public Action<InputAction.CallbackContext> OnMoveAction;
-        public Action<InputAction.CallbackContext> OnInteractAction;
-        public Action<InputAction.CallbackContext> OnPreviousAction;
-        public Action<InputAction.CallbackContext> OnNextAction;
-        public Action<InputAction.CallbackContext> OnMouseMoveAction;
+        private Action<InputAction.CallbackContext> _onMoveAction;
+        private Action<InputAction.CallbackContext> _onInteractAction;
+        private Action<InputAction.CallbackContext> _onPreviousAction;
+        private Action<InputAction.CallbackContext> _onNextAction;
+        private Action<InputAction.CallbackContext> _onMouseMoveAction;
 
-        private InputSystem_Actions inputSystemActions;
-        private InGameManager inGameManager;
+        private InputSystem_Actions _inputSystemActions;
+        private InGameManager _inGameManager;
 
         #region Player
 
         public void OnMove(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnMove Input", this);
-            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
             {
-                OnMoveAction?.Invoke(context);
+                _onMoveAction?.Invoke(context);
             }
         }
 
         public void OnInteract(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnInteract Input", this);
-            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
             {
-                OnInteractAction?.Invoke(context);
+                _onInteractAction?.Invoke(context);
             }
         }
 
         public void OnPrevious(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnPrevious Input", this);
-            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
             {
-                OnPreviousAction?.Invoke(context);
+                _onPreviousAction?.Invoke(context);
             }
         }
 
         public void OnNext(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnNext Input", this);
-            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
             {
-                OnNextAction?.Invoke(context);
+                _onNextAction?.Invoke(context);
             }
         }
 
         public void OnMouseMove(InputAction.CallbackContext context)
         {
-            if (inGameManager == null || (int)inGameManager.DayState < 2)
+            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
             {
-                OnMouseMoveAction?.Invoke(context);
+                _onMouseMoveAction?.Invoke(context);
             }
         }
 
@@ -124,19 +125,63 @@ namespace PlayerSystem
 
         public override void Initialize()
         {
-            inputSystemActions = new InputSystem_Actions();
-            inputSystemActions.Player.SetCallbacks(this);
-            inputSystemActions.Enable();
+            _inputSystemActions = new InputSystem_Actions();
+            _inputSystemActions.Player.SetCallbacks(this);
+            _inputSystemActions.Enable();
+            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IMoveInputReceiver>(
+                    out var moveInputReceivers))
+            {
+                foreach (var receiver in moveInputReceivers)
+                {
+                    _onMoveAction += receiver.OnMoveInput;
+                }
+            }
+
+            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IInteractInputReceiver>(
+                    out var interactInputReceivers))
+            {
+                foreach (var receiver in interactInputReceivers)
+                {
+                    _onInteractAction += receiver.OnInteractInput;
+                }
+            }
+
+            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IPreviousInputReceiver>(
+                    out var previousInputReceivers))
+            {
+                foreach (var receiver in previousInputReceivers)
+                {
+                    _onPreviousAction += receiver.OnPreviousInput;
+                }
+            }
+
+            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<INextInputReceiver>(
+                    out var nextInputReceivers))
+            {
+                foreach (var receiver in nextInputReceivers)
+                {
+                    _onNextAction += receiver.OnNextInput;
+                }
+            }
+
+            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IMouseMoveInputReceiver>(
+                    out var mouseMoveInputReceivers))
+            {
+                foreach (var receiver in mouseMoveInputReceivers)
+                {
+                    _onMouseMoveAction += receiver.OnMouseMoveInput;
+                }
+            }
         }
 
         private void OnDisable()
         {
-            inputSystemActions.Disable();
+            _inputSystemActions.Disable();
         }
 
         public void Dispose()
         {
-            inputSystemActions?.Dispose();
+            _inputSystemActions?.Dispose();
         }
 
         public void RegisterPresentation()

@@ -71,14 +71,15 @@ namespace Service
 
         //UnRegister呼び出しで引数に指定したインスタンスが登録されているインスタンスと違う場合はエラーを出す。
         //登録されたインスタンス以外がUnRegisterを呼んでいる場合、そこから取得できる情報と実際の運用で変更された情報が乖離している可能性があり、それが原因のエラーが出る可能性がある。
-        
+
         /// <summary>
         /// プレゼンテーション層のインスタンス登録を解除
         /// </summary>
         /// <typeparam name="T"></typeparam>
         public void UnRegisterPresentation<T>(T instance) where T : class, IPresentationLayer
         {
-            if (_presentationLayers.TryGetValue(typeof(T), out var registeredInstance) && registeredInstance == instance)
+            if (_presentationLayers.TryGetValue(typeof(T), out var registeredInstance) &&
+                registeredInstance == instance)
             {
                 _presentationLayers.Remove(typeof(T));
             }
@@ -191,7 +192,7 @@ namespace Service
         /// <param name="list"></param>
         /// <typeparam name="T">インターフェースを指定</typeparam>
         /// <returns></returns>
-        public bool TryGetAllFuncPresentationLayer<T>(out List<T> list) where T : class, IPresentationLayer
+        public bool TryGetAllFuncPresentationLayer<T>(out List<T> list) where T : IPresentationLayer
         {
             if (!typeof(T).IsInterface)
             {
@@ -228,7 +229,7 @@ namespace Service
         /// <param name="list"></param>
         /// <typeparam name="T">インターフェースを指定</typeparam>
         /// <returns></returns>
-        public bool TryGetAllFuncDomainLayer<T>(out List<T> list) where T : class, IDomainLayer
+        public bool TryGetAllFuncDomainLayer<T>(out List<T> list) where T : IDomainLayer
         {
             if (!typeof(T).IsInterface)
             {
@@ -265,7 +266,7 @@ namespace Service
         /// <param name="list"></param>
         /// <typeparam name="T">インターフェースを指定</typeparam>
         /// <returns></returns>
-        public bool TryGetAllFuncDataLayer<T>(out List<T> list) where T : class, IDataLayer
+        public bool TryGetAllFuncDataLayer<T>(out List<T> list) where T : IDataLayer
         {
             if (!typeof(T).IsInterface)
             {

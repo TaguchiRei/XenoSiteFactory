@@ -1,25 +1,35 @@
+using Interface;
 using UnityEngine.InputSystem;
 
 namespace PlayerSystem
 {
-    public interface IButtonInputReceiver
+    public interface IMoveInputReceiver : IDomainLayer
     {
-        public void OnButtonInput(InputAction.CallbackContext context, ButtonKinds buttonKind);
+        public void OnMoveInput(InputAction.CallbackContext context);
     }
 
-    public interface ISwipeInputReceiver
+    public interface IInteractInputReceiver : IDomainLayer
     {
-        public void OnSwipeInput(InputAction.CallbackContext context);
+        public void OnInteractInput(InputAction.CallbackContext context);
     }
 
-    public interface ITapInputReceiver
+    public interface IPreviousInputReceiver : IDomainLayer
     {
-        public void OnTapInput(InputAction.CallbackContext context);
+        public void OnPreviousInput(InputAction.CallbackContext context);
     }
 
-    public enum ButtonKinds
+    public interface INextInputReceiver : IDomainLayer
     {
-        MenuButton,
-        
+        public void OnNextInput(InputAction.CallbackContext context);
+    }
+
+    public interface IMouseMoveInputReceiver : IDomainLayer
+    {
+        public void OnMouseMoveInput(InputAction.CallbackContext context);
+    }
+
+    public interface IScrollWheelInputReceiver : IDomainLayer
+    {
+        public void OnScrollWheelInput(InputAction.CallbackContext context);
     }
 }
