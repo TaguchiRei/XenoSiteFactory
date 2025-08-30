@@ -52,7 +52,7 @@ namespace GridSystem
                 KeyLogger.LogError("GridManagerの初期化に失敗しました。");
                 return;
             }
-            
+
             _wallData = wallData;
             _oneDUlong = new(0, 1);
 
@@ -182,7 +182,7 @@ namespace GridSystem
             LayeredServiceLocator.Instance.RegisterDomain(this);
         }
 
-        public bool GetData<T>(out T instance) where T : IDataLayer
+        public bool GetData<T>(out T instance) where T : class, IDataLayer
         {
             var result = LayeredServiceLocator.Instance.TryGetDataLayer(out T instanceData);
             instance = instanceData;

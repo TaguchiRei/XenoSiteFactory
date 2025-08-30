@@ -16,7 +16,7 @@ namespace Service
         private readonly Dictionary<Type, object> _domainLayers = new();
         private readonly Dictionary<Type, object> _dataLayers = new();
 
-        public static LayeredServiceLocator Instance;
+        public static LayeredServiceLocator Instance { get; private set; }
 
         private void Awake()
         {
@@ -40,7 +40,7 @@ namespace Service
         /// </summary>
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
-        public void RegisterPresentation<T>(T instance) where T : IPresentationLayer
+        public void RegisterPresentation<T>(T instance) where T : class, IPresentationLayer
         {
             _presentationLayers[typeof(T)] = instance;
         }
@@ -50,7 +50,7 @@ namespace Service
         /// </summary>
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
-        public void RegisterDomain<T>(T instance) where T : IDomainLayer
+        public void RegisterDomain<T>(T instance) where T : class, IDomainLayer
         {
             _domainLayers[typeof(T)] = instance;
         }
@@ -60,7 +60,7 @@ namespace Service
         /// </summary>
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
-        public void RegisterData<T>(T instance) where T : IDataLayer
+        public void RegisterData<T>(T instance) where T : class, IDataLayer
         {
             _dataLayers[typeof(T)] = instance;
         }
@@ -69,22 +69,41 @@ namespace Service
 
         #region UnRegister系
 
+        //UnRegister呼び出しで引数に指定したインスタンスが登録されているインスタンスと違う場合はエラーを出す。
+        //登録されたインスタンス以外がUnRegisterを呼んでいる場合、そこから取得できる情報と実際の運用で変更された情報が乖離している可能性があり、それが原因のエラーが出る可能性がある。
+        
         /// <summary>
         /// プレゼンテーション層のインスタンス登録を解除
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void UnRegisterPresentation<T>(T instance) where T : IPresentationLayer
+        public void UnRegisterPresentation<T>(T instance) where T : class, IPresentationLayer
         {
-            _presentationLayers.Remove(typeof(T));
+            if (_presentationLayers.TryGetValue(typeof(T), out var registeredInstance) && registeredInstance == instance)
+            {
+                _presentationLayers.Remove(typeof(T));
+            }
+            else
+            {
+                KeyLogger.LogError("登録されたインスタンス以外がUnRegisterを呼んでいます。", typeof(T));
+            }
         }
 
         /// <summary>
         /// ドメイン層のインスタンス登録を解除
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public void UnRegisterDomain<T>(T instance) where T : IDomainLayer
+        public void UnRegisterDomain<T>(T instance) where T : class, IDomainLayer
         {
-            _domainLayers.Remove(typeof(T));
+            if (_domainLayers.TryGetValue(typeof(T), out var registeredInstance) && registeredInstance == instance)
+            {
+                _domainLayers.Remove(typeof(T));
+            }
+            else
+            {
+                //インスタンスDispose時にUnRegisterを呼ぶ。
+                //そのためUnRegisterするインスタンスと登録されているインスタンスが違う場合、
+                KeyLogger.LogError("登録されたインスタンス以外がUnRegisterを呼んでいます。", typeof(T));
+            }
         }
 
         /// <summary>
@@ -92,13 +111,20 @@ namespace Service
         /// </summary>
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
-        public void UnRegisterData<T>(T instance) where T : IDataLayer
+        public void UnRegisterData<T>(T instance) where T : class, IDataLayer
         {
-            _dataLayers.Remove(typeof(T));
+            if (_dataLayers.TryGetValue(typeof(T), out var registeredInstance) && registeredInstance == instance)
+            {
+                _dataLayers.Remove(typeof(T));
+            }
+            else
+            {
+                KeyLogger.LogError("登録されたインスタンス以外がUnRegisterを呼んでいます。", typeof(T));
+            }
         }
 
         #endregion
-        
+
         #region TryGet系
 
         /// <summary>
@@ -107,7 +133,7 @@ namespace Service
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public bool TryGetPresentationLayer<T>(out T instance) where T : IPresentationLayer
+        public bool TryGetPresentationLayer<T>(out T instance) where T : class, IPresentationLayer
         {
             if (_presentationLayers.TryGetValue(typeof(T), out object result))
             {
@@ -125,7 +151,7 @@ namespace Service
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public bool TryGetDomainLayer<T>(out T instance) where T : IDomainLayer
+        public bool TryGetDomainLayer<T>(out T instance) where T : class, IDomainLayer
         {
             if (_domainLayers.TryGetValue(typeof(T), out object result))
             {
@@ -143,7 +169,7 @@ namespace Service
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public bool TryGetDataLayer<T>(out T instance) where T : IDataLayer
+        public bool TryGetDataLayer<T>(out T instance) where T : class, IDataLayer
         {
             if (_dataLayers.TryGetValue(typeof(T), out object result))
             {
@@ -154,9 +180,9 @@ namespace Service
             instance = default;
             return false;
         }
-        
+
         #endregion
-        
+
         #region TryGetAllFunc系
 
         /// <summary>
@@ -165,7 +191,7 @@ namespace Service
         /// <param name="list"></param>
         /// <typeparam name="T">インターフェースを指定</typeparam>
         /// <returns></returns>
-        public bool TryGetAllFuncPresentationLayer<T>(out List<T> list) where T : IPresentationLayer
+        public bool TryGetAllFuncPresentationLayer<T>(out List<T> list) where T : class, IPresentationLayer
         {
             if (!typeof(T).IsInterface)
             {
@@ -202,7 +228,7 @@ namespace Service
         /// <param name="list"></param>
         /// <typeparam name="T">インターフェースを指定</typeparam>
         /// <returns></returns>
-        public bool TryGetAllFuncDomainLayer<T>(out List<T> list) where T : IDomainLayer
+        public bool TryGetAllFuncDomainLayer<T>(out List<T> list) where T : class, IDomainLayer
         {
             if (!typeof(T).IsInterface)
             {
@@ -239,7 +265,7 @@ namespace Service
         /// <param name="list"></param>
         /// <typeparam name="T">インターフェースを指定</typeparam>
         /// <returns></returns>
-        public bool TryGetAllFuncDataLayer<T>(out List<T> list) where T : IDataLayer
+        public bool TryGetAllFuncDataLayer<T>(out List<T> list) where T : class, IDataLayer
         {
             if (!typeof(T).IsInterface)
             {
@@ -269,9 +295,9 @@ namespace Service
                 return false;
             }
         }
-        
+
         #endregion
-        
+
         #region ScriptableObject系
 
         /// <summary>
@@ -324,7 +350,7 @@ namespace Service
                 return false;
             }
         }
-        
+
         #endregion
     }
 }

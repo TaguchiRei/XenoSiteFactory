@@ -144,7 +144,7 @@ namespace PlayerSystem
             LayeredServiceLocator.Instance.RegisterPresentation(this);
         }
 
-        public bool GetDomain<T>(out T instance) where T : IDomainLayer
+        public bool GetDomain<T>(out T instance) where T : class, IDomainLayer
         {
             if (LayeredServiceLocator.Instance.TryGetDomainLayer<T>(out var domainInstance))
             {
