@@ -33,6 +33,8 @@ namespace Service
             KeyLogger.Log("Initialize Complete", this);
         }
 
+        #region Register系
+
         /// <summary>
         /// プレゼンテーション層のインスタンスを保存
         /// </summary>
@@ -63,6 +65,10 @@ namespace Service
             _dataLayers[typeof(T)] = instance;
         }
 
+        #endregion
+
+        #region UnRegister系
+
         /// <summary>
         /// プレゼンテーション層のインスタンス登録を解除
         /// </summary>
@@ -91,13 +97,17 @@ namespace Service
             _dataLayers.Remove(typeof(T));
         }
 
+        #endregion
+        
+        #region TryGet系
+
         /// <summary>
         /// プレゼンテーション層のインスタンスを取得
         /// </summary>
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public bool TryGetPresentationLayer<T>(out T instance)
+        public bool TryGetPresentationLayer<T>(out T instance) where T : IPresentationLayer
         {
             if (_presentationLayers.TryGetValue(typeof(T), out object result))
             {
@@ -109,7 +119,53 @@ namespace Service
             return false;
         }
 
-        public bool TryGetAllFuncPresentationLayer<T>(out List<T> list) where T : IDataLayer
+        /// <summary>
+        /// ドメイン層のインスタンスを取得
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool TryGetDomainLayer<T>(out T instance) where T : IDomainLayer
+        {
+            if (_domainLayers.TryGetValue(typeof(T), out object result))
+            {
+                instance = (T)result;
+                return true;
+            }
+
+            instance = default;
+            return false;
+        }
+
+        /// <summary>
+        /// データ層のインスタンスを取得
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool TryGetDataLayer<T>(out T instance) where T : IDataLayer
+        {
+            if (_dataLayers.TryGetValue(typeof(T), out object result))
+            {
+                instance = (T)result;
+                return true;
+            }
+
+            instance = default;
+            return false;
+        }
+        
+        #endregion
+        
+        #region TryGetAllFunc系
+
+        /// <summary>
+        /// 指定したインターフェースを実装しているプレゼンテーション層のクラスをインターフェースとしてすべて取得
+        /// </summary>
+        /// <param name="list"></param>
+        /// <typeparam name="T">インターフェースを指定</typeparam>
+        /// <returns></returns>
+        public bool TryGetAllFuncPresentationLayer<T>(out List<T> list) where T : IPresentationLayer
         {
             if (!typeof(T).IsInterface)
             {
@@ -141,23 +197,11 @@ namespace Service
         }
 
         /// <summary>
-        /// ドメイン層のインスタンスを取得
+        /// 指定したインターフェースを実装しているドメイン層のクラスをすべてインターフェースとして取得
         /// </summary>
-        /// <param name="instance"></param>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <typeparam name="T">インターフェースを指定</typeparam>
         /// <returns></returns>
-        public bool TryGetDomainLayer<T>(out T instance) where T : IDomainLayer
-        {
-            if (_domainLayers.TryGetValue(typeof(T), out object result))
-            {
-                instance = (T)result;
-                return true;
-            }
-
-            instance = default;
-            return false;
-        }
-
         public bool TryGetAllFuncDomainLayer<T>(out List<T> list) where T : IDomainLayer
         {
             if (!typeof(T).IsInterface)
@@ -166,6 +210,7 @@ namespace Service
                 list = null;
                 return false;
             }
+
             List<T> result = new List<T>();
             foreach (var kvp in _domainLayers)
             {
@@ -189,23 +234,11 @@ namespace Service
         }
 
         /// <summary>
-        /// データ層のインスタンスを取得
+        /// 指定した型のインターフェースを実装しているクラスをすべてインターフェースとして取得
         /// </summary>
-        /// <param name="instance"></param>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <typeparam name="T">インターフェースを指定</typeparam>
         /// <returns></returns>
-        public bool TryGetDataLayer<T>(out T instance)
-        {
-            if (_dataLayers.TryGetValue(typeof(T), out object result))
-            {
-                instance = (T)result;
-                return true;
-            }
-
-            instance = default;
-            return false;
-        }
-
         public bool TryGetAllFuncDataLayer<T>(out List<T> list) where T : IDataLayer
         {
             if (!typeof(T).IsInterface)
@@ -214,6 +247,7 @@ namespace Service
                 list = null;
                 return false;
             }
+
             List<T> result = new List<T>();
             foreach (var kvp in _dataLayers)
             {
@@ -235,7 +269,17 @@ namespace Service
                 return false;
             }
         }
+        
+        #endregion
+        
+        #region ScriptableObject系
 
+        /// <summary>
+        /// スクリプタブルオブジェクトを取得する。
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public bool TryGetScriptableObject<T>(out T instance) where T : ScriptableObject
         {
             foreach (var scriptableObject in _scriptableObjects)
@@ -252,6 +296,12 @@ namespace Service
             return false;
         }
 
+        /// <summary>
+        /// 同一の型のスクリプタブルオブジェクトをすべて取得する
+        /// </summary>
+        /// <param name="list"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public bool TryGetAllScriptableObjectsOfType<T>(out List<T> list) where T : ScriptableObject
         {
             List<T> scriptableObjectList = new();
@@ -274,5 +324,7 @@ namespace Service
                 return false;
             }
         }
+        
+        #endregion
     }
 }
