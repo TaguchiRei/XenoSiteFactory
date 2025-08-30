@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using UnityEngine;
@@ -80,6 +81,11 @@ namespace Service
             _domainLayers.Remove(typeof(T));
         }
 
+        /// <summary>
+        /// データ層のインスタンス登録を解除
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <typeparam name="T"></typeparam>
         public void UnRegisterData<T>(T instance) where T : IDataLayer
         {
             _dataLayers.Remove(typeof(T));
@@ -103,13 +109,44 @@ namespace Service
             return false;
         }
 
+        public bool TryGetAllFuncPresentationLayer<T>(out List<T> list) where T : IDataLayer
+        {
+            if (!typeof(T).IsInterface)
+            {
+                KeyLogger.Log("TryGetAllFuncPresentationLayer can use interfaceOnly");
+                list = null;
+                return false;
+            }
+
+            List<T> result = new List<T>();
+            foreach (var kvp in _presentationLayers)
+            {
+                var type = kvp.Key;
+                if (kvp.Value is T obj)
+                {
+                    result.Add(obj);
+                }
+            }
+
+            if (result.Any())
+            {
+                list = result;
+                return true;
+            }
+            else
+            {
+                list = null;
+                return false;
+            }
+        }
+
         /// <summary>
         /// ドメイン層のインスタンスを取得
         /// </summary>
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public bool TryGetDomainLayer<T>(out T instance)
+        public bool TryGetDomainLayer<T>(out T instance) where T : IDomainLayer
         {
             if (_domainLayers.TryGetValue(typeof(T), out object result))
             {
@@ -119,6 +156,36 @@ namespace Service
 
             instance = default;
             return false;
+        }
+
+        public bool TryGetAllFuncDomainLayer<T>(out List<T> list) where T : IDomainLayer
+        {
+            if (!typeof(T).IsInterface)
+            {
+                KeyLogger.Log("TryGetAllFuncDomainLayer can use interfaceOnly");
+                list = null;
+                return false;
+            }
+            List<T> result = new List<T>();
+            foreach (var kvp in _domainLayers)
+            {
+                var type = kvp.Key;
+                if (kvp.Value is T obj)
+                {
+                    result.Add(obj);
+                }
+            }
+
+            if (result.Any())
+            {
+                list = result;
+                return true;
+            }
+            else
+            {
+                list = null;
+                return false;
+            }
         }
 
         /// <summary>
@@ -137,6 +204,36 @@ namespace Service
 
             instance = default;
             return false;
+        }
+
+        public bool TryGetAllFuncDataLayer<T>(out List<T> list) where T : IDataLayer
+        {
+            if (!typeof(T).IsInterface)
+            {
+                KeyLogger.Log("TryGetAllFuncDataLayer can use interfaceOnly");
+                list = null;
+                return false;
+            }
+            List<T> result = new List<T>();
+            foreach (var kvp in _dataLayers)
+            {
+                var type = kvp.Key;
+                if (kvp.Value is T obj)
+                {
+                    result.Add(obj);
+                }
+            }
+
+            if (result.Any())
+            {
+                list = result;
+                return true;
+            }
+            else
+            {
+                list = null;
+                return false;
+            }
         }
 
         public bool TryGetScriptableObject<T>(out T instance) where T : ScriptableObject

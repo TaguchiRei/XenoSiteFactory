@@ -2,6 +2,7 @@ using System;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
+using Service;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,18 +10,20 @@ namespace PlayerSystem
 {
     public class PlayerOperationManager : ManagerBase<PlayerOperationManager>,
         InputSystem_Actions.IPlayerActions,
-        InputSystem_Actions.IUIActions
+        InputSystem_Actions.IUIActions,
+        IPresentationLayer
     {
         public Action<InputAction.CallbackContext> OnMoveAction;
         public Action<InputAction.CallbackContext> OnInteractAction;
         public Action<InputAction.CallbackContext> OnPreviousAction;
         public Action<InputAction.CallbackContext> OnNextAction;
         public Action<InputAction.CallbackContext> OnMouseMoveAction;
-        
+
         private InputSystem_Actions inputSystemActions;
         private InGameManager inGameManager;
 
         #region Player
+
         public void OnMove(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnMove Input", this);
@@ -66,8 +69,9 @@ namespace PlayerSystem
         }
 
         #endregion
-        
+
         #region UI
+
         public void OnNavigate(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnNavigate Input", this);
@@ -128,6 +132,30 @@ namespace PlayerSystem
         private void OnDisable()
         {
             inputSystemActions.Disable();
+        }
+
+        public void Dispose()
+        {
+            inputSystemActions?.Dispose();
+        }
+
+        public void RegisterPresentation()
+        {
+            LayeredServiceLocator.Instance.RegisterPresentation(this);
+        }
+
+        public bool GetDomain<T>(out T instance) where T : IDomainLayer
+        {
+            if (LayeredServiceLocator.Instance.TryGetDomainLayer<T>(out var domainInstance))
+            {
+                instance = domainInstance;
+                return true;
+            }
+            else
+            {
+                instance = default;
+                return false;
+            }
         }
     }
 }

@@ -13,17 +13,13 @@ MonoBehaviour:
   m_Name: TestSaveData
   m_EditorClassIdentifier: 
   PlayerName: Hidden
-  Days: 0
-  Unit: 0
-  Xenosite: 0
+  Days: 26
+  Unit: 26
+  Xenosite: 60
   Items: 0
-  Money: 0
+  Money: 23
   _putUnitDataList:
-  - UnitId: 0
+  - UnitId: 19
     UnitType: 0
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: 0
-  - UnitId: 0
-    UnitType: 0
-    Position: {x: 0, y: 0, z: 0}
+    Position: {x: 0, y: 23, z: 0}
     Rotation: 0
