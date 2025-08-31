@@ -3,6 +3,7 @@ using System.IO;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
+using NUnit.Framework.Constraints;
 using XenositeFramework.SaveSystem;
 
 namespace GamesKeystoneFramework.Save
@@ -36,22 +37,6 @@ namespace GamesKeystoneFramework.Save
                 KeyLogger.Log("File Exists");
 #endif
                 var encrypted = await File.ReadAllBytesAsync(path);
-                return JsonUtility.FromJson<T>(AESHelper.Decrypt(encrypted));
-            }
-#if UNITY_EDITOR
-            KeyLogger.Log("File Not Exists");
-#endif
-            return null;
-        }
-
-        public async UniTask<T> Load(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-#if UNITY_EDITOR
-                KeyLogger.Log("File Exists");
-#endif
-                var encrypted = await File.ReadAllBytesAsync(filePath);
                 return JsonUtility.FromJson<T>(AESHelper.Decrypt(encrypted));
             }
 #if UNITY_EDITOR
