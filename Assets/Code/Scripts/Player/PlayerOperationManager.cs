@@ -64,6 +64,11 @@ namespace Player
                 OnMouseMoveAction?.Invoke(context);
             }
         }
+        
+        public void OnAnyKey(InputAction.CallbackContext context)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
         
@@ -115,7 +120,7 @@ namespace Player
             KeyLogger.Log("OnScrollWheel Input", this);
             throw new NotImplementedException();
         }
-
+        
         #endregion
 
         public override void Initialize()

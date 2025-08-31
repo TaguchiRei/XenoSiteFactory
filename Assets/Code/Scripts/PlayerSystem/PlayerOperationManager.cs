@@ -68,6 +68,11 @@ namespace PlayerSystem
                 _onMouseMoveAction?.Invoke(context);
             }
         }
+        
+        public void OnAnyKey(InputAction.CallbackContext context)
+        {
+            
+        }
 
         #endregion
 
