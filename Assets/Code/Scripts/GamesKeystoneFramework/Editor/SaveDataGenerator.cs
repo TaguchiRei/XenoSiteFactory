@@ -23,6 +23,7 @@ namespace XenositeFramework.Editor
         private SerializedProperty _usingSerializedProperty;
         private Vector2 _scrollPosition;
         private int _testSaveDataNumber;
+        private bool _isC;
 
         [MenuItem("Window/XenositeFramework/SaveDataGenerator")]
         public static void ShowWindow()
@@ -101,12 +102,20 @@ namespace XenositeFramework.Editor
             {
                 EditorGUILayout.BeginHorizontal();
                 _testSaveDataNumber = EditorGUILayout.IntField("セーブデータ番号", _testSaveDataNumber);
+                _isC = EditorGUILayout.Toggle("", _isC);
                 if (GUILayout.Button("テスト用セーブデータを作成"))
                 {
                     string path = Path.Combine(Application.persistentDataPath, $"TestData{_testSaveDataNumber}.dat");
                     string json = JsonUtility.ToJson(_scriptableSaveData);
-                    byte[] aes = AESHelper.Encrypt(json);
-                    File.WriteAllBytes(path, aes);
+                    if (_isC)
+                    {
+                        byte[] aes = AESHelper.Encrypt(json);
+                        File.WriteAllBytes(path, aes);
+                    }
+                    else
+                    {
+                        File.WriteAllText(path, json);
+                    }
                 }
 
                 if (GUILayout.Button("セーブデータのあるディレクトリを取得"))
