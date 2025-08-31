@@ -43,6 +43,22 @@ namespace GamesKeystoneFramework.Save
 #endif
             return null;
         }
+
+        public async UniTask<T> Load(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+#if UNITY_EDITOR
+                KeyLogger.Log("File Exists");
+#endif
+                var encrypted = await File.ReadAllBytesAsync(filePath);
+                return JsonUtility.FromJson<T>(AESHelper.Decrypt(encrypted));
+            }
+#if UNITY_EDITOR
+            KeyLogger.Log("File Not Exists");
+#endif
+            return null;
+        }
         
         /// <summary>
         /// セーブデータの初期化を行う
