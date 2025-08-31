@@ -176,6 +176,7 @@ namespace PlayerSystem
 
         private void OnDisable()
         {
+            
             _inputSystemActions.Disable();
         }
 
