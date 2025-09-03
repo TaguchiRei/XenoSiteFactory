@@ -3,21 +3,28 @@ using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
 using Service;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace PlayerSystem
 {
-    public class PlayerOperationManager : ManagerBase<PlayerOperationManager>,
-        InputSystem_Actions.IPlayerActions,
-        InputSystem_Actions.IUIActions,
-        IPresentationLayer
+    public class PlayerOperationManager :MonoBehaviour, IPresentationLayer
+        , InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, IInitializable
     {
+        public Action<InputAction.CallbackContext> OnMoveAction => _onMoveAction;
         private Action<InputAction.CallbackContext> _onMoveAction;
+        public Action<InputAction.CallbackContext> OnInteractAction  => _onInteractAction;
         private Action<InputAction.CallbackContext> _onInteractAction;
+        public Action<InputAction.CallbackContext> OnPreviousAction  => _onPreviousAction;
         private Action<InputAction.CallbackContext> _onPreviousAction;
+        public Action<InputAction.CallbackContext> OnNextAction    => _onNextAction;
         private Action<InputAction.CallbackContext> _onNextAction;
+        public Action<InputAction.CallbackContext> OnMouseMoveAction  => _onMouseMoveAction;
         private Action<InputAction.CallbackContext> _onMouseMoveAction;
-        private Action<InputAction.CallbackContext> _onAnyKeyInputAction;
+        public Action<InputAction.CallbackContext> OnAnyKeyAction => _onAnyKeyAction;
+        private Action<InputAction.CallbackContext> _onAnyKeyAction;
+        
 
         private InputSystem_Actions _inputSystemActions;
         private InGameManager _inGameManager;
@@ -127,75 +134,22 @@ namespace PlayerSystem
 
         #endregion
 
-        public override void Initialize()
+        public void Initialize()
         {
             _inputSystemActions = new InputSystem_Actions();
             _inputSystemActions.Player.SetCallbacks(this);
             _inputSystemActions.Enable();
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IMoveInputReceiver>(
-                    out var moveInputReceivers))
-            {
-                foreach (var receiver in moveInputReceivers)
-                {
-                    _onMoveAction += receiver.OnMoveInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IInteractInputReceiver>(
-                    out var interactInputReceivers))
-            {
-                foreach (var receiver in interactInputReceivers)
-                {
-                    _onInteractAction += receiver.OnInteractInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IPreviousInputReceiver>(
-                    out var previousInputReceivers))
-            {
-                foreach (var receiver in previousInputReceivers)
-                {
-                    _onPreviousAction += receiver.OnPreviousInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<INextInputReceiver>(
-                    out var nextInputReceivers))
-            {
-                foreach (var receiver in nextInputReceivers)
-                {
-                    _onNextAction += receiver.OnNextInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IMouseMoveInputReceiver>(
-                    out var mouseMoveInputReceivers))
-            {
-                foreach (var receiver in mouseMoveInputReceivers)
-                {
-                    _onMouseMoveAction += receiver.OnMouseMoveInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IAnyKeyInputReceiver>(
-                    out var anyKeyInputReceivers))
-            {
-                foreach (var receiver in anyKeyInputReceivers)
-                {
-                    _onAnyKeyInputAction += receiver.OnAnyKeyInput;
-                }
-            }
         }
 
         private void OnDisable()
         {
-            
-            _inputSystemActions.Disable();
+            Dispose();
         }
 
         public void Dispose()
         {
             _inputSystemActions?.Dispose();
+            LayeredServiceLocator.Instance.UnRegisterPresentation(this);
         }
 
         public void RegisterPresentation()
