@@ -3,6 +3,7 @@ using System.IO;
 using Cysharp.Threading.Tasks;
 using Player;
 using UnityEngine;
+using XenositeFramework.SaveSystem;
 
 namespace OutGame
 {
@@ -21,7 +22,7 @@ namespace OutGame
             string[] allPath = Directory.GetFiles(Application.persistentDataPath, "*.dat", SearchOption.AllDirectories);
             foreach (var path in allPath)
             {
-                
+                playerDatas.Add(await SaveDataSupporter.Load<PlayerData>(path));
             }
         }
     }

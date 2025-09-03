@@ -10,7 +10,7 @@ namespace Player
 {
     public class UnitAttacheDetaching : MonoBehaviour
     {
-        private PlayerOperationManager _playerOperationManager;
+        private PlayerOperationManagerL _playerOperationManagerL;
         private UnitResourceManager _unitResourceManager;
         private InGameUIManager _inGameUIManager;
         private InGameManager _inGameManager;
@@ -18,12 +18,12 @@ namespace Player
 
         private void Start()
         {
-            ServiceLocatorL.Instance.TryGetClass(out _playerOperationManager);
+            ServiceLocatorL.Instance.TryGetClass(out _playerOperationManagerL);
             ServiceLocatorL.Instance.TryGetClass(out _unitResourceManager);
             ServiceLocatorL.Instance.TryGetClass(out _inGameUIManager);
             ServiceLocatorL.Instance.TryGetClass(out _inGameManager);
             ServiceLocatorL.Instance.TryGetClass(out _gridManagerL);
-            _playerOperationManager.OnInteractAction += OnInteract;
+            _playerOperationManagerL.OnInteractAction += OnInteract;
         }
 
         /// <summary>

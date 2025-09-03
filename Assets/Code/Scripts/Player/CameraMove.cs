@@ -20,7 +20,7 @@ namespace Player
         {
             _rotation = transform.eulerAngles;
             var a = ServiceLocatorL.Instance.TryGetClass(out _inGameManager);
-            var b = ServiceLocatorL.Instance.TryGetClass(out PlayerOperationManager playerOperationManager);
+            var b = ServiceLocatorL.Instance.TryGetClass(out PlayerOperationManagerL playerOperationManager);
             playerOperationManager.OnMoveAction += OnMoveInput;
             playerOperationManager.OnNextAction += OnNextInput;
             playerOperationManager.OnPreviousAction += OnPreviousInput;

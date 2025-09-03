@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-    public class PlayerOperationManager : ManagerBase<PlayerOperationManager>,
+    public class PlayerOperationManagerL : ManagerBase<PlayerOperationManagerL>,
         InputSystem_Actions.IPlayerActions,
         InputSystem_Actions.IUIActions
     {

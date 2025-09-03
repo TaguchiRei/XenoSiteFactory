@@ -14,7 +14,7 @@ namespace Player
         public bool IsPaused { get; set; }
         [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
-        PlayerOperationManager _playerOperationManager;
+        PlayerOperationManagerL _playerOperationManagerL;
         private GridManagerL _gridManagerL;
         UnitResourceManager _unitResourceManager;
         
@@ -22,7 +22,7 @@ namespace Player
         
         private void Start()
         {
-            if(ServiceLocatorL.Instance.TryGetClass(out _playerOperationManager) &&
+            if(ServiceLocatorL.Instance.TryGetClass(out _playerOperationManagerL) &&
                ServiceLocatorL.Instance.TryGetClass(out _gridManagerL) &&
                ServiceLocatorL.Instance.TryGetClass(out _unitResourceManager))
             {
@@ -33,7 +33,7 @@ namespace Player
                 KeyLogger.Log("GetManagerClass");
                 return;
             }
-            _playerOperationManager.OnMouseMoveAction += GetMousePosition;
+            _playerOperationManagerL.OnMouseMoveAction += GetMousePosition;
         }
 
 

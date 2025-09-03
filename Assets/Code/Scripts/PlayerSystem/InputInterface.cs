@@ -28,6 +28,11 @@ namespace PlayerSystem
         public void OnMouseMoveInput(InputAction.CallbackContext context);
     }
 
+    public interface IAnyKeyInputReceiver : IDomainLayer
+    {
+        public void OnAnyKeyInput(InputAction.CallbackContext context);
+    }
+
     public interface IScrollWheelInputReceiver : IDomainLayer
     {
         public void OnScrollWheelInput(InputAction.CallbackContext context);

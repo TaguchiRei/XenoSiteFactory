@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
 using Service;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace PlayerSystem
@@ -19,6 +17,7 @@ namespace PlayerSystem
         private Action<InputAction.CallbackContext> _onPreviousAction;
         private Action<InputAction.CallbackContext> _onNextAction;
         private Action<InputAction.CallbackContext> _onMouseMoveAction;
+        private Action<InputAction.CallbackContext> _onAnyKeyInputAction;
 
         private InputSystem_Actions _inputSystemActions;
         private InGameManager _inGameManager;
@@ -175,6 +174,15 @@ namespace PlayerSystem
                 foreach (var receiver in mouseMoveInputReceivers)
                 {
                     _onMouseMoveAction += receiver.OnMouseMoveInput;
+                }
+            }
+
+            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IAnyKeyInputReceiver>(
+                    out var anyKeyInputReceivers))
+            {
+                foreach (var receiver in anyKeyInputReceivers)
+                {
+                    _onAnyKeyInputAction += receiver.OnAnyKeyInput;
                 }
             }
         }
