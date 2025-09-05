@@ -9,7 +9,7 @@ namespace Service
 {
     public class LayeredServiceLocator : MonoBehaviour
     {
-        [SerializeField] private string _managerSceneName;
+        [SerializeField] private string _systemSceneName;
         [SerializeField] private ScriptableObject[] _scriptableObjects;
 
         private readonly Dictionary<Type, object> _presentationLayers = new();
