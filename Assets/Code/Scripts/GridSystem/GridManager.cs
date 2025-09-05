@@ -191,7 +191,9 @@ namespace GridSystem
 
         public bool GetInfrastructure<T>(out T instance) where T : class, IInfrastructure
         {
-            var result = LayeredServiceLocator.Instance.
+            var result = LayeredServiceLocator.Instance.TryGetInfrastructureLayer(out T instanceInfra);
+            instance = instanceInfra;
+            return result;
         }
 
         #endregion

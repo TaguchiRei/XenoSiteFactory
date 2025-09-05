@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
+using Service;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace XenositeFramework.SceneSystem
 {
-    public class SceneFlowManager
+    public class SceneFlowManager : IInfrastructure
     {
         private readonly Dictionary<SceneName, Scene> _scenes = new();
 
@@ -44,6 +45,16 @@ namespace XenositeFramework.SceneSystem
             }
             SceneManager.MoveGameObjectToScene(targetObj, scene);
             return true;
+        }
+
+        public void Dispose()
+        {
+            
+        }
+
+        public void RegisterInfrastructure()
+        {
+            LayeredServiceLocator.Instance.RegisterInfrastructure(this);
         }
     }
 }
