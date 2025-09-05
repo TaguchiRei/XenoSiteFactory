@@ -4,6 +4,7 @@ using System.Linq;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Service
 {
@@ -14,6 +15,7 @@ namespace Service
 
         private readonly Dictionary<Type, object> _presentationLayers = new();
         private readonly Dictionary<Type, object> _domainLayers = new();
+        private readonly Dictionary<Type, object> _infrastructureLayers = new();
         private readonly Dictionary<Type, object> _dataLayers = new();
 
         public static LayeredServiceLocator Instance { get; private set; }
@@ -31,6 +33,7 @@ namespace Service
             }
 
             KeyLogger.Log("Initialize Complete", this);
+            SceneManager.LoadScene(nameof(SceneName.System));
         }
 
         #region Register系
@@ -53,6 +56,16 @@ namespace Service
         public void RegisterDomain<T>(T instance) where T : class, IDomainLayer
         {
             _domainLayers[typeof(T)] = instance;
+        }
+
+        /// <summary>
+        /// インフラ層のインスタンスを保存
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <typeparam name="T"></typeparam>
+        public void RegisterInfrastructure<T>(T instance) where T : class, IInfrastructure
+        {
+            _infrastructureLayers[typeof(T)] = instance;
         }
 
         /// <summary>
@@ -107,6 +120,19 @@ namespace Service
             }
         }
 
+        public void UnRegisterInfrastructure<T>(T instance)  where T : class, IInfrastructure
+        {
+            if (_infrastructureLayers.TryGetValue(typeof(T), out var registeredInstance) &&
+                registeredInstance == instance)
+            {
+                _infrastructureLayers.Remove(typeof(T));
+            }
+            else
+            {
+                KeyLogger.LogError("登録されたインスタンス以外がUnRegisterを呼んでいます。", typeof(T));
+            }
+        }
+
         /// <summary>
         /// データ層のインスタンス登録を解除
         /// </summary>
@@ -142,7 +168,7 @@ namespace Service
                 return true;
             }
 
-            instance = default;
+            instance = null;
             return false;
         }
 
@@ -160,7 +186,19 @@ namespace Service
                 return true;
             }
 
-            instance = default;
+            instance = null;
+            return false;
+        }
+
+        public bool TryGetInfrastructureLayer<T>(out T instance) where T : class, IInfrastructure
+        {
+            if (_infrastructureLayers.TryGetValue(typeof(T), out object result))
+            {
+                instance = (T)result;
+                return true;
+            }
+
+            instance = null;
             return false;
         }
 
@@ -178,7 +216,7 @@ namespace Service
                 return true;
             }
 
-            instance = default;
+            instance = null;
             return false;
         }
 

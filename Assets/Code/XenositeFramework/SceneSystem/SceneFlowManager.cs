@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
+using Interface;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

@@ -163,6 +163,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d776f4745b2170947a5c65c42c58f173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _inGameSceneName: 
+  _dayStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _OpenMenuEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _CloseMenuEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _DayEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1961490342
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,9 +205,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a1193f91c20ec449d01562548da36a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gridCollider: {fileID: 0}
+  _layerLimit: 4
   _gridSize: 100
   _height: 4
-  _allUnitData: {fileID: 11400000, guid: 73de3c5aebba1da4ead7ea5de025f608, type: 2}
+  _wallData:
+    wallPrefab: {fileID: 0}
+    Position: {x: 0, y: 0, z: 0}
+    Height: 0
+    Width: 0
+    Size: 0
 --- !u!4 &1961490344
 Transform:
   m_ObjectHideFlags: 0

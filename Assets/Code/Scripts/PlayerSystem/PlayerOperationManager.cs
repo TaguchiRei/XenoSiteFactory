@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 
 namespace PlayerSystem
 {
-    public class PlayerOperationManager :MonoBehaviour, IPresentationLayer
+    public class PlayerOperationManager : IPresentationLayer
         , InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, IInitializable
     {
         public Action<InputAction.CallbackContext> OnMoveAction => _onMoveAction;

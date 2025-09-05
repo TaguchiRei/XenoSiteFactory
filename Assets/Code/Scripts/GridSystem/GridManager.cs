@@ -189,6 +189,11 @@ namespace GridSystem
             return result;
         }
 
+        public bool GetInfrastructure<T>(out T instance) where T : class, IInfrastructure
+        {
+            var result = LayeredServiceLocator.Instance.
+        }
+
         #endregion
 
         public void Initialize()
