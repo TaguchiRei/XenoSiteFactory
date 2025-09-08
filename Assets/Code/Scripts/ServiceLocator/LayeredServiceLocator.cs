@@ -10,7 +10,6 @@ namespace Service
 {
     public class LayeredServiceLocator : MonoBehaviour
     {
-        [SerializeField] private string _systemSceneName;
         [SerializeField] private ScriptableObject[] _scriptableObjects;
 
         private readonly Dictionary<Type, object> _presentationLayers = new();
@@ -33,7 +32,6 @@ namespace Service
             }
 
             KeyLogger.Log("Initialize Complete", this);
-            SceneManager.LoadScene(nameof(SceneName.System));
         }
 
         #region Register系
@@ -45,6 +43,7 @@ namespace Service
         /// <typeparam name="T"></typeparam>
         public void RegisterPresentation<T>(T instance) where T : class, IPresentationLayer
         {
+            KeyLogger.Log($"プレゼンテーション層[{typeof(T).Name}] がサービスロケーターに登録されました。", this);
             _presentationLayers[typeof(T)] = instance;
         }
 
@@ -55,6 +54,7 @@ namespace Service
         /// <typeparam name="T"></typeparam>
         public void RegisterDomain<T>(T instance) where T : class, IDomainLayer
         {
+            KeyLogger.Log($"ドメイン層[{typeof(T).Name}] がサービスロケーターに登録されました。", this);
             _domainLayers[typeof(T)] = instance;
         }
 
@@ -65,6 +65,7 @@ namespace Service
         /// <typeparam name="T"></typeparam>
         public void RegisterInfrastructure<T>(T instance) where T : class, IInfrastructure
         {
+            KeyLogger.Log($"インフラ層[{typeof(T).Name}] がサービスロケーターに登録されました。", this);
             _infrastructureLayers[typeof(T)] = instance;
         }
 
@@ -75,6 +76,7 @@ namespace Service
         /// <typeparam name="T"></typeparam>
         public void RegisterData<T>(T instance) where T : class, IDataLayer
         {
+            KeyLogger.Log($"データ層[{typeof(T).Name}] がサービスロケーターに登録されました。", this);
             _dataLayers[typeof(T)] = instance;
         }
 
@@ -120,7 +122,7 @@ namespace Service
             }
         }
 
-        public void UnRegisterInfrastructure<T>(T instance)  where T : class, IInfrastructure
+        public void UnRegisterInfrastructure<T>(T instance) where T : class, IInfrastructure
         {
             if (_infrastructureLayers.TryGetValue(typeof(T), out var registeredInstance) &&
                 registeredInstance == instance)

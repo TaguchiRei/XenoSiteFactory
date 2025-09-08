@@ -10,10 +10,6 @@ namespace XenositeFramework.SystemClass
     {
         private void Awake()
         {
-            PlayerOperationManager playerOperationManager = new();
-            SceneFlowManager  sceneFlowManager = new();
-            playerOperationManager.RegisterPresentation();
-            sceneFlowManager.RegisterInfrastructure();
             Destroy(gameObject);
         }
     }
