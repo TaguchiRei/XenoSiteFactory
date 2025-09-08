@@ -47,8 +47,8 @@ namespace XenositeFramework.SceneSystem
         {
             if (pastSceneRetention)
             {
-                await SceneManager.UnloadSceneAsync(_mainScene.scene);
                 await SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Additive);
+                await SceneManager.UnloadSceneAsync(_mainScene.scene);
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName.ToString()));
             }
             else

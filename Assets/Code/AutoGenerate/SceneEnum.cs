@@ -6,4 +6,5 @@ public enum SceneName
     InGameManagerDevScene,
     System,
     StartScene,
+    Bootstrap,
 }
