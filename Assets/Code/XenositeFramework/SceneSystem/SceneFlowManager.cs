@@ -12,7 +12,7 @@ namespace XenositeFramework.SceneSystem
 {
     public class SceneFlowManager : IInfrastructure
     {
-        private (SceneName sceneName, Scene scene) _mainScene;
+        private (SceneName sceneName, Scene scene) _mainScene = (Enum.Parse<SceneName>(SceneManager.GetActiveScene().name),SceneManager.GetActiveScene());
         private readonly Dictionary<SceneName, Scene> _subScenes = new();
 
         /// <summary>
@@ -22,6 +22,7 @@ namespace XenositeFramework.SceneSystem
         public async UniTask SceneLoadedGuarantee(Func<UniTask> loadSceneFunc)
         {
             await loadSceneFunc();
+            //１フレーム待つことでStartおよびAwakeの実行を待機する。
             await UniTask.Yield();
         }
 
@@ -33,6 +34,7 @@ namespace XenositeFramework.SceneSystem
         public async UniTask SceneLoadedGuarantee(Func<bool, UniTask> loadSceneTask, bool pastSceneRetention = true)
         {
             await loadSceneTask(pastSceneRetention);
+            //１フレーム待つことでStartおよびAwakeの実行を待機する
             await UniTask.Yield();
         }
 
@@ -58,22 +60,6 @@ namespace XenositeFramework.SceneSystem
         }
 
         /// <summary>
-        /// サブシーンをロードする
-        /// </summary>
-        /// <param name="sceneName"></param>
-        public void LoadSubScene(SceneName sceneName)
-        {
-            if (_subScenes.ContainsKey(sceneName))
-            {
-                KeyLogger.LogWarning($"シーン[{sceneName.ToString()}]はすでに読み込まれています。");
-                return;
-            }
-
-            SceneManager.LoadScene(sceneName.ToString(), LoadSceneMode.Additive);
-            _subScenes[sceneName] = SceneManager.GetSceneByName(sceneName.ToString());
-        }
-
-        /// <summary>
         /// サブシーンを非同期でロードする
         /// </summary>
         /// <param name="sceneName"></param>
@@ -87,6 +73,20 @@ namespace XenositeFramework.SceneSystem
 
             await SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Additive);
             _subScenes[sceneName] = SceneManager.GetSceneByName(sceneName.ToString());
+        }
+        
+        
+        /// <summary>
+        /// サブシーンをアンロードする
+        /// </summary>
+        /// <param name="sceneName"></param>
+        public async UniTask UnLoadSubSceneAsync(SceneName sceneName)
+        {
+            if (_subScenes.TryGetValue(sceneName, out var scene))
+            {
+                await SceneManager.UnloadSceneAsync(scene);
+                _subScenes.Remove(sceneName);
+            }
         }
 
         /// <summary>
@@ -138,18 +138,6 @@ namespace XenositeFramework.SceneSystem
         public List<SceneName> GetLoadedSubScene()
         {
             return new List<SceneName>(_subScenes.Keys);
-        }
-
-        /// <summary>
-        /// サブシーンをアンロードする
-        /// </summary>
-        /// <param name="sceneName"></param>
-        public async UniTask UnLoadSubSceneAsync(SceneName sceneName)
-        {
-            if (_subScenes.TryGetValue(sceneName, out var scene))
-            {
-                await SceneManager.UnloadSceneAsync(scene);
-            }
         }
 
         public void Dispose()
