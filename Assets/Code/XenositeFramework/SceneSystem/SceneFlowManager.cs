@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Service;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,22 +16,44 @@ namespace XenositeFramework.SceneSystem
         private readonly Dictionary<SceneName, Scene> _subScenes = new();
 
         /// <summary>
-        /// メインシーンをロードする
+        /// シーン読み込み完了を保証する
         /// </summary>
-        /// <param name="sceneName"></param>
-        public void LoadMainScene(SceneName sceneName)
+        /// <param name="loadSceneFunc"></param>
+        public async UniTask SceneLoadedGuarantee(Func<UniTask> loadSceneFunc)
         {
-            SceneManager.LoadScene(sceneName.ToString(), LoadSceneMode.Single);
-            _mainScene = (sceneName, SceneManager.GetSceneByName(sceneName.ToString()));
+            await loadSceneFunc();
+            await UniTask.Yield();
+        }
+
+        /// <summary>
+        /// シーン読み込み完了を保証する
+        /// </summary>
+        /// <param name="loadSceneTask"></param>
+        /// <param name="pastSceneRetention"></param>
+        public async UniTask SceneLoadedGuarantee(Func<bool, UniTask> loadSceneTask, bool pastSceneRetention = true)
+        {
+            await loadSceneTask(pastSceneRetention);
+            await UniTask.Yield();
         }
 
         /// <summary>
         /// 非同期でメインシーンをロードする
         /// </summary>
         /// <param name="sceneName"></param>
-        public async UniTask LoadMainSceneAsync(SceneName sceneName)
+        /// <param name="pastSceneRetention">サブシーンを保持するかどうか。デフォルトはtrue</param>
+        public async UniTask LoadMainSceneAsync(SceneName sceneName, bool pastSceneRetention = true)
         {
-            await SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Single);
+            if (pastSceneRetention)
+            {
+                await SceneManager.UnloadSceneAsync(_mainScene.scene);
+                await SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Additive);
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName.ToString()));
+            }
+            else
+            {
+                await SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Single);
+            }
+
             _mainScene = (sceneName, SceneManager.GetSceneByName(sceneName.ToString()));
         }
 
@@ -39,6 +63,12 @@ namespace XenositeFramework.SceneSystem
         /// <param name="sceneName"></param>
         public void LoadSubScene(SceneName sceneName)
         {
+            if (_subScenes.ContainsKey(sceneName))
+            {
+                KeyLogger.LogWarning($"シーン[{sceneName.ToString()}]はすでに読み込まれています。");
+                return;
+            }
+
             SceneManager.LoadScene(sceneName.ToString(), LoadSceneMode.Additive);
             _subScenes[sceneName] = SceneManager.GetSceneByName(sceneName.ToString());
         }
@@ -49,6 +79,12 @@ namespace XenositeFramework.SceneSystem
         /// <param name="sceneName"></param>
         public async UniTask LoadSubSceneAsync(SceneName sceneName)
         {
+            if (_subScenes.ContainsKey(sceneName))
+            {
+                KeyLogger.LogWarning($"シーン[{sceneName.ToString()}]はすでに読み込まれています。");
+                return;
+            }
+
             await SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Additive);
             _subScenes[sceneName] = SceneManager.GetSceneByName(sceneName.ToString());
         }
@@ -66,6 +102,7 @@ namespace XenositeFramework.SceneSystem
                 KeyLogger.Log(targetObj ? $"scene {targetScene} not found" : $"targetObj can not be null", this);
                 return false;
             }
+
             SceneManager.MoveGameObjectToScene(targetObj, scene);
             return true;
         }
@@ -81,9 +118,10 @@ namespace XenositeFramework.SceneSystem
                 KeyLogger.Log("targetObj can not be null", this);
                 return;
             }
+
             SceneManager.MoveGameObjectToScene(targetObj, _mainScene.Item2);
         }
-        
+
         /// <summary>
         /// 開いているメインシーンを取得する
         /// </summary>
@@ -113,7 +151,7 @@ namespace XenositeFramework.SceneSystem
                 await SceneManager.UnloadSceneAsync(scene);
             }
         }
-        
+
         public void Dispose()
         {
             LayeredServiceLocator.Instance.UnRegisterInfrastructure(this);

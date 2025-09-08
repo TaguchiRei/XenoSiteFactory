@@ -10,13 +10,13 @@ namespace XenositeFramework.SystemClass
     /// </summary>
     public class Bootstrap : MonoBehaviour
     {
-        private void Start()
+        private async void Start()
         {
             PlayerOperationManager playerOperationManager = new();
             SceneFlowManager  sceneFlowManager = new();
             playerOperationManager.RegisterPresentation();
             sceneFlowManager.RegisterInfrastructure();
-            sceneFlowManager.LoadMainScene(SceneName.StartScene);
+            await sceneFlowManager.LoadMainSceneAsync(SceneName.StartScene);
         }
     }
 }
