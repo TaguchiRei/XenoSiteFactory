@@ -17,7 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Level/Scenes/Editor/InGameManagerDevScene.unity
     guid: 8ac6eac9c375d504390ea20812bc9f30
-  - enabled: 1
+  - enabled: 0
     path: Assets/Level/Scenes/OutGame/System.unity
     guid: 332ee1f44165df34b9537a0f86896e3e
   - enabled: 1

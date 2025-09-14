@@ -22,7 +22,6 @@ namespace GridSystem
         private DUlong _oneDUlong;
         private GridExistData _gridExistData;
         private AllUnitData _allUnitData;
-        private GridDistanceData _gridDistanceData;
         private PlacedObjectData _placedObjectData;
 
         #region テスト用スクリプト
@@ -45,7 +44,6 @@ namespace GridSystem
         public void GridSystemInitialize(WallData wallData)
         {
             if (!GetData(out _gridExistData) ||
-                !GetData(out _gridDistanceData) ||
                 !GetData(out _placedObjectData) ||
                 !LayeredServiceLocator.Instance.TryGetScriptableObject(out _allUnitData))
             {
@@ -72,7 +70,6 @@ namespace GridSystem
             if (CheckCanPut(shape, position)) return false;
 
             _gridExistData.SetGridData(shape, position);
-            _gridDistanceData.SetGridData(shape, position);
             _placedObjectData.SetUnit(putUnitData);
             GenerateUnitInstance(putUnitData);
 
@@ -83,7 +80,6 @@ namespace GridSystem
         {
             var shape = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId].UnitShape;
             _gridExistData.RemoveGridData(shape, position);
-            _gridDistanceData.RemoveGridData(shape, position);
             _placedObjectData.RemoveUnit(putUnitData);
 
             return true;

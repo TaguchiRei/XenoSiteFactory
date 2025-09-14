@@ -23,6 +23,7 @@ namespace GamesKeystoneFramework.KeyDebug.KeyLog
             var logCanvas = new GameObject("KeyTesterCanvas");
             _canvas = logCanvas.AddComponent<Canvas>();
             _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            _canvas.sortingOrder = 999;
             var logCanvasScaler = logCanvas.AddComponent<CanvasScaler>();
             logCanvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
 
