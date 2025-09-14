@@ -1,6 +1,7 @@
 using System;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
+using PlayerSystemInterface;
 using ServiceManagement;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
@@ -8,6 +9,7 @@ using UnityEngine.InputSystem;
 namespace PlayerSystem
 {
     public class PlayerOperationManager : IPresentationLayer
+        , IManagementFunc<IOperation>
         , InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, IInitializable
     {
         public event Action<InputAction.CallbackContext> OnMoveAction;
@@ -111,16 +113,14 @@ namespace PlayerSystem
 
         #endregion
 
+
+        #region インターフェース実装
+
         public void Initialize()
         {
             _inputSystemActions = new InputSystem_Actions();
             _inputSystemActions.Player.SetCallbacks(this);
             _inputSystemActions.Enable();
-        }
-
-        private void OnDisable()
-        {
-            Dispose();
         }
 
         public void Dispose()
@@ -143,9 +143,62 @@ namespace PlayerSystem
             }
             else
             {
-                instance = default;
+                instance = null;
                 return false;
             }
         }
+
+
+        public void RegisterFunc(IOperation instance)
+        {
+            switch (instance)
+            {
+                case IMoveAction:
+                    OnMoveAction += instance.OnOperation;
+                    break;
+                case IInteractAction:
+                    OnInteractAction += instance.OnOperation;
+                    break;
+                case IPreviousAction:
+                    OnPreviousAction += instance.OnOperation;
+                    break;
+                case INextAction:
+                    OnNextAction += instance.OnOperation;
+                    break;
+                case IMouseMoveAction:
+                    OnMouseMoveAction += instance.OnOperation;
+                    break;
+                case IAnyKeyAction:
+                    OnAnyKeyAction += instance.OnOperation;
+                    break;
+            }
+        }
+
+        public void UnregisterFunc(IOperation instance)
+        {
+            switch (instance)
+            {
+                case IMoveAction:
+                    OnMoveAction -= instance.OnOperation;
+                    break;
+                case IInteractAction:
+                    OnInteractAction -= instance.OnOperation;
+                    break;
+                case IPreviousAction:
+                    OnPreviousAction -= instance.OnOperation;
+                    break;
+                case INextAction:
+                    OnNextAction -= instance.OnOperation;
+                    break;
+                case IMouseMoveAction:
+                    OnMouseMoveAction -= instance.OnOperation;
+                    break;
+                case IAnyKeyAction:
+                    OnAnyKeyAction -= instance.OnOperation;
+                    break;
+            }
+        }
+
+        #endregion
     }
 }
