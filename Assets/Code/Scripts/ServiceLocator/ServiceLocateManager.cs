@@ -66,7 +66,7 @@ namespace ServiceManagement
         /// </summary>
         /// <param name="instance"></param>
         /// <typeparam name="T"></typeparam>
-        public void RegisterInfrastructure<T>(T instance) where T : class, IInfrastructure
+        public void RegisterApplication<T>(T instance) where T : class, IApplicationLayer
         {
             KeyLogger.Log($"インフラ層[{typeof(T).Name}] がサービスロケーターに登録されました。", this);
             _infrastructureLayers[typeof(T)] = instance;
@@ -155,7 +155,7 @@ namespace ServiceManagement
             }
         }
 
-        public void UnRegisterInfrastructure<T>(T instance) where T : class, IInfrastructure
+        public void UnRegisterInfrastructure<T>(T instance) where T : class, IApplicationLayer
         {
             if (_infrastructureLayers.TryGetValue(typeof(T), out var registeredInstance) &&
                 registeredInstance == instance)
@@ -270,7 +270,7 @@ namespace ServiceManagement
             return false;
         }
 
-        public bool TryGetInfrastructureLayer<T>(out T instance) where T : class, IInfrastructure
+        public bool TryGetInfrastructureLayer<T>(out T instance) where T : class, IApplicationLayer
         {
             if (_infrastructureLayers.TryGetValue(typeof(T), out object result))
             {

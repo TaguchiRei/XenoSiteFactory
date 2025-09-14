@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 namespace XenositeFramework.SceneSystem
 {
-    public class SceneFlowManager : IInfrastructure
+    public class SceneFlowManager : IApplicationLayer
     {
         private (SceneName sceneName, Scene scene) _mainScene = (Enum.Parse<SceneName>(SceneManager.GetActiveScene().name),SceneManager.GetActiveScene());
         private readonly Dictionary<SceneName, Scene> _subScenes = new();
@@ -144,9 +144,9 @@ namespace XenositeFramework.SceneSystem
             ServiceLocateManager.Instance.UnRegisterInfrastructure(this);
         }
 
-        public void RegisterInfrastructure()
+        public void RegisterApplication()
         {
-            ServiceLocateManager.Instance.RegisterInfrastructure(this);
+            ServiceLocateManager.Instance.RegisterApplication(this);
         }
     }
 }

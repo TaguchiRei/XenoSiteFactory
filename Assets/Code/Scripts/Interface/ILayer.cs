@@ -31,15 +31,16 @@ namespace Interface
         void RegisterDomain();
 
         public bool GetData<T>(out T instance) where T : class, IDataLayer;
-        public bool GetInfrastructure<T>(out T instance) where T : class, IInfrastructure;
+        public bool GetInfrastructure<T>(out T instance) where T : class, IApplicationLayer;
     }
 
     /// <summary>
-    /// どこの参照も持たず、ドメイン層に参照される
+    /// どこの参照も持たず、ドメイン層の参照を持つ。
+    /// またはサービスロケーターからメソッドなどの注入を受ける
     /// </summary>
-    public interface IInfrastructure : IDisposable
+    public interface IApplicationLayer : IDisposable
     {
-        void RegisterInfrastructure();
+        void RegisterApplication();
     }
 
     /// <summary>

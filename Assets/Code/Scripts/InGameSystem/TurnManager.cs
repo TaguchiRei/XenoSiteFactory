@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace InGameSystem
 {
-    public class TurnManager : MonoBehaviour, IPresentationLayer, IManagementFunc<IUseTurnAction>, IInitializable
+    public class TurnManager : MonoBehaviour, IApplicationLayer, IManagementFunc<IUseTurnAction>, IInitializable
     {
         [KeyReadOnly] private int _turnNumber = 0;
         [SerializeField] private int _maxTurn;
@@ -22,7 +22,7 @@ namespace InGameSystem
 
         private void Start()
         {
-            RegisterPresentation();
+            RegisterApplication();
         }
 
         #region 非公開メソッド
@@ -96,9 +96,9 @@ namespace InGameSystem
         {
         }
 
-        public void RegisterPresentation()
+        public void RegisterApplication()
         {
-            ServiceLocateManager.Instance.RegisterPresentation(this);
+            ServiceLocateManager.Instance.RegisterApplication(this);
         }
 
         public bool GetDomain<T>(out T instance) where T : class, IDomainLayer

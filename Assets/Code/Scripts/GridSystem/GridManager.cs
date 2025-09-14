@@ -185,7 +185,7 @@ namespace GridSystem
             return result;
         }
 
-        public bool GetInfrastructure<T>(out T instance) where T : class, IInfrastructure
+        public bool GetInfrastructure<T>(out T instance) where T : class, IApplicationLayer
         {
             var result = ServiceLocateManager.Instance.TryGetInfrastructureLayer(out T instanceInfra);
             instance = instanceInfra;

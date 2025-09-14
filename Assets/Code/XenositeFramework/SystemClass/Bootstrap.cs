@@ -15,7 +15,7 @@ namespace XenositeFramework.SystemClass
             PlayerOperationManager playerOperationManager = new();
             SceneFlowManager  sceneFlowManager = new();
             playerOperationManager.RegisterPresentation();
-            sceneFlowManager.RegisterInfrastructure();
+            sceneFlowManager.RegisterApplication();
             await sceneFlowManager.LoadMainSceneAsync(SceneName.StartScene);
         }
     }
