@@ -14,11 +14,16 @@ namespace InGameSystem
     {
         [KeyReadOnly] private int _turnNumber = 0;
         [SerializeField] private int _maxTurn;
-        private float _turnTime;
+        [SerializeField] private float _turnTime;
         private event Action StartTurnAction;
         private event Action OnTurnAction;
         private event Action EndTurnAction;
         private event Action EndAllTurnAction;
+
+        private void Start()
+        {
+            RegisterPresentation();
+        }
 
         #region 非公開メソッド
 
@@ -36,6 +41,7 @@ namespace InGameSystem
                 OnTurnAction?.Invoke();
                 EndTurnAction?.Invoke();
             }
+
             EndAllTurnAction?.Invoke();
         }
 
