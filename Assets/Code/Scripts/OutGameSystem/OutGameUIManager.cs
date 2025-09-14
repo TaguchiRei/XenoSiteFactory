@@ -13,17 +13,17 @@ namespace OutGameSystem
         }
         public void Dispose()
         {
-            LayeredServiceLocator.Instance.UnRegisterPresentation(this);
+            ServiceLocateManager.Instance.UnRegisterPresentation(this);
         }
 
         public void RegisterPresentation()
         {
-            LayeredServiceLocator.Instance.RegisterPresentation(this);
+            ServiceLocateManager.Instance.RegisterPresentation(this);
         }
 
         public bool GetDomain<T>(out T instance) where T : class, IDomainLayer
         {
-            if (LayeredServiceLocator.Instance.TryGetDomainLayer(out T instanceDomain))
+            if (ServiceLocateManager.Instance.TryGetDomainLayer(out T instanceDomain))
             {
                 instance = instanceDomain;
                 return true;

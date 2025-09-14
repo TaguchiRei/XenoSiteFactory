@@ -2,9 +2,8 @@ using System;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using Manager;
-using Service;
+using ServiceManagement;
 using Unity.VisualScripting;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace PlayerSystem
@@ -149,17 +148,17 @@ namespace PlayerSystem
         public void Dispose()
         {
             _inputSystemActions?.Dispose();
-            LayeredServiceLocator.Instance.UnRegisterPresentation(this);
+            ServiceLocateManager.Instance.UnRegisterPresentation(this);
         }
 
         public void RegisterPresentation()
         {
-            LayeredServiceLocator.Instance.RegisterPresentation(this);
+            ServiceLocateManager.Instance.RegisterPresentation(this);
         }
 
         public bool GetDomain<T>(out T instance) where T : class, IDomainLayer
         {
-            if (LayeredServiceLocator.Instance.TryGetDomainLayer<T>(out var domainInstance))
+            if (ServiceLocateManager.Instance.TryGetDomainLayer<T>(out var domainInstance))
             {
                 instance = domainInstance;
                 return true;

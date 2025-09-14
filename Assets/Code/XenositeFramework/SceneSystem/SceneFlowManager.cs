@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
-using Service;
+using ServiceManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -141,12 +141,12 @@ namespace XenositeFramework.SceneSystem
 
         public void Dispose()
         {
-            LayeredServiceLocator.Instance.UnRegisterInfrastructure(this);
+            ServiceLocateManager.Instance.UnRegisterInfrastructure(this);
         }
 
         public void RegisterInfrastructure()
         {
-            LayeredServiceLocator.Instance.RegisterInfrastructure(this);
+            ServiceLocateManager.Instance.RegisterInfrastructure(this);
         }
     }
 }

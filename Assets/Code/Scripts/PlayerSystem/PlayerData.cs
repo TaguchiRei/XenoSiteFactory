@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using GamesKeystoneFramework.Save;
 using Interface;
-using Service;
+using ServiceManagement;
 using UnitInfo;
 
 namespace Player
@@ -31,12 +31,12 @@ namespace Player
         
         public void Dispose()
         {
-            LayeredServiceLocator.Instance.UnRegisterData(this);
+            ServiceLocateManager.Instance.UnRegisterData(this);
         }
 
         public void RegisterData()
         {
-            LayeredServiceLocator.Instance.RegisterData(this);
+            ServiceLocateManager.Instance.RegisterData(this);
         }
 
         protected override PlayerData Initialize()

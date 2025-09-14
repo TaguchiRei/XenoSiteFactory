@@ -4,6 +4,16 @@ using Service;
 namespace Interface
 {
     /// <summary>
+    /// 各種機能を管理するクラスが継承する。
+    /// </summary>
+    /// <typeparam name="T">インターフェースを指定</typeparam>
+    public interface IManagementFunc<in T>
+    {
+        void RegisterFunc(T instance);
+        
+        void UnregisterFunc(T instance);
+    }
+    /// <summary>
     /// どこにも参照されず、ドメイン層を参照する。
     /// </summary>
     public interface IPresentationLayer : IDisposable

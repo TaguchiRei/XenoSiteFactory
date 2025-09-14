@@ -1,12 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Player;
-using Service;
+using ServiceManagement;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using XenositeFramework.SaveSystem;
 using XenositeFramework.SceneSystem;
@@ -23,7 +20,7 @@ namespace OutGameSystem.Dev
         private async void Start()
         {
             var allData = await SaveDataSupporter.LoadAll<PlayerData>(Application.persistentDataPath);
-            LayeredServiceLocator.Instance.TryGetInfrastructureLayer(out _sceneFlowManager);
+            ServiceLocateManager.Instance.TryGetInfrastructureLayer(out _sceneFlowManager);
             
             foreach (var data in allData)
             {
@@ -38,7 +35,7 @@ namespace OutGameSystem.Dev
         private async UniTask LoadPlayerData(PlayerData playerData)
         {
             KeyLogger.Log($"LoadPlayerData {playerData.PlayerName}");
-            LayeredServiceLocator.Instance.RegisterData(playerData);
+            ServiceLocateManager.Instance.RegisterData(playerData);
             await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGameDev);
         }
     }

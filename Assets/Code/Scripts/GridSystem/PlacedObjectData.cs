@@ -26,12 +26,12 @@ namespace GridSystem
 
         public void Dispose()
         {
-            LayeredServiceLocator.Instance.UnRegisterData(this);
+            ServiceLocateManager.Instance.UnRegisterData(this);
         }
 
         public void RegisterData()
         {
-            LayeredServiceLocator.Instance.RegisterData(this);
+            ServiceLocateManager.Instance.RegisterData(this);
         }
     }
 }
