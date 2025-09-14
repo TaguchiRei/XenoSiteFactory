@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
-using Manager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

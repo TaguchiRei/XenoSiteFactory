@@ -1,7 +1,6 @@
 using System;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
-using Manager;
 using ServiceManagement;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
@@ -11,72 +10,51 @@ namespace PlayerSystem
     public class PlayerOperationManager : IPresentationLayer
         , InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, IInitializable
     {
-        public Action<InputAction.CallbackContext> OnMoveAction => _onMoveAction;
-        private Action<InputAction.CallbackContext> _onMoveAction;
-        public Action<InputAction.CallbackContext> OnInteractAction  => _onInteractAction;
-        private Action<InputAction.CallbackContext> _onInteractAction;
-        public Action<InputAction.CallbackContext> OnPreviousAction  => _onPreviousAction;
-        private Action<InputAction.CallbackContext> _onPreviousAction;
-        public Action<InputAction.CallbackContext> OnNextAction    => _onNextAction;
-        private Action<InputAction.CallbackContext> _onNextAction;
-        public Action<InputAction.CallbackContext> OnMouseMoveAction  => _onMouseMoveAction;
-        private Action<InputAction.CallbackContext> _onMouseMoveAction;
-        public Action<InputAction.CallbackContext> OnAnyKeyAction => _onAnyKeyAction;
-        private Action<InputAction.CallbackContext> _onAnyKeyAction;
-        
+        public event Action<InputAction.CallbackContext> OnMoveAction;
+        public event Action<InputAction.CallbackContext> OnInteractAction;
+        public event Action<InputAction.CallbackContext> OnPreviousAction;
+        public event Action<InputAction.CallbackContext> OnNextAction;
+        public event Action<InputAction.CallbackContext> OnMouseMoveAction;
+        public event Action<InputAction.CallbackContext> OnAnyKeyAction;
 
         private InputSystem_Actions _inputSystemActions;
-        private InGameManager _inGameManager;
 
         #region Player
 
         public void OnMove(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnMove Input", this);
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onMoveAction?.Invoke(context);
-            }
+            OnMoveAction?.Invoke(context);
         }
 
         public void OnInteract(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnInteract Input", this);
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onInteractAction?.Invoke(context);
-            }
+            OnInteractAction?.Invoke(context);
         }
 
         public void OnPrevious(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnPrevious Input", this);
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onPreviousAction?.Invoke(context);
-            }
+            OnPreviousAction?.Invoke(context);
         }
 
         public void OnNext(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnNext Input", this);
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onNextAction?.Invoke(context);
-            }
+            OnNextAction?.Invoke(context);
         }
 
         public void OnMouseMove(InputAction.CallbackContext context)
         {
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onMouseMoveAction?.Invoke(context);
-            }
+            KeyLogger.Log("OnMouseMove Input", this);
+            OnMouseMoveAction?.Invoke(context);
         }
-        
+
         public void OnAnyKey(InputAction.CallbackContext context)
         {
-            
+            KeyLogger.Log("OnAnyKey Input", this);
+            OnAnyKeyAction?.Invoke(context);
         }
 
         #endregion

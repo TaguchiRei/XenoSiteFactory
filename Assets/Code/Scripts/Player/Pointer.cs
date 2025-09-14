@@ -2,7 +2,7 @@ using Service;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GridSystem;
 using Interface;
-using Manager;
+using PlayerSystem;
 using StaticObject;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,17 +14,13 @@ namespace Player
         public bool IsPaused { get; set; }
         [SerializeField, Range(-2f, 2f)] private float pointerOffset;
         
-        PlayerOperationManagerL _playerOperationManagerL;
-        private GridManagerL _gridManagerL;
-        UnitResourceManager _unitResourceManager;
+        PlayerOperationManager _playerOperationManager;
         
         
         
         private void Start()
         {
-            if(ServiceLocatorL.Instance.TryGetClass(out _playerOperationManagerL) &&
-               ServiceLocatorL.Instance.TryGetClass(out _gridManagerL) &&
-               ServiceLocatorL.Instance.TryGetClass(out _unitResourceManager))
+            if(ServiceLocatorL.Instance.TryGetClass(out _playerOperationManager))
             {
                 KeyLogger.Log("GetManagerClass");
             }
@@ -33,7 +29,7 @@ namespace Player
                 KeyLogger.Log("GetManagerClass");
                 return;
             }
-            _playerOperationManagerL.OnMouseMoveAction += GetMousePosition;
+            _playerOperationManager.OnMouseMoveAction += GetMousePosition;
         }
 
 
@@ -44,7 +40,7 @@ namespace Player
             
             Vector2 mousePosition = context.ReadValue<Vector2>();
             var ray = Camera.main.ScreenPointToRay(mousePosition);
-            var mask = LayerMask.GetMask($"Layer{_gridManagerL.PutLayer}Collider");
+            var mask = LayerMask.GetMask($"Layer1Collider");
             
             if (Physics.Raycast(ray, out RaycastHit hit, 100f, mask))
             {

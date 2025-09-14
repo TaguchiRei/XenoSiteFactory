@@ -1,6 +1,5 @@
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Service;
-using Manager;
 using StaticObject;
 using UnitInfo;
 using UnityEngine;
@@ -8,8 +7,9 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-    public class UnitAttacheDetaching : MonoBehaviour
+    public class UnitAttacheDetaching //: MonoBehaviour
     {
+        /*
         private PlayerOperationManagerL _playerOperationManagerL;
         private UnitResourceManager _unitResourceManager;
         private InGameUIManager _inGameUIManager;
@@ -54,5 +54,6 @@ namespace Player
                 _gridManagerL.PutUnitOnGrid(shape, UnitPutSupport.SelectedPosition);
             }
         }
+        */
     }
 }
