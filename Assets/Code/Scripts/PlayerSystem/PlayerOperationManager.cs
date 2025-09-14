@@ -153,23 +153,23 @@ namespace PlayerSystem
         {
             switch (instance)
             {
-                case IMoveAction:
-                    OnMoveAction += instance.OnOperation;
+                case IMoveAction moveAction:
+                    OnMoveAction += moveAction.OnMoveOperation;
                     break;
-                case IInteractAction:
-                    OnInteractAction += instance.OnOperation;
+                case IInteractAction  interactAction:
+                    OnInteractAction += interactAction.OnInteractOperation;
                     break;
-                case IPreviousAction:
-                    OnPreviousAction += instance.OnOperation;
+                case IPreviousAction  previousAction:
+                    OnPreviousAction += previousAction.OnPreviousOperation;
                     break;
-                case INextAction:
-                    OnNextAction += instance.OnOperation;
+                case INextAction nextAction:
+                    OnNextAction +=  nextAction.OnNextOperation;
                     break;
-                case IMouseMoveAction:
-                    OnMouseMoveAction += instance.OnOperation;
+                case IMouseMoveAction  mouseMoveAction:
+                    OnMouseMoveAction += mouseMoveAction.OnMouseMoveOperation;
                     break;
-                case IAnyKeyAction:
-                    OnAnyKeyAction += instance.OnOperation;
+                case IAnyKeyAction anyKeyAction:
+                    OnAnyKeyAction += anyKeyAction.OnAnyKeyOperation;
                     break;
             }
         }
@@ -178,23 +178,23 @@ namespace PlayerSystem
         {
             switch (instance)
             {
-                case IMoveAction:
-                    OnMoveAction -= instance.OnOperation;
+                case IMoveAction moveAction:
+                    OnMoveAction -= moveAction.OnMoveOperation;
                     break;
-                case IInteractAction:
-                    OnInteractAction -= instance.OnOperation;
+                case IInteractAction  interactAction:
+                    OnInteractAction -= interactAction.OnInteractOperation;
                     break;
-                case IPreviousAction:
-                    OnPreviousAction -= instance.OnOperation;
+                case IPreviousAction  previousAction:
+                    OnPreviousAction -= previousAction.OnPreviousOperation;
                     break;
-                case INextAction:
-                    OnNextAction -= instance.OnOperation;
+                case INextAction nextAction:
+                    OnNextAction -=  nextAction.OnNextOperation;
                     break;
-                case IMouseMoveAction:
-                    OnMouseMoveAction -= instance.OnOperation;
+                case IMouseMoveAction  mouseMoveAction:
+                    OnMouseMoveAction -= mouseMoveAction.OnMouseMoveOperation;
                     break;
-                case IAnyKeyAction:
-                    OnAnyKeyAction -= instance.OnOperation;
+                case IAnyKeyAction anyKeyAction:
+                    OnAnyKeyAction -= anyKeyAction.OnAnyKeyOperation;
                     break;
             }
         }
