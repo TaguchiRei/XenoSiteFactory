@@ -8,7 +8,7 @@ using UnitInfo;
 namespace Player
 {
     [Serializable]
-    public class PlayerData: SaveDataBase<PlayerData>, IDataLayer
+    public class SaveData: SaveDataBase<SaveData>, IDataLayer
     {
         public string PlayerName;
         public int Days;
@@ -18,7 +18,7 @@ namespace Player
         public int Money;
         public List<PutUnitData> _putUnitDataList;
 
-        public PlayerData()
+        public SaveData()
         {
             PlayerName = "Sinner";
             Days = 0;
@@ -39,9 +39,9 @@ namespace Player
             ServiceLocateManager.Instance.RegisterData(this);
         }
 
-        protected override PlayerData Initialize()
+        protected override SaveData Initialize()
         {
-            var initializedPlayerData = new PlayerData();
+            var initializedPlayerData = new SaveData();
             initializedPlayerData.PlayerName = "Sinner";
             initializedPlayerData.Days = 0;
             initializedPlayerData.Unit = 0;
