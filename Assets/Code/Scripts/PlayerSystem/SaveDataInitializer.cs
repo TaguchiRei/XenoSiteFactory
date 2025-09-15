@@ -9,7 +9,7 @@ namespace PlayerSystem
     {
         public void InitializeSaveData(SaveData  saveData)
         {
-            
+            // GridExistDataおよびGridPlacedData、PlayerDataをサービスロケーターに登録する
         }
 
         #region インターフェース実装
