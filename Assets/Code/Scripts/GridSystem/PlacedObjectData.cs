@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Interface;
 using Service;
+using ServiceManagement;
 using UnitInfo;
 
 namespace GridSystem
@@ -26,12 +27,12 @@ namespace GridSystem
 
         public void Dispose()
         {
-            LayeredServiceLocator.Instance.UnRegisterData(this);
+            ServiceLocateManager.Instance.UnRegisterData(this);
         }
 
         public void RegisterData()
         {
-            LayeredServiceLocator.Instance.RegisterData(this);
+            ServiceLocateManager.Instance.RegisterData(this);
         }
     }
 }

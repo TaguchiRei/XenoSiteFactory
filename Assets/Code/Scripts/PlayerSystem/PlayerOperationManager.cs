@@ -1,77 +1,62 @@
 using System;
-using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
-using Manager;
-using Service;
-using UnityEngine;
+using PlayerSystemInterface;
+using ServiceManagement;
+using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 
 namespace PlayerSystem
 {
-    public class PlayerOperationManager : ManagerBase<PlayerOperationManager>,
-        InputSystem_Actions.IPlayerActions,
-        InputSystem_Actions.IUIActions,
-        IPresentationLayer
+    public class PlayerOperationManager : IPresentationLayer
+        , IManagementFunc<IOperation>
+        , InputSystem_Actions.IPlayerActions, InputSystem_Actions.IUIActions, IInitializable
     {
-        private Action<InputAction.CallbackContext> _onMoveAction;
-        private Action<InputAction.CallbackContext> _onInteractAction;
-        private Action<InputAction.CallbackContext> _onPreviousAction;
-        private Action<InputAction.CallbackContext> _onNextAction;
-        private Action<InputAction.CallbackContext> _onMouseMoveAction;
+        public event Action<InputAction.CallbackContext> OnMoveAction;
+        public event Action<InputAction.CallbackContext> OnInteractAction;
+        public event Action<InputAction.CallbackContext> OnPreviousAction;
+        public event Action<InputAction.CallbackContext> OnNextAction;
+        public event Action<InputAction.CallbackContext> OnMouseMoveAction;
+        public event Action<InputAction.CallbackContext> OnAnyKeyAction;
 
         private InputSystem_Actions _inputSystemActions;
-        private InGameManager _inGameManager;
 
         #region Player
 
         public void OnMove(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnMove Input", this);
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onMoveAction?.Invoke(context);
-            }
+            OnMoveAction?.Invoke(context);
         }
 
         public void OnInteract(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnInteract Input", this);
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onInteractAction?.Invoke(context);
-            }
+            OnInteractAction?.Invoke(context);
         }
 
         public void OnPrevious(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnPrevious Input", this);
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onPreviousAction?.Invoke(context);
-            }
+            OnPreviousAction?.Invoke(context);
         }
 
         public void OnNext(InputAction.CallbackContext context)
         {
             KeyLogger.Log("OnNext Input", this);
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onNextAction?.Invoke(context);
-            }
+            OnNextAction?.Invoke(context);
         }
 
         public void OnMouseMove(InputAction.CallbackContext context)
         {
-            if (_inGameManager == null || (int)_inGameManager.DayState < 2)
-            {
-                _onMouseMoveAction?.Invoke(context);
-            }
+            KeyLogger.Log("OnMouseMove Input", this);
+            OnMouseMoveAction?.Invoke(context);
         }
-        
+
         public void OnAnyKey(InputAction.CallbackContext context)
         {
-            
+            KeyLogger.Log("OnAnyKey Input", this);
+            OnAnyKeyAction?.Invoke(context);
         }
 
         #endregion
@@ -128,85 +113,92 @@ namespace PlayerSystem
 
         #endregion
 
-        public override void Initialize()
+
+        #region インターフェース実装
+
+        public void Initialize()
         {
             _inputSystemActions = new InputSystem_Actions();
             _inputSystemActions.Player.SetCallbacks(this);
             _inputSystemActions.Enable();
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IMoveInputReceiver>(
-                    out var moveInputReceivers))
-            {
-                foreach (var receiver in moveInputReceivers)
-                {
-                    _onMoveAction += receiver.OnMoveInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IInteractInputReceiver>(
-                    out var interactInputReceivers))
-            {
-                foreach (var receiver in interactInputReceivers)
-                {
-                    _onInteractAction += receiver.OnInteractInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IPreviousInputReceiver>(
-                    out var previousInputReceivers))
-            {
-                foreach (var receiver in previousInputReceivers)
-                {
-                    _onPreviousAction += receiver.OnPreviousInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<INextInputReceiver>(
-                    out var nextInputReceivers))
-            {
-                foreach (var receiver in nextInputReceivers)
-                {
-                    _onNextAction += receiver.OnNextInput;
-                }
-            }
-
-            if (LayeredServiceLocator.Instance.TryGetAllFuncDomainLayer<IMouseMoveInputReceiver>(
-                    out var mouseMoveInputReceivers))
-            {
-                foreach (var receiver in mouseMoveInputReceivers)
-                {
-                    _onMouseMoveAction += receiver.OnMouseMoveInput;
-                }
-            }
-        }
-
-        private void OnDisable()
-        {
-            
-            _inputSystemActions.Disable();
         }
 
         public void Dispose()
         {
             _inputSystemActions?.Dispose();
+            ServiceLocateManager.Instance.UnRegisterPresentation(this);
         }
 
         public void RegisterPresentation()
         {
-            LayeredServiceLocator.Instance.RegisterPresentation(this);
+            ServiceLocateManager.Instance.RegisterPresentation(this);
         }
 
         public bool GetDomain<T>(out T instance) where T : class, IDomainLayer
         {
-            if (LayeredServiceLocator.Instance.TryGetDomainLayer<T>(out var domainInstance))
+            if (ServiceLocateManager.Instance.TryGetDomainLayer<T>(out var domainInstance))
             {
                 instance = domainInstance;
                 return true;
             }
             else
             {
-                instance = default;
+                instance = null;
                 return false;
             }
         }
+
+
+        public void RegisterFunc(IOperation instance)
+        {
+            switch (instance)
+            {
+                case IMoveAction moveAction:
+                    OnMoveAction += moveAction.OnMoveOperation;
+                    break;
+                case IInteractAction  interactAction:
+                    OnInteractAction += interactAction.OnInteractOperation;
+                    break;
+                case IPreviousAction  previousAction:
+                    OnPreviousAction += previousAction.OnPreviousOperation;
+                    break;
+                case INextAction nextAction:
+                    OnNextAction +=  nextAction.OnNextOperation;
+                    break;
+                case IMouseMoveAction  mouseMoveAction:
+                    OnMouseMoveAction += mouseMoveAction.OnMouseMoveOperation;
+                    break;
+                case IAnyKeyAction anyKeyAction:
+                    OnAnyKeyAction += anyKeyAction.OnAnyKeyOperation;
+                    break;
+            }
+        }
+
+        public void UnregisterFunc(IOperation instance)
+        {
+            switch (instance)
+            {
+                case IMoveAction moveAction:
+                    OnMoveAction -= moveAction.OnMoveOperation;
+                    break;
+                case IInteractAction  interactAction:
+                    OnInteractAction -= interactAction.OnInteractOperation;
+                    break;
+                case IPreviousAction  previousAction:
+                    OnPreviousAction -= previousAction.OnPreviousOperation;
+                    break;
+                case INextAction nextAction:
+                    OnNextAction -=  nextAction.OnNextOperation;
+                    break;
+                case IMouseMoveAction  mouseMoveAction:
+                    OnMouseMoveAction -= mouseMoveAction.OnMouseMoveOperation;
+                    break;
+                case IAnyKeyAction anyKeyAction:
+                    OnAnyKeyAction -= anyKeyAction.OnAnyKeyOperation;
+                    break;
+            }
+        }
+
+        #endregion
     }
 }

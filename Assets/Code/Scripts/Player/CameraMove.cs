@@ -1,5 +1,4 @@
 using DG.Tweening;
-using Manager;
 using Service;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,6 +7,7 @@ namespace Player
 {
     public class CameraMove : MonoBehaviour
     {
+        /*
         private Vector3 _rotation;
         private Tween _rotateTween;
         private Vector3 _moveDirection;
@@ -20,7 +20,7 @@ namespace Player
         {
             _rotation = transform.eulerAngles;
             var a = ServiceLocatorL.Instance.TryGetClass(out _inGameManager);
-            var b = ServiceLocatorL.Instance.TryGetClass(out PlayerOperationManager playerOperationManager);
+            var b = ServiceLocatorL.Instance.TryGetClass(out PlayerOperationManagerL playerOperationManager);
             playerOperationManager.OnMoveAction += OnMoveInput;
             playerOperationManager.OnNextAction += OnNextInput;
             playerOperationManager.OnPreviousAction += OnPreviousInput;
@@ -57,5 +57,6 @@ namespace Player
             _rotation += new Vector3(0, 90, 0);
             transform.DORotate(_rotation, 1.0f);
         }
+        */
     }
 }

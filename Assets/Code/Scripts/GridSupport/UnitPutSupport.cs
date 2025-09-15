@@ -1,4 +1,3 @@
-using Manager;
 using UnitInfo;
 using UnityEngine;
 using Object = UnityEngine.Object;

@@ -1,7 +1,7 @@
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GamesKeystoneFramework.KeyMathBit;
 using Interface;
-using Service;
+using ServiceManagement;
 using StaticObject;
 using UnitInfo;
 using Unity.VisualScripting;
@@ -22,7 +22,6 @@ namespace GridSystem
         private DUlong _oneDUlong;
         private GridExistData _gridExistData;
         private AllUnitData _allUnitData;
-        private GridDistanceData _gridDistanceData;
         private PlacedObjectData _placedObjectData;
 
         #region テスト用スクリプト
@@ -45,9 +44,8 @@ namespace GridSystem
         public void GridSystemInitialize(WallData wallData)
         {
             if (!GetData(out _gridExistData) ||
-                !GetData(out _gridDistanceData) ||
                 !GetData(out _placedObjectData) ||
-                !LayeredServiceLocator.Instance.TryGetScriptableObject(out _allUnitData))
+                !ServiceLocateManager.Instance.TryGetScriptableObject(out _allUnitData))
             {
                 KeyLogger.LogError("GridManagerの初期化に失敗しました。");
                 return;
@@ -72,7 +70,6 @@ namespace GridSystem
             if (CheckCanPut(shape, position)) return false;
 
             _gridExistData.SetGridData(shape, position);
-            _gridDistanceData.SetGridData(shape, position);
             _placedObjectData.SetUnit(putUnitData);
             GenerateUnitInstance(putUnitData);
 
@@ -83,7 +80,6 @@ namespace GridSystem
         {
             var shape = _allUnitData.UnitTypeArray[(int)putUnitData.UnitType].AllUnit[putUnitData.UnitId].UnitShape;
             _gridExistData.RemoveGridData(shape, position);
-            _gridDistanceData.RemoveGridData(shape, position);
             _placedObjectData.RemoveUnit(putUnitData);
 
             return true;
@@ -174,18 +170,25 @@ namespace GridSystem
 
         public void Dispose()
         {
-            LayeredServiceLocator.Instance.UnRegisterDomain(this);
+            ServiceLocateManager.Instance.UnRegisterDomain(this);
         }
 
         public void RegisterDomain()
         {
-            LayeredServiceLocator.Instance.RegisterDomain(this);
+            ServiceLocateManager.Instance.RegisterDomain(this);
         }
 
         public bool GetData<T>(out T instance) where T : class, IDataLayer
         {
-            var result = LayeredServiceLocator.Instance.TryGetDataLayer(out T instanceData);
+            var result = ServiceLocateManager.Instance.TryGetDataLayer(out T instanceData);
             instance = instanceData;
+            return result;
+        }
+
+        public bool GetInfrastructure<T>(out T instance) where T : class, IApplicationLayer
+        {
+            var result = ServiceLocateManager.Instance.TryGetInfrastructureLayer(out T instanceInfra);
+            instance = instanceInfra;
             return result;
         }
 

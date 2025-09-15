@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Manager;
 using UnitInfo;
 using Unity.VisualScripting;
 using UnityEngine;

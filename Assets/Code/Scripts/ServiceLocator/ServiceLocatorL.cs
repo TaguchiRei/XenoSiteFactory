@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
-using Manager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Service
 {
+    [Obsolete("これは旧形式のサービスロケーターです。代わりにLayeredServiceLocatorを利用してください。")]
     public class ServiceLocatorL : MonoBehaviour
     {
         [SerializeField] private string managerSceneName;

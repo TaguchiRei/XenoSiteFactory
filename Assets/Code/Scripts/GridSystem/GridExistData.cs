@@ -1,6 +1,6 @@
 using GamesKeystoneFramework.KeyMathBit;
 using Interface;
-using Service;
+using ServiceManagement;
 using StaticObject;
 using UnityEngine;
 
@@ -74,12 +74,12 @@ namespace GridSystem
         /// </summary>
         public void RegisterData()
         {
-            LayeredServiceLocator.Instance.RegisterData(this);
+            ServiceLocateManager.Instance.RegisterData(this);
         }
 
         public void Dispose()
         {
-            LayeredServiceLocator.Instance.UnRegisterData(this);
+            ServiceLocateManager.Instance.UnRegisterData(this);
         }
 
 #if UNITY_EDITOR
