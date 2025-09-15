@@ -33,7 +33,7 @@ namespace InGameSystem
         {
             if(ServiceLocateManager.Instance.TryGetApplicationLayer(out _sceneFlowManager))
             {
-                await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGameDev);
+                await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGame);
                 _startDirector.Play();
             }
         }

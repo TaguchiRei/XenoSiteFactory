@@ -36,7 +36,7 @@ namespace OutGameSystem.Dev
         {
             KeyLogger.Log($"LoadPlayerData {playerData.PlayerName}");
             ServiceLocateManager.Instance.RegisterData(playerData);
-            await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGameDev);
+            await _sceneFlowManager.LoadMainSceneAsync(SceneName.ManagementScene);
         }
     }
 }
