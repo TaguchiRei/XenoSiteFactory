@@ -18,4 +18,8 @@ MonoBehaviour:
   Xenosite: 0
   Items: 0
   Money: 0
-  _putUnitDataList: []
+  _putUnitDataList:
+  - UnitId: 0
+    UnitType: 0
+    Position: {x: 15, y: 0, z: 32}
+    Rotation: 0

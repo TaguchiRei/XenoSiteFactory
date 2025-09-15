@@ -38,9 +38,7 @@ namespace GridSystem
         /// <summary>
         /// グリッドのシステム全体の初期化を行う。
         /// </summary>
-        /// <param name="gridExistData"></param>
-        /// <param name="gridDistanceData"></param>
-        /// <param name="placedObjectData"></param>
+        /// <param name="wallData"></param>
         public void GridSystemInitialize(WallData wallData)
         {
             if (!GetData(out _gridExistData) ||

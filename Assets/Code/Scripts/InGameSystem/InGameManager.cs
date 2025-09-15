@@ -1,5 +1,7 @@
 using System;
+using GridSystem;
 using Interface;
+using Player;
 using ServiceManagement;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -12,8 +14,10 @@ namespace InGameSystem
         private InGameState _inGameState = InGameState.LoadedInGame;
         [SerializeField] private PlayableDirector _startDirector;
         [SerializeField] private PlayableDirector _endDirector;
-        
+
         private SceneFlowManager _sceneFlowManager;
+        private GridManager _gridManager;
+        private PlayerData _playerData;
 
         #region パブリックメソッド
 
@@ -22,19 +26,20 @@ namespace InGameSystem
         /// </summary>
         public void PlayModeStart()
         {
-            
         }
 
         #endregion
-        
+
         #region プライベートメソッド
 
         private async void Start()
         {
-            if(ServiceLocateManager.Instance.TryGetApplicationLayer(out _sceneFlowManager))
+            if (ServiceLocateManager.Instance.TryGetDomainLayer(out _gridManager) &&
+                ServiceLocateManager.Instance.TryGetApplicationLayer(out _sceneFlowManager) &&
+                ServiceLocateManager.Instance.TryGetDataLayer(out _playerData))
             {
                 await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGame);
-                _startDirector.Play();
+                
             }
         }
 
@@ -48,16 +53,14 @@ namespace InGameSystem
 
         private void EndInGame()
         {
-            
         }
-        
+
         #endregion
 
         #region インターフェース実装
 
         public void Dispose()
         {
-            
         }
 
         public bool GetDomain<T>(out T instance) where T : class, IDomainLayer
@@ -114,10 +117,13 @@ namespace InGameSystem
     {
         /// <summary> インゲームシーンを読み込んだ直後 </summary>
         LoadedInGame,
+
         /// <summary> インゲームシーン開始時のムービー </summary>
         StartInGame,
+
         /// <summary> 実際に遊んでいる状態 </summary>
         PlayMode,
+
         /// <summary> インゲームシーン終了時のムービー </summary>
         EndInGame
     }

@@ -8,6 +8,7 @@ using GamesKeystoneFramework.Save;
 using UnityEditor;
 using UnityEngine;
 using XenositeFramework.SaveSystem;
+using UnitInfo;
 
 namespace XenositeFramework.Editor
 {
@@ -23,6 +24,7 @@ namespace XenositeFramework.Editor
         private SerializedProperty _usingSerializedProperty;
         private Vector2 _scrollPosition;
         private int _testSaveDataNumber;
+        private int _randomGenerateNumber;
         private bool _isC;
 
         [MenuItem("Window/XenositeFramework/SaveDataGenerator")]
@@ -157,6 +159,12 @@ namespace XenositeFramework.Editor
             }
 
             EditorGUILayout.EndScrollView();
+            
+            _randomGenerateNumber = EditorGUILayout.IntField("Random Generate Number", _randomGenerateNumber);
+            if (GUILayout.Button("Create Random Unit Data"))
+            {
+                CreateRandomUnitData();
+            }
         }
 
         public FieldInfo[] GetAllSaveDataFields(Type type)
@@ -235,6 +243,14 @@ namespace XenositeFramework.Editor
             }
 
             return type.Name; // その他はそのまま
+        }
+
+        private void CreateRandomUnitData()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                
+            }
         }
     }
 }
