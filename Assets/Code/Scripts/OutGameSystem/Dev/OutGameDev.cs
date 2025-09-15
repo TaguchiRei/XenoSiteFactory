@@ -19,7 +19,7 @@ namespace OutGameSystem.Dev
 
         private async void Start()
         {
-            var allData = await SaveDataSupporter.LoadAll<SaveData>(Application.persistentDataPath);
+            var allData = await SaveDataSupporter.LoadAll<XenositeSaveData>(Application.persistentDataPath);
             ServiceLocateManager.Instance.TryGetApplicationLayer(out _sceneFlowManager);
             
             foreach (var data in allData)
@@ -32,10 +32,10 @@ namespace OutGameSystem.Dev
             }
         }
 
-        private async UniTask LoadPlayerData(SaveData saveData)
+        private async UniTask LoadPlayerData(XenositeSaveData xenositeSaveData)
         {
-            KeyLogger.Log($"LoadPlayerData {saveData.PlayerName}");
-            ServiceLocateManager.Instance.RegisterData(saveData);
+            KeyLogger.Log($"LoadPlayerData {xenositeSaveData.PlayerName}");
+            ServiceLocateManager.Instance.RegisterData(xenositeSaveData);
             await _sceneFlowManager.LoadMainSceneAsync(SceneName.ManagementScene);
         }
     }

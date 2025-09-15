@@ -17,7 +17,7 @@ namespace InGameSystem
 
         private SceneFlowManager _sceneFlowManager;
         private GridManager _gridManager;
-        private SaveData _saveData;
+        private XenositeSaveData _xenositeSaveData;
 
         #region パブリックメソッド
 
@@ -36,7 +36,7 @@ namespace InGameSystem
         {
             if (ServiceLocateManager.Instance.TryGetDomainLayer(out _gridManager) &&
                 ServiceLocateManager.Instance.TryGetApplicationLayer(out _sceneFlowManager) &&
-                ServiceLocateManager.Instance.TryGetDataLayer(out _saveData))
+                ServiceLocateManager.Instance.TryGetDataLayer(out _xenositeSaveData))
             {
                 await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGame);
                 

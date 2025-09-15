@@ -7,7 +7,7 @@ namespace PlayerSystem
 {
     public class SaveDataInitializer : IDataLayer
     {
-        public void InitializeSaveData(SaveData  saveData)
+        public void InitializeSaveData(XenositeSaveData  xenositeSaveData)
         {
             // GridExistDataおよびGridPlacedData、PlayerDataをサービスロケーターに登録する
         }

@@ -5,6 +5,12 @@ namespace PlayerSystem
 {
     public class PlayerData : IDataLayer
     {
+        public string PlayerName;
+        public int Days;
+        public int Unit;
+        public int Xenosite;
+        public int Items;
+        public int Money;
         public void Dispose()
         {
             ServiceLocateManager.Instance.UnRegisterData(this);
