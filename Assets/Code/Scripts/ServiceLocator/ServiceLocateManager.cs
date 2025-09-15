@@ -16,7 +16,7 @@ namespace ServiceManagement
 
         private readonly Dictionary<Type, object> _presentationLayers = new();
         private readonly Dictionary<Type, object> _domainLayers = new();
-        private readonly Dictionary<Type, object> _infrastructureLayers = new();
+        private readonly Dictionary<Type, object> _applicationLayers = new();
         private readonly Dictionary<Type, object> _dataLayers = new();
         private readonly Dictionary<Type, object> _funcManagementInterfaces = new();
 
@@ -69,7 +69,7 @@ namespace ServiceManagement
         public void RegisterApplication<T>(T instance) where T : class, IApplicationLayer
         {
             KeyLogger.Log($"インフラ層[{typeof(T).Name}] がサービスロケーターに登録されました。", this);
-            _infrastructureLayers[typeof(T)] = instance;
+            _applicationLayers[typeof(T)] = instance;
         }
 
         /// <summary>
@@ -155,12 +155,12 @@ namespace ServiceManagement
             }
         }
 
-        public void UnRegisterInfrastructure<T>(T instance) where T : class, IApplicationLayer
+        public void UnRegisterApplication<T>(T instance) where T : class, IApplicationLayer
         {
-            if (_infrastructureLayers.TryGetValue(typeof(T), out var registeredInstance) &&
+            if (_applicationLayers.TryGetValue(typeof(T), out var registeredInstance) &&
                 registeredInstance == instance)
             {
-                _infrastructureLayers.Remove(typeof(T));
+                _applicationLayers.Remove(typeof(T));
             }
             else
             {
@@ -270,9 +270,9 @@ namespace ServiceManagement
             return false;
         }
 
-        public bool TryGetInfrastructureLayer<T>(out T instance) where T : class, IApplicationLayer
+        public bool TryGetApplicationLayer<T>(out T instance) where T : class, IApplicationLayer
         {
-            if (_infrastructureLayers.TryGetValue(typeof(T), out object result))
+            if (_applicationLayers.TryGetValue(typeof(T), out object result))
             {
                 instance = (T)result;
                 return true;

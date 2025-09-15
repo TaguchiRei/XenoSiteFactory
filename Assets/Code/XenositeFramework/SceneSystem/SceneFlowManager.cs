@@ -141,7 +141,7 @@ namespace XenositeFramework.SceneSystem
 
         public void Dispose()
         {
-            ServiceLocateManager.Instance.UnRegisterInfrastructure(this);
+            ServiceLocateManager.Instance.UnRegisterApplication(this);
         }
 
         public void RegisterApplication()

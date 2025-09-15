@@ -20,7 +20,7 @@ namespace OutGameSystem.Dev
         private async void Start()
         {
             var allData = await SaveDataSupporter.LoadAll<PlayerData>(Application.persistentDataPath);
-            ServiceLocateManager.Instance.TryGetInfrastructureLayer(out _sceneFlowManager);
+            ServiceLocateManager.Instance.TryGetApplicationLayer(out _sceneFlowManager);
             
             foreach (var data in allData)
             {
