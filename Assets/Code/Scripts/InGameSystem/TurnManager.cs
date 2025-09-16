@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace InGameSystem
 {
-    public class TurnManager : MonoBehaviour, IApplicationLayer, IManagementFunc<IUseTurnAction>, IInitializable
+    public class TurnManager : MonoBehaviour, IApplicationLayer, IManagementFunc<IUseTurnAction>, IInitializable, IPauseable
     {
         [KeyReadOnly] private int _turnNumber = 0;
         [SerializeField] private int _maxTurn;
@@ -21,10 +21,15 @@ namespace InGameSystem
         private event Action EndTurnAction;
         private event Action EndAllTurnAction;
 
-        private void Start()
+        private void Awake()
         {
             RegisterApplication();
             RegisterManagementFunc();
+        }
+
+        private void Start()
+        {
+            ServiceLocateManager.Instance.RegisterFunc<IPauseable>(this);
         }
 
         #region 非公開メソッド
@@ -38,6 +43,11 @@ namespace InGameSystem
             for (int i = 0; i < _maxTurn; i++)
             {
                 yield return new WaitForSeconds(_turnTime);
+                if (IsPaused)
+                {
+                    yield return new WaitUntil(() => !IsPaused);
+                    yield return new WaitForSeconds(_turnTime);
+                }
                 _turnNumber++;
                 StartTurnAction?.Invoke();
                 OnTurnAction?.Invoke();
@@ -149,6 +159,17 @@ namespace InGameSystem
             /// すべてのターンが終了したとき
             /// </summary>
             EndAllTurn,
+        }
+
+        public bool IsPaused { get; private set; }
+        public void Pause()
+        {
+            IsPaused = true;
+        }
+
+        public void Resume()
+        {
+            IsPaused = false;
         }
     }
 }

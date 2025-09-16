@@ -4,7 +4,7 @@ namespace Interface
 {
     public interface IPauseable
     {
-        bool IsPaused { get; set; }
+        bool IsPaused { get; }
         /// <summary>
         /// ポーズする処理をすべてここに書く
         /// </summary>

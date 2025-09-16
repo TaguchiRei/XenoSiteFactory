@@ -1,4 +1,5 @@
 using System;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using InGameSystem;
 using Interface;
 using ServiceManagement;
@@ -18,7 +19,10 @@ namespace UnitSystem
 
         private void Start()
         {
-            _pauseManager = GetComponent<PauseManager>();
+            if (!GetApplication(out _pauseManager))
+            {
+                KeyLogger.Log($"ポーズマネージャーの取得に失敗",this);
+            }
         }
 
         #region パブリックメソッド
