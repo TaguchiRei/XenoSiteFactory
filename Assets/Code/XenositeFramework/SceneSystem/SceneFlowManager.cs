@@ -11,7 +11,9 @@ namespace XenositeFramework.SceneSystem
 {
     public class SceneFlowManager : IApplicationLayer
     {
-        private (SceneName sceneName, Scene scene) _mainScene = (Enum.Parse<SceneName>(SceneManager.GetActiveScene().name),SceneManager.GetActiveScene());
+        private (SceneName sceneName, Scene scene) _mainScene = (
+            Enum.Parse<SceneName>(SceneManager.GetActiveScene().name), SceneManager.GetActiveScene());
+
         private readonly Dictionary<SceneName, Scene> _subScenes = new();
 
         /// <summary>
@@ -59,6 +61,30 @@ namespace XenositeFramework.SceneSystem
         }
 
         /// <summary>
+        /// 新たなメインシーンに指定したGameObjectを移動し、
+        /// </summary>
+        /// <param name="loadSceneName"></param>
+        /// <param name="originalSceneName"></param>
+        public async UniTask LoadMainSceneHoldObjectAsync(SceneName loadSceneName, SceneName originalSceneName)
+        {
+            //もともとのシーンが読み込まれているかを調べる
+            if (originalSceneName != _mainScene.sceneName)
+            {
+                KeyLogger.Log($"シーン{originalSceneName.ToString()}は読み込まれていません", this);
+            }
+            //一度サブシーンとして読み込み、オブジェクトをすべて移動
+            await SceneManager.LoadSceneAsync(loadSceneName.ToString(), LoadSceneMode.Additive);
+            foreach (var obj in SceneManager.GetSceneByName(originalSceneName.ToString()).GetRootGameObjects())
+            {
+                TryMoveObjectSceneToScene(obj, loadSceneName);
+            }
+            
+            //メインシーンをアンロード、新たなメインシーンを定義
+            await SceneManager.UnloadSceneAsync(_mainScene.scene);
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(loadSceneName.ToString()));
+        }
+
+        /// <summary>
         /// サブシーンを非同期でロードする
         /// </summary>
         /// <param name="sceneName"></param>
@@ -73,8 +99,8 @@ namespace XenositeFramework.SceneSystem
             await SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Additive);
             _subScenes[sceneName] = SceneManager.GetSceneByName(sceneName.ToString());
         }
-        
-        
+
+
         /// <summary>
         /// サブシーンをアンロードする
         /// </summary>
