@@ -209,6 +209,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 33855492683723561}
+        m_TargetAssemblyTypeName: UnitSystem.InGameUIManager, Assembly-CSharp
+        m_MethodName: TabChange
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1620631333796156373
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,6 +346,18 @@ MonoBehaviour:
       - m_Target: {fileID: 4939635434865758584}
         m_TargetAssemblyTypeName: UILayerSort, Assembly-CSharp
         m_MethodName: SetFront
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 33855492683723561}
+        m_TargetAssemblyTypeName: UnitSystem.InGameUIManager, Assembly-CSharp
+        m_MethodName: TabChange
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -495,6 +519,7 @@ GameObject:
   - component: {fileID: 2118163864388364595}
   - component: {fileID: 4939635434865758584}
   - component: {fileID: 6584066668244008830}
+  - component: {fileID: 33855492683723561}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -606,6 +631,8 @@ MonoBehaviour:
   - {fileID: 1351364071731346762}
   - {fileID: 8812806365768018896}
   - {fileID: 1620631333796156373}
+  - {fileID: 9017247017474158404}
+  - {fileID: 3899628851702214749}
 --- !u!95 &6584066668244008830
 Animator:
   serializedVersion: 7
@@ -628,6 +655,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &33855492683723561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2612604828987157762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d5f5e641108c2746a6538265df9da47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitSystem.InGameUIManager
+  _animator: {fileID: 6584066668244008830}
 --- !u!1 &3449813873796452723
 GameObject:
   m_ObjectHideFlags: 0
@@ -898,7 +938,43 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1732518691952462627}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4939635434865758584}
+        m_TargetAssemblyTypeName: UILayerSort, Assembly-CSharp
+        m_MethodName: SetFront
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4939635434865758584}
+        m_TargetAssemblyTypeName: UILayerSort, Assembly-CSharp
+        m_MethodName: SetFront
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 33855492683723561}
+        m_TargetAssemblyTypeName: UnitSystem.InGameUIManager, Assembly-CSharp
+        m_MethodName: MenuOpenClose
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4080681763985220032
 GameObject:
   m_ObjectHideFlags: 0
@@ -1455,6 +1531,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 33855492683723561}
+        m_TargetAssemblyTypeName: UnitSystem.InGameUIManager, Assembly-CSharp
+        m_MethodName: TabChange
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &9017247017474158404
 GameObject:
   m_ObjectHideFlags: 0
@@ -1490,7 +1578,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 815, y: 0}
   m_SizeDelta: {x: 763.7, y: 449.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3266373364095791845

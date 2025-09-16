@@ -6,10 +6,16 @@ using UnityEngine;
 
 namespace InGameSystem
 {
-    public class PauseManager : IManagementFunc<IPauseable>, IApplicationLayer
+    public class PauseManager : MonoBehaviour, IManagementFunc<IPauseable>, IApplicationLayer
     {
         private Action _pauseAction;
         private Action _resumeAction;
+
+        private void Awake()
+        {
+            RegisterApplication();
+            RegisterManagementFunc();
+        }
 
         public void Pause()
         {

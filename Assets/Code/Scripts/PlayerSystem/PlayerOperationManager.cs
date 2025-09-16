@@ -159,12 +159,6 @@ namespace PlayerSystem
             return false;
         }
 
-
-        public void RegisterManagementFunc()
-        {
-            ServiceLocateManager.Instance.RegisterManagementFunc(this);
-        }
-
         public void RegisterManagementFunc()
         {
             ServiceLocateManager.Instance.RegisterManagementFunc(this);
