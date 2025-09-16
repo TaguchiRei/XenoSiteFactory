@@ -105,14 +105,18 @@ namespace ServiceManagement
             if (!typeof(TInterface).IsInterface)
                 throw new Exception("TInterface must be an interface");
 
-            if (!(instance is TInterface typedInstance))
-                throw new Exception($"instance は {typeof(TInterface).Name} を実装していません");
+            // インスタンスの型が TInterface から派生しているか（実装しているか）をチェック
+            if (!typeof(TInterface).IsAssignableFrom(instance.GetType()))
+                throw new Exception($"instance of type {instance.GetType().Name} does not implement {typeof(TInterface).Name}");
+
+            // TInterface にキャスト
+            var typedInstance = (TInterface)instance;
 
             if (_funcManagementInterfaces.TryGetValue(typeof(TInterface), out object funcManager) &&
                 funcManager is IManagementFunc<TInterface> manager)
             {
                 manager.RegisterFunc(typedInstance);
-                KeyLogger.Log($"機能[{typeof(TInterface).Name}] が登録されました。", this);
+                KeyLogger.Log($"機能[{instance.GetType().Name}] が登録されました。", this);
             }
             else
             {
@@ -225,18 +229,24 @@ namespace ServiceManagement
         /// </summary>
         /// <param name="instance"></param>
         /// <typeparam name="TInterface"></typeparam>
-        public void UnRegisterFunc<TInterface>(TInterface instance)
+        public void UnRegisterFunc<TInterface>(object instance)
         {
-            if (!typeof(TInterface).IsInterface) throw new Exception("TInterface must be an interface");
+            if (!typeof(TInterface).IsInterface) throw new Exception("TInterface はインターフェースでなければいけません");
+
+            if (!typeof(TInterface).IsAssignableFrom(instance.GetType()))
+                throw new Exception($"instance of type {instance.GetType().Name} does not implement {typeof(TInterface).Name}");
+
+            var typedInstance = (TInterface)instance;
+
             if (_funcManagementInterfaces.TryGetValue(typeof(TInterface), out var managerFunc) &&
                 managerFunc is IManagementFunc<TInterface> manager)
             {
-                manager.UnregisterFunc(instance);
-                KeyLogger.Log($"機能[{typeof(TInterface).Name}] の登録を解除しました。", this);
+                manager.UnregisterFunc(typedInstance);
+                KeyLogger.Log($"機能[{instance.GetType().Name}] の登録を解除しました。", this);
             }
             else
             {
-                KeyLogger.LogError($"機能[{typeof(TInterface).Name}] を管理するクラスは登録されていません。", this);
+                KeyLogger.LogError($"機能[{instance.GetType().Name}] を管理するクラスは登録されていません。", this);
             }
         }
 
