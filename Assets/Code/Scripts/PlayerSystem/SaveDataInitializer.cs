@@ -1,3 +1,4 @@
+using GridSystem;
 using Interface;
 using Player;
 using ServiceManagement;
@@ -9,7 +10,8 @@ namespace PlayerSystem
     {
         public void InitializeSaveData(XenositeSaveData  xenositeSaveData)
         {
-            // GridExistDataおよびGridPlacedData、PlayerDataをサービスロケーターに登録する
+            // GridPlacedDataおよびPlayerDataをサービスロケーターに登録する
+            
         }
 
         #region インターフェース実装

@@ -27,14 +27,14 @@ namespace OutGameSystem.Dev
                 var obj = Instantiate(_dataPrehab, _dataGroup.transform, true);
                 var tmp = obj.GetComponentInChildren<TextMeshProUGUI>();
                 var button = obj.GetComponent<Button>();
-                tmp.text = $"{data.PlayerName}\nDay:{data.Days}";
+                tmp.text = $"{data.PlayerData.PlayerName}\nDay:{data.PlayerData.Days}";
                 button.onClick.AddListener(() => LoadPlayerData(data).Forget());
             }
         }
 
         private async UniTask LoadPlayerData(XenositeSaveData xenositeSaveData)
         {
-            KeyLogger.Log($"LoadPlayerData {xenositeSaveData.PlayerName}");
+            KeyLogger.Log($"LoadPlayerData {xenositeSaveData.PlayerData.PlayerName}");
             ServiceLocateManager.Instance.RegisterData(xenositeSaveData);
             await _sceneFlowManager.LoadMainSceneAsync(SceneName.ManagementScene);
         }

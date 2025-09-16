@@ -41,12 +41,17 @@ namespace GridSystem
         /// <param name="wallData"></param>
         public void GridSystemInitialize(WallData wallData)
         {
-            if (!GetData(out _gridExistData) ||
-                !GetData(out _placedObjectData) ||
+            if (!GetData(out _placedObjectData) ||
                 !ServiceLocateManager.Instance.TryGetScriptableObject(out _allUnitData))
             {
-                KeyLogger.LogError("GridManagerの初期化に失敗しました。");
+                KeyLogger.LogError("初期化に失敗しました。", this);
                 return;
+            }
+
+            if (!GetData(out _gridExistData))
+            {
+                _gridExistData = new GridExistData();
+                
             }
 
             _wallData = wallData;
@@ -63,12 +68,12 @@ namespace GridSystem
         /// <param name="position"></param>
         /// <param name="putUnitData"></param>
         /// <returns>設置できたかを返す。</returns>
-        public bool PutUnit(ulong shape, Vector3Int position, PutUnitData putUnitData)
+        public bool PutUnit(ulong shape, Vector3Int position, PutUnitData putUnitData, bool placedObjectDataUpdate = true)
         {
             if (CheckCanPut(shape, position)) return false;
 
             _gridExistData.SetGridData(shape, position);
-            _placedObjectData.SetUnit(putUnitData);
+            if (placedObjectDataUpdate) _placedObjectData.SetUnit(putUnitData);
             GenerateUnitInstance(putUnitData);
 
             return true;
@@ -91,7 +96,7 @@ namespace GridSystem
         /// すべてのユニットを一括で設置する
         /// </summary>
         /// <returns></returns>
-        private void PutAllUnit()
+        private void PutAllUnit(bool placedObjectDataUpdate = true)
         {
             var edge = BitShapeSupporter.GetEdge();
             foreach (var putUnitData in _placedObjectData.GetAllUnitData())

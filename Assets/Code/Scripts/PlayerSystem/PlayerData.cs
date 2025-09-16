@@ -1,8 +1,10 @@
+using System;
 using Interface;
 using ServiceManagement;
 
 namespace PlayerSystem
 {
+    [Serializable]
     public class PlayerData : IDataLayer
     {
         public string PlayerName;

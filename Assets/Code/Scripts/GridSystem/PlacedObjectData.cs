@@ -1,14 +1,16 @@
+using System;
 using System.Collections.Generic;
 using Interface;
-using Service;
 using ServiceManagement;
 using UnitInfo;
+using UnityEngine;
 
 namespace GridSystem
 {
+    [Serializable]
     public class PlacedObjectData : IDataLayer
     {
-        private readonly List<PutUnitData> _putUnitDataList = new();
+        [SerializeField] private List<PutUnitData> _putUnitDataList = new();
 
         public void SetUnit(PutUnitData putUnitData)
         {
