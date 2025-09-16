@@ -9,6 +9,7 @@ namespace Interface
     /// <typeparam name="T">インターフェースを指定</typeparam>
     public interface IManagementFunc<in T>
     {
+        void RegisterManagementFunc();
         void RegisterFunc(T instance);
         
         void UnregisterFunc(T instance);

@@ -64,7 +64,6 @@ namespace XenositeFramework.SceneSystem
         /// 新たなメインシーンに指定したGameObjectを移動し、
         /// </summary>
         /// <param name="loadSceneName"></param>
-        /// <param name="originalSceneName"></param>
         public async UniTask LoadMainSceneHoldObjectAsync(SceneName loadSceneName)
         {
             //もともとのシーンが読み込まれているかを調べる

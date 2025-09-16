@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using GamesKeystoneFramework.Attributes;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using InGameSystemInterface;
 using Interface;
 using ServiceManagement;
@@ -23,6 +24,7 @@ namespace InGameSystem
         private void Start()
         {
             RegisterApplication();
+            RegisterManagementFunc();
         }
 
         #region 非公開メソッド
@@ -55,6 +57,11 @@ namespace InGameSystem
             StartCoroutine(TurnFlow());
         }
 
+        public void RegisterManagementFunc()
+        {
+            ServiceLocateManager.Instance.RegisterManagementFunc<IUseTurnAction>(this);
+        }
+
         public void RegisterFunc(IUseTurnAction instance)
         {
             switch (instance)
@@ -72,6 +79,7 @@ namespace InGameSystem
                     EndAllTurnAction += allEndAction.AllEndTurn;
                     break;
             }
+            KeyLogger.Log("アクション登録",this);
         }
 
         public void UnregisterFunc(IUseTurnAction instance)
@@ -95,6 +103,8 @@ namespace InGameSystem
 
         public void Dispose()
         {
+            ServiceLocateManager.Instance.UnRegisterApplication(this);
+            ServiceLocateManager.Instance.UnRegisterManagementFunc(this);
         }
 
         public void RegisterApplication()

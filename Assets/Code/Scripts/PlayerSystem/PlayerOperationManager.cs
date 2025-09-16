@@ -149,6 +149,11 @@ namespace PlayerSystem
         }
 
 
+        public void RegisterManagementFunc()
+        {
+            ServiceLocateManager.Instance.RegisterManagementFunc(this);
+        }
+
         public void RegisterFunc(IOperation instance)
         {
             switch (instance)

@@ -28,7 +28,7 @@ namespace InGameSystem
         /// </summary>
         public void PlayModeStart()
         {
-            ServiceLocateManager.Instance.RegisterFunc<ITurnAllEndAction>(this);
+            ServiceLocateManager.Instance.RegisterFunc<IUseTurnAction>(this);
             _turnManager.Initialize();
         }
 
@@ -40,10 +40,12 @@ namespace InGameSystem
         {
             var gridManager = await ServiceLocateManager.Instance.TryGetDomainLayerAsync<GridManager>();
             var sceneFlow = await ServiceLocateManager.Instance.TryGetApplicationLayerAsync<SceneFlowManager>();
-            if (gridManager.Item1 && sceneFlow.Item1)
+            var turnManager = await ServiceLocateManager.Instance.TryGetApplicationLayerAsync<TurnManager>();
+            if (gridManager.Item1 && sceneFlow.Item1 && turnManager.Item1)
             {
                 _gridManager = gridManager.Item2;
                 _sceneFlowManager = sceneFlow.Item2;
+                _turnManager = turnManager.Item2;
                 await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGame);
                 KeyLogger.Log("Initialized", this);
                 _gridManager.Initialize();
@@ -130,6 +132,7 @@ namespace InGameSystem
         public void AllEndTurn()
         {
             _endDirector.Play();
+            Debug.Log("ALL TURN END");
         }
 
         #endregion
