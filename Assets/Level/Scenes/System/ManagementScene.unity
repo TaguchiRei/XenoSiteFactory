@@ -209,6 +209,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6377a6054ac4d342b261b2b4eb8e294, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InGameSystem.InGameManager
+  _startDirector: {fileID: 0}
+  _endDirector: {fileID: 0}
 --- !u!1 &1368569588
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,11 +256,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridSystem.GridManager
   _wallData:
-    wallPrefab: {fileID: 0}
-    Position: {x: 0, y: 0, z: 0}
-    Height: 0
-    Width: 0
-    Size: 0
+    wallPrefab: {fileID: 118725316214312412, guid: b683401707940e04e9c75619846c0e4b, type: 3}
+    Position: {x: 64, y: 0, z: 64}
+    Height: 2
+    Width: 2
+    Size: 40
   _objectInfluenceRange: 10
   _wallShape: 268439552
 --- !u!1660057539 &9223372036854775807

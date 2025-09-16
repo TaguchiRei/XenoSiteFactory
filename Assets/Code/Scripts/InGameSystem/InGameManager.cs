@@ -1,4 +1,5 @@
 using System;
+using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GridSystem;
 using Interface;
 using Player;
@@ -17,7 +18,6 @@ namespace InGameSystem
 
         private SceneFlowManager _sceneFlowManager;
         private GridManager _gridManager;
-        private XenositeSaveData _xenositeSaveData;
 
         #region パブリックメソッド
 
@@ -34,12 +34,19 @@ namespace InGameSystem
 
         private async void Start()
         {
-            if (ServiceLocateManager.Instance.TryGetDomainLayer(out _gridManager) &&
-                ServiceLocateManager.Instance.TryGetApplicationLayer(out _sceneFlowManager) &&
-                ServiceLocateManager.Instance.TryGetDataLayer(out _xenositeSaveData))
+            var gridManager = await ServiceLocateManager.Instance.TryGetDomainLayerAsync<GridManager>();
+            var sceneFlow = await ServiceLocateManager.Instance.TryGetApplicationLayerAsync<SceneFlowManager>();
+            if (gridManager.Item1 && sceneFlow.Item1)
             {
-                Debug.Log("Loaded InGame Scene");
+                _gridManager = gridManager.Item2;
+                _sceneFlowManager = sceneFlow.Item2;
                 await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGame);
+                KeyLogger.Log("Initialized", this);
+                _gridManager.Initialize();
+            }
+            else
+            {
+                KeyLogger.Log("Initialize Failed", this);
             }
         }
 

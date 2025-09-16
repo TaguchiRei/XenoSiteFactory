@@ -89,7 +89,7 @@ namespace GridSystem
         private DUlong _oneDULong = new(0, 1);
 
         private bool _createdGridData;
-        private void OnDrawGizmos()
+        public void OnDrawGizmos()
         {
             if (!_createdGridData) return;
 

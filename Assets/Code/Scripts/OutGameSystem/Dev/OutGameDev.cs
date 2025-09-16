@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Player;
+using PlayerSystem;
 using ServiceManagement;
 using TMPro;
 using UnityEngine;
@@ -35,7 +36,10 @@ namespace OutGameSystem.Dev
         private async UniTask LoadPlayerData(XenositeSaveData xenositeSaveData)
         {
             KeyLogger.Log($"LoadPlayerData {xenositeSaveData.PlayerData.PlayerName}");
-            ServiceLocateManager.Instance.RegisterData(xenositeSaveData);
+            if (ServiceLocateManager.Instance.TryGetDataLayer(out SaveDataInitializer saveDataInitializer))
+            {
+                saveDataInitializer.InitializeSaveData(xenositeSaveData);
+            }
             await _sceneFlowManager.LoadMainSceneAsync(SceneName.ManagementScene);
         }
     }
