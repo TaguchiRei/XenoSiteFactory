@@ -55,6 +55,11 @@ namespace InGameSystem
             StartCoroutine(TurnFlow());
         }
 
+        public void RegisterManagementFunc()
+        {
+            ServiceLocateManager.Instance.RegisterManagementFunc(this);
+        }
+
         public void RegisterFunc(IUseTurnAction instance)
         {
             switch (instance)
