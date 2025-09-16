@@ -19,8 +19,9 @@ namespace XenositeFramework.XenoDebug
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Initialize()
         {
+            return;
             //キャンバス作成
-            var logCanvas = new GameObject("KeyTesterCanvas");
+            var logCanvas = new GameObject("XenoLoggerCanvas");
             _canvas = logCanvas.AddComponent<Canvas>();
             _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             _canvas.sortingOrder = 999;

@@ -11,7 +11,8 @@ namespace PlayerSystem
         public void InitializeSaveData(XenositeSaveData  xenositeSaveData)
         {
             // GridPlacedDataおよびPlayerDataをサービスロケーターに登録する
-            
+            ServiceLocateManager.Instance.RegisterData(xenositeSaveData.PlayerData);
+            ServiceLocateManager.Instance.RegisterData(xenositeSaveData.PlacedObjectData);
         }
 
         #region インターフェース実装

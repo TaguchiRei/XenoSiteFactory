@@ -38,8 +38,8 @@ namespace InGameSystem
                 ServiceLocateManager.Instance.TryGetApplicationLayer(out _sceneFlowManager) &&
                 ServiceLocateManager.Instance.TryGetDataLayer(out _xenositeSaveData))
             {
+                Debug.Log("Loaded InGame Scene");
                 await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGame);
-                
             }
         }
 
