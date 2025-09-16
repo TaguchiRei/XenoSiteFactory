@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using Interface;
 using UnityEngine;
@@ -12,11 +13,12 @@ namespace ServiceManagement
     /// </summary>
     public class ServiceLocateManager : MonoBehaviour
     {
+        [SerializeField] private int _timeOutTime;
         [SerializeField] private ScriptableObject[] _scriptableObjects;
 
         private readonly Dictionary<Type, object> _presentationLayers = new();
         private readonly Dictionary<Type, object> _domainLayers = new();
-        private readonly Dictionary<Type, object> _infrastructureLayers = new();
+        private readonly Dictionary<Type, object> _applicationLayers = new();
         private readonly Dictionary<Type, object> _dataLayers = new();
         private readonly Dictionary<Type, object> _funcManagementInterfaces = new();
 
@@ -69,7 +71,7 @@ namespace ServiceManagement
         public void RegisterApplication<T>(T instance) where T : class, IApplicationLayer
         {
             KeyLogger.Log($"インフラ層[{typeof(T).Name}] がサービスロケーターに登録されました。", this);
-            _infrastructureLayers[typeof(T)] = instance;
+            _applicationLayers[typeof(T)] = instance;
         }
 
         /// <summary>
@@ -91,27 +93,33 @@ namespace ServiceManagement
         public void RegisterManagementFunc<TInterface>(IManagementFunc<TInterface> instance)
         {
             if (!typeof(TInterface).IsInterface) throw new Exception("TInterface must be an interface");
-            KeyLogger.Log($"管理システム[{typeof(TInterface).Name}] がサービスロケーターに登録されました。",this);
+            KeyLogger.Log($"管理システム[{typeof(TInterface).Name}] がサービスロケーターに登録されました。", this);
             _funcManagementInterfaces[typeof(TInterface)] = instance;
         }
 
         /// <summary>
-        /// 機能を登録する
+        /// 機能を登録する。必ず語引数を指定すること
         /// </summary>
-        public void RegisterFunc<TInterface>(TInterface instance)
+        public void RegisterFunc<TInterface>(object instance)
         {
-            if (!typeof(TInterface).IsInterface) throw new Exception("TInterface must be an interface");
+            if (!typeof(TInterface).IsInterface)
+                throw new Exception("TInterface must be an interface");
+
+            if (!(instance is TInterface typedInstance))
+                throw new Exception($"instance は {typeof(TInterface).Name} を実装していません");
+
             if (_funcManagementInterfaces.TryGetValue(typeof(TInterface), out object funcManager) &&
                 funcManager is IManagementFunc<TInterface> manager)
             {
-                manager.RegisterFunc(instance);
-                KeyLogger.Log($"機能[{typeof(TInterface).Name}] が登録されました。",this);
+                manager.RegisterFunc(typedInstance);
+                KeyLogger.Log($"機能[{typeof(TInterface).Name}] が登録されました。", this);
             }
             else
             {
-                KeyLogger.LogError($"機能[{typeof(TInterface).Name}] を管理するクラスは登録されていないか、見つけることができませんでした。",this);
+                KeyLogger.LogError($"機能[{typeof(TInterface).Name}] を管理するクラスは登録されていません。", this);
             }
         }
+
 
         #endregion
 
@@ -155,12 +163,12 @@ namespace ServiceManagement
             }
         }
 
-        public void UnRegisterInfrastructure<T>(T instance) where T : class, IApplicationLayer
+        public void UnRegisterApplication<T>(T instance) where T : class, IApplicationLayer
         {
-            if (_infrastructureLayers.TryGetValue(typeof(T), out var registeredInstance) &&
+            if (_applicationLayers.TryGetValue(typeof(T), out var registeredInstance) &&
                 registeredInstance == instance)
             {
-                _infrastructureLayers.Remove(typeof(T));
+                _applicationLayers.Remove(typeof(T));
             }
             else
             {
@@ -198,16 +206,17 @@ namespace ServiceManagement
                 if (ReferenceEquals(func, instance))
                 {
                     _funcManagementInterfaces.Remove(typeof(TInterface));
-                    KeyLogger.Log($"管理システム[{typeof(TInterface).Name}] がサービスロケーターから解除されました。",this);
+                    KeyLogger.Log($"管理システム[{typeof(TInterface).Name}] がサービスロケーターから解除されました。", this);
                 }
                 else
                 {
-                    KeyLogger.Log($"機能[IManagementFunc<{typeof(TInterface).Name}>] を登録時と違うインスタンスから登録解除しようとしています。",this);
+                    KeyLogger.Log($"機能[IManagementFunc<{typeof(TInterface).Name}>] を登録時と違うインスタンスから登録解除しようとしています。",
+                        this);
                 }
             }
             else
             {
-                KeyLogger.LogError($"機能[{typeof(TInterface)}]を管理するクラスはまだ登録されていないか、すでに登録が解除されています",this);
+                KeyLogger.LogError($"機能[{typeof(TInterface)}]を管理するクラスはまだ登録されていないか、すでに登録が解除されています", this);
             }
         }
 
@@ -219,7 +228,8 @@ namespace ServiceManagement
         public void UnRegisterFunc<TInterface>(TInterface instance)
         {
             if (!typeof(TInterface).IsInterface) throw new Exception("TInterface must be an interface");
-            if (_funcManagementInterfaces.TryGetValue(typeof(TInterface), out var managerFunc) && managerFunc is IManagementFunc<TInterface> manager)
+            if (_funcManagementInterfaces.TryGetValue(typeof(TInterface), out var managerFunc) &&
+                managerFunc is IManagementFunc<TInterface> manager)
             {
                 manager.UnregisterFunc(instance);
                 KeyLogger.Log($"機能[{typeof(TInterface).Name}] の登録を解除しました。", this);
@@ -229,7 +239,7 @@ namespace ServiceManagement
                 KeyLogger.LogError($"機能[{typeof(TInterface).Name}] を管理するクラスは登録されていません。", this);
             }
         }
-        
+
         #endregion
 
         #region TryGet系
@@ -253,6 +263,26 @@ namespace ServiceManagement
         }
 
         /// <summary>
+        /// プレゼンテーション層のインスタンスを非同期で取得
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public async UniTask<(bool, T)> TryGetPresentationLayerAsync<T>() where T : class, IPresentationLayer
+        {
+            try
+            {
+                await UniTask.WaitUntil(() => _presentationLayers.ContainsKey(typeof(T)))
+                    .Timeout(TimeSpan.FromSeconds(_timeOutTime));
+                return (true, _presentationLayers[typeof(T)] as T);
+            }
+            catch (TimeoutException)
+            {
+                KeyLogger.LogError($"[{typeof(T).Name}]はタイムアウトにより取得できませんでした。", this);
+                return (false, null);
+            }
+        }
+
+        /// <summary>
         /// ドメイン層のインスタンスを取得
         /// </summary>
         /// <param name="instance"></param>
@@ -270,9 +300,35 @@ namespace ServiceManagement
             return false;
         }
 
-        public bool TryGetInfrastructureLayer<T>(out T instance) where T : class, IApplicationLayer
+        /// <summary>
+        /// ドメイン層のインスタンスを非同期で取得
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public async UniTask<(bool, T)> TryGetDomainLayerAsync<T>() where T : class, IDomainLayer
         {
-            if (_infrastructureLayers.TryGetValue(typeof(T), out object result))
+            try
+            {
+                await UniTask.WaitUntil(() => _domainLayers.ContainsKey(typeof(T)))
+                    .Timeout(TimeSpan.FromSeconds(_timeOutTime));
+                return (true, _domainLayers[typeof(T)] as T);
+            }
+            catch (TimeoutException)
+            {
+                KeyLogger.LogError($"[{typeof(T).Name}]はタイムアウトにより取得できませんでした。", this);
+                return (false, null);
+            }
+        }
+
+        /// <summary>
+        /// アプリケーション層のインスタンスを取得
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool TryGetApplicationLayer<T>(out T instance) where T : class, IApplicationLayer
+        {
+            if (_applicationLayers.TryGetValue(typeof(T), out object result))
             {
                 instance = (T)result;
                 return true;
@@ -280,6 +336,25 @@ namespace ServiceManagement
 
             instance = null;
             return false;
+        }
+
+        /// <summary>
+        /// アプリケーション層のインスタンスを非同期で取得
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public async UniTask<(bool, T)> TryGetApplicationLayerAsync<T>() where T : class, IApplicationLayer
+        {
+            try
+            {
+                await UniTask.WaitUntil(() => _applicationLayers.ContainsKey(typeof(T))).Timeout(TimeSpan.FromSeconds(_timeOutTime));
+                return (true, _applicationLayers[typeof(T)] as T);
+            }
+            catch (TimeoutException)
+            {
+                KeyLogger.LogError($"[{typeof(T).Name}]はタイムアウトにより取得できませんでした。", this);
+                return (false, null);
+            }
         }
 
         /// <summary>
@@ -298,6 +373,20 @@ namespace ServiceManagement
 
             instance = null;
             return false;
+        }
+
+        public async UniTask<(bool, T)> TryGetDataLayerAsync<T>() where T : class, IDataLayer
+        {
+            try
+            {
+                await UniTask.WaitUntil(() => _dataLayers.ContainsKey(typeof(T))).Timeout(TimeSpan.FromSeconds(_timeOutTime));
+                return (true, _dataLayers[typeof(T)] as T);
+            }
+            catch (TimeoutException)
+            {
+                KeyLogger.LogError($"[{typeof(T).Name}]はタイムアウトにより取得できませんでした。", this);
+                return (false, null);
+            }
         }
 
         #endregion

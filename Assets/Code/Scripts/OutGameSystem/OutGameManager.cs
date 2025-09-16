@@ -10,7 +10,7 @@ namespace OutGame
     public class OutGameManager : MonoBehaviour
     {
         //[SerializeField] private 
-        private List<PlayerData> playerDatas;
+        private List<XenositeSaveData> playerDatas;
         public void ShowAllSaveData()
         {
             
@@ -18,11 +18,11 @@ namespace OutGame
 
         private async UniTask FindAllSaveData()
         {
-            playerDatas = new List<PlayerData>();
+            playerDatas = new List<XenositeSaveData>();
             string[] allPath = Directory.GetFiles(Application.persistentDataPath, "*.dat", SearchOption.AllDirectories);
             foreach (var path in allPath)
             {
-                playerDatas.Add(await SaveDataSupporter.Load<PlayerData>(path));
+                playerDatas.Add(await SaveDataSupporter.Load<XenositeSaveData>(path));
             }
         }
     }

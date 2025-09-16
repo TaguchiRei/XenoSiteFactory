@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using GamesKeystoneFramework.Save;
+using GridSystem;
+using UnitInfo;
 using UnityEditor;
 using UnityEngine;
 using XenositeFramework.SaveSystem;
@@ -23,6 +25,7 @@ namespace XenositeFramework.Editor
         private SerializedProperty _usingSerializedProperty;
         private Vector2 _scrollPosition;
         private int _testSaveDataNumber;
+        private int _randomGenerateNumber;
         private bool _isC;
 
         [MenuItem("Window/XenositeFramework/SaveDataGenerator")]
@@ -58,7 +61,6 @@ namespace XenositeFramework.Editor
                 {
                     StringBuilder sb = new StringBuilder();
                     string className = GenerateType.Name + "TestData";
-
                     sb.Append("using UnityEngine;\n");
                     sb.Append("using System;\n");
                     sb.Append("using System.Collections.Generic;\n\n");
@@ -68,19 +70,17 @@ namespace XenositeFramework.Editor
                     }
 
                     sb.Append("\nnamespace XenositeFramework.Editor\n{\n");
-                    sb.Append($"[CreateAssetMenu(menuName = \"XenositeFramework/Editor/{className}\")]");
-                    sb.Append("    public class " + className + " : ScriptableSaveData\n    {\n");
-
+                    sb.Append($"[CreateAssetMenu(menuName = \"ScriptableObject/{className}\")]");
+                    sb.Append(" public class " + className + " : ScriptableSaveData\n {\n");
                     foreach (var info in _fieldInfos)
                     {
                         string typeName = GetFriendlyTypeName(info.FieldType);
                         string fieldName = info.Name;
-                        sb.Append($"        public {typeName} {fieldName};\n");
+                        sb.Append($" public {typeName} {fieldName};\n");
                     }
 
-                    sb.Append("    }\n");
+                    sb.Append(" }\n");
                     sb.Append("}\n");
-
                     string path = $"Assets/Code/Editor/TestSaveData/{className}.cs";
                     string dir = Path.GetDirectoryName(path);
                     if (!Directory.Exists(dir))
@@ -121,7 +121,6 @@ namespace XenositeFramework.Editor
                 if (GUILayout.Button("セーブデータのあるディレクトリを取得"))
                 {
                     Debug.Log($"クリップボードに保存しました。: {Application.persistentDataPath}");
-
                     GUIUtility.systemCopyBuffer = Application.persistentDataPath;
                 }
 
@@ -137,6 +136,7 @@ namespace XenositeFramework.Editor
                         EditorGUILayout.EndScrollView();
                         return;
                     }
+
                     if (_serializedObject == null || _serializedObject.targetObject != _scriptableSaveData)
                     {
                         _serializedObject = new SerializedObject(_scriptableSaveData);
@@ -157,11 +157,19 @@ namespace XenositeFramework.Editor
             }
 
             EditorGUILayout.EndScrollView();
+
+            _randomGenerateNumber = EditorGUILayout.IntField("Random Generate Number", _randomGenerateNumber);
+            if (GUILayout.Button("Create Random Unit Data"))
+            {
+                CreateRandomUnitData();
+            }
         }
 
-        public FieldInfo[] GetAllSaveDataFields(Type type)
+        private FieldInfo[] GetAllSaveDataFields(Type type)
         {
-            return type.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            return type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(f => f.IsPublic || f.GetCustomAttribute<SerializeField>() != null)
+                .ToArray();
         }
 
         private Type[] GetAllSaveData()
@@ -235,6 +243,73 @@ namespace XenositeFramework.Editor
             }
 
             return type.Name; // その他はそのまま
+        }
+
+        private void CreateRandomUnitData()
+        {
+            
+        }
+
+
+        // ネスト対応のクラスコード生成
+        private string GenerateClassCode(Type rootType, string className)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("using UnityEngine;\n");
+            sb.Append("using System;\n");
+            sb.Append("using System.Collections.Generic;\n\n");
+            foreach (var addUsing in _addUsings)
+            {
+                sb.Append($"using {addUsing};\n");
+            }
+
+            sb.Append("\nnamespace XenositeFramework.Editor\n{\n");
+            sb.Append($"[CreateAssetMenu(menuName = \"XenositeFramework/Editor/{className}\")]\n");
+            sb.Append($"public class {className} : ScriptableSaveData\n{{\n");
+
+            AppendFieldsRecursive(rootType, sb, "    ");
+
+            sb.Append("}\n");
+            sb.Append("}\n");
+
+            return sb.ToString();
+        }
+
+        private void AppendFieldsRecursive(Type type, StringBuilder sb, string indent)
+        {
+            var fields = GetAllSaveDataFields(type);
+            foreach (var field in fields)
+            {
+                string typeName = GetFriendlyTypeName(field.FieldType);
+                string fieldName = field.Name;
+                sb.AppendLine($"{indent}public {typeName} {fieldName};");
+
+                if (NeedRecursive(field.FieldType))
+                {
+                    // ネストクラスを定義
+                    sb.AppendLine($"{indent}[Serializable]");
+                    sb.AppendLine($"{indent}public class {field.FieldType.Name}");
+                    sb.AppendLine($"{indent}{{");
+                    AppendFieldsRecursive(field.FieldType, sb, indent + "    ");
+                    sb.AppendLine($"{indent}}}");
+                }
+            }
+        }
+
+        private bool NeedRecursive(Type type)
+        {
+            if (type.IsPrimitive) return false;
+            if (type == typeof(string)) return false;
+            if (type.IsEnum) return false;
+            if (typeof(UnityEngine.Object).IsAssignableFrom(type)) return false;
+            if (type.IsArray) return NeedRecursive(type.GetElementType());
+            if (type.IsGenericType)
+            {
+                return type.GetGenericArguments().Any(NeedRecursive);
+            }
+
+            return type.IsClass || type.IsValueType;
         }
     }
 }

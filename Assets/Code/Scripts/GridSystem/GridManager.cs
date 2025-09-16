@@ -1,3 +1,4 @@
+using System;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GamesKeystoneFramework.KeyMathBit;
 using Interface;
@@ -7,6 +8,9 @@ using UnitInfo;
 using Unity.VisualScripting;
 using UnityEngine;
 using XenoScriptableObject;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace GridSystem
 {
@@ -24,38 +28,29 @@ namespace GridSystem
         private AllUnitData _allUnitData;
         private PlacedObjectData _placedObjectData;
 
-        #region テスト用スクリプト
-
-        private void GenerateTestData()
-        {
-            KeyLogger.LogWarning("This is Test Only Method");
-        }
-
-        #endregion
-
         #region 公開メソッド
 
         /// <summary>
         /// グリッドのシステム全体の初期化を行う。
         /// </summary>
-        /// <param name="gridExistData"></param>
-        /// <param name="gridDistanceData"></param>
-        /// <param name="placedObjectData"></param>
-        public void GridSystemInitialize(WallData wallData)
+        public void Initialize()
         {
-            if (!GetData(out _gridExistData) ||
-                !GetData(out _placedObjectData) ||
+            if (!GetData(out _placedObjectData) ||
                 !ServiceLocateManager.Instance.TryGetScriptableObject(out _allUnitData))
             {
-                KeyLogger.LogError("GridManagerの初期化に失敗しました。");
+                KeyLogger.LogError("初期化に失敗しました。", this);
                 return;
             }
 
-            _wallData = wallData;
+            if (!GetData(out _gridExistData))
+            {
+                _gridExistData = new GridExistData();
+            }
+
             _oneDUlong = new(0, 1);
 
             GenerateWall();
-            PutAllUnit();
+            PutAllUnit(false);
         }
 
         /// <summary>
@@ -65,12 +60,13 @@ namespace GridSystem
         /// <param name="position"></param>
         /// <param name="putUnitData"></param>
         /// <returns>設置できたかを返す。</returns>
-        public bool PutUnit(ulong shape, Vector3Int position, PutUnitData putUnitData)
+        public bool PutUnit(ulong shape, Vector3Int position, PutUnitData putUnitData,
+            bool placedObjectDataUpdate = true)
         {
-            if (CheckCanPut(shape, position)) return false;
+            if (!CheckCanPut(shape, position)) return false;
 
             _gridExistData.SetGridData(shape, position);
-            _placedObjectData.SetUnit(putUnitData);
+            if (placedObjectDataUpdate) _placedObjectData.SetUnit(putUnitData);
             GenerateUnitInstance(putUnitData);
 
             return true;
@@ -89,11 +85,16 @@ namespace GridSystem
 
         #region 非公開メソッド
 
+        private void Awake()
+        {
+            RegisterDomain();
+        }
+
         /// <summary>
         /// すべてのユニットを一括で設置する
         /// </summary>
         /// <returns></returns>
-        private void PutAllUnit()
+        private void PutAllUnit(bool placedObjectDataUpdate = true)
         {
             var edge = BitShapeSupporter.GetEdge();
             foreach (var putUnitData in _placedObjectData.GetAllUnitData())
@@ -131,11 +132,11 @@ namespace GridSystem
                     for (int z = 0; z < edge; z++)
                     {
                         int bitPosition = BitShapeSupporter.CalculationBitPosition(x, y, z);
+                        //ビットが指定の座標に立っていたら以下の処理を行う
                         if ((shape & (1ul << bitPosition)) != 0)
                         {
-                            //範囲内チェックとビットがたっているかのチェック
-                            if (position.x + x >= GRID_SIZE || position.z + z >= GRID_SIZE ||
-                                position.y + y >= GRID_HEIGHT ||
+                            //範囲内チェックと重なっていないかを調べる
+                            if (position.x + x >= GRID_SIZE || position.z + z >= GRID_SIZE || position.y + y >= GRID_HEIGHT ||
                                 (dUlongGrid[position.x + x, position.y + y] & (_oneDUlong << (position.z + z))) != 0)
                             {
                                 return false;
@@ -185,18 +186,21 @@ namespace GridSystem
             return result;
         }
 
-        public bool GetInfrastructure<T>(out T instance) where T : class, IApplicationLayer
+        public bool GetApplication<T>(out T instance) where T : class, IApplicationLayer
         {
-            var result = ServiceLocateManager.Instance.TryGetInfrastructureLayer(out T instanceInfra);
+            var result = ServiceLocateManager.Instance.TryGetApplicationLayer(out T instanceInfra);
             instance = instanceInfra;
             return result;
         }
 
         #endregion
 
-        public void Initialize()
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
         {
-            GridSystemInitialize(_wallData);
+            if (_gridExistData != null)
+                _gridExistData.OnDrawGizmos();
         }
+#endif
     }
 }

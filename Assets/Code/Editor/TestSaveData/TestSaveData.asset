@@ -9,13 +9,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26303665cbc0b4a42b724301d705f9e6, type: 3}
+  m_Script: {fileID: 11500000, guid: 6adab3ab5d2d76f41bf0f28c412b32c3, type: 3}
   m_Name: TestSaveData
-  m_EditorClassIdentifier: 
-  PlayerName: ZeroData
-  Days: 0
-  Unit: 0
-  Xenosite: 0
-  Items: 0
-  Money: 0
-  _putUnitDataList: []
+  m_EditorClassIdentifier: Assembly-CSharp-Editor::XenositeFramework.Editor.XenositeSaveDataTestData
+  PlayerData:
+    PlayerName: Player
+    Days: 0
+    Unit: 0
+    Xenosite: 0
+    Items: 0
+    Money: 0
+  PlacedObjectData:
+    _putUnitDataList:
+    - UnitId: 0
+      UnitType: 0
+      Position: {x: 25, y: 0, z: 34}
+      Rotation: 1
+    - UnitId: 2
+      UnitType: 0
+      Position: {x: 114, y: 0, z: 44}
+      Rotation: 2
+    - UnitId: 4
+      UnitType: 0
+      Position: {x: 32, y: 0, z: 108}
+      Rotation: 3
+    - UnitId: 3
+      UnitType: 0
+      Position: {x: 78, y: 0, z: 96}
+      Rotation: 0
+    - UnitId: 3
+      UnitType: 0
+      Position: {x: 64, y: 0, z: 64}
+      Rotation: 0

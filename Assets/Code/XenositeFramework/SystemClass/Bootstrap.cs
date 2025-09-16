@@ -13,8 +13,10 @@ namespace XenositeFramework.SystemClass
         private async void Start()
         {
             PlayerOperationManager playerOperationManager = new();
-            SceneFlowManager  sceneFlowManager = new();
+            SaveDataInitializer saveDataInitializer = new();
+            SceneFlowManager sceneFlowManager = new();
             playerOperationManager.RegisterPresentation();
+            saveDataInitializer.RegisterData();
             sceneFlowManager.RegisterApplication();
             await sceneFlowManager.LoadMainSceneAsync(SceneName.StartScene);
         }

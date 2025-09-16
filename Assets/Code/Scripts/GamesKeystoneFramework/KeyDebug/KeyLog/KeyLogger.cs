@@ -19,6 +19,7 @@ namespace GamesKeystoneFramework.KeyDebug.KeyLog
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Initialize()
         {
+            Debug.Log("Initialized KeyLogger");
             //キャンバス作成
             var logCanvas = new GameObject("KeyTesterCanvas");
             _canvas = logCanvas.AddComponent<Canvas>();

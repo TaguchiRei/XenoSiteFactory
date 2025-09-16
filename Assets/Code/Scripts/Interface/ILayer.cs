@@ -31,7 +31,7 @@ namespace Interface
         void RegisterDomain();
 
         public bool GetData<T>(out T instance) where T : class, IDataLayer;
-        public bool GetInfrastructure<T>(out T instance) where T : class, IApplicationLayer;
+        public bool GetApplication<T>(out T instance) where T : class, IApplicationLayer;
     }
 
     /// <summary>
