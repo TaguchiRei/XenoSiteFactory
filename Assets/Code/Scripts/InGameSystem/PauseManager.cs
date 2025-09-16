@@ -1,24 +1,32 @@
 using System;
-using System.Collections.Generic;
 using Interface;
 using ServiceManagement;
 using UnityEngine;
 
 namespace InGameSystem
 {
-    public class PauseManager : IManagementFunc<IPauseable>, IApplicationLayer
+    public class PauseManager : MonoBehaviour, IManagementFunc<IPauseable>, IApplicationLayer
     {
+        public bool IsPause { get; private set; }
         private Action _pauseAction;
         private Action _resumeAction;
+
+        private void Awake()
+        {
+            RegisterApplication();
+            RegisterManagementFunc();
+        }
 
         public void Pause()
         {
             _pauseAction?.Invoke();
+            IsPause = true;
         }
 
         public void Resume()
         {
             _resumeAction?.Invoke();
+            IsPause = false;
         }
 
         #region インターフェース実装
