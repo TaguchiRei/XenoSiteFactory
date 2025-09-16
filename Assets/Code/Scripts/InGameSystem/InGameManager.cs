@@ -1,6 +1,7 @@
 using System;
 using GamesKeystoneFramework.KeyDebug.KeyLog;
 using GridSystem;
+using InGameSystemInterface;
 using Interface;
 using Player;
 using ServiceManagement;
@@ -10,13 +11,14 @@ using XenositeFramework.SceneSystem;
 
 namespace InGameSystem
 {
-    public class InGameManager : MonoBehaviour, IDomainLayer
+    public class InGameManager : MonoBehaviour, IDomainLayer, ITurnAllEndAction
     {
         private InGameState _inGameState = InGameState.LoadedInGame;
         [SerializeField] private PlayableDirector _startDirector;
         [SerializeField] private PlayableDirector _endDirector;
 
         private SceneFlowManager _sceneFlowManager;
+        private TurnManager _turnManager;
         private GridManager _gridManager;
 
         #region パブリックメソッド
@@ -26,6 +28,8 @@ namespace InGameSystem
         /// </summary>
         public void PlayModeStart()
         {
+            ServiceLocateManager.Instance.RegisterFunc<ITurnAllEndAction>(this);
+            _turnManager.Initialize();
         }
 
         #endregion
@@ -43,6 +47,7 @@ namespace InGameSystem
                 await _sceneFlowManager.LoadMainSceneAsync(SceneName.InGame);
                 KeyLogger.Log("Initialized", this);
                 _gridManager.Initialize();
+                _startDirector.Play();
             }
             else
             {
@@ -58,8 +63,12 @@ namespace InGameSystem
             _inGameState = InGameState.StartInGame;
         }
 
+        /// <summary>
+        /// タイムラインが終了したとき
+        /// </summary>
         private void EndInGame()
         {
+            
         }
 
         #endregion
@@ -68,6 +77,7 @@ namespace InGameSystem
 
         public void Dispose()
         {
+            
         }
 
         public bool GetDomain<T>(out T instance) where T : class, IDomainLayer
@@ -117,7 +127,13 @@ namespace InGameSystem
             }
         }
 
+        public void AllEndTurn()
+        {
+            _endDirector.Play();
+        }
+
         #endregion
+
     }
 
     public enum InGameState

@@ -98,22 +98,28 @@ namespace ServiceManagement
         }
 
         /// <summary>
-        /// 機能を登録する
+        /// 機能を登録する。必ず語引数を指定すること
         /// </summary>
-        public void RegisterFunc<TInterface>(TInterface instance)
+        public void RegisterFunc<TInterface>(object instance)
         {
-            if (!typeof(TInterface).IsInterface) throw new Exception("TInterface must be an interface");
+            if (!typeof(TInterface).IsInterface)
+                throw new Exception("TInterface must be an interface");
+
+            if (!(instance is TInterface typedInstance))
+                throw new Exception($"instance は {typeof(TInterface).Name} を実装していません");
+
             if (_funcManagementInterfaces.TryGetValue(typeof(TInterface), out object funcManager) &&
                 funcManager is IManagementFunc<TInterface> manager)
             {
-                manager.RegisterFunc(instance);
+                manager.RegisterFunc(typedInstance);
                 KeyLogger.Log($"機能[{typeof(TInterface).Name}] が登録されました。", this);
             }
             else
             {
-                KeyLogger.LogError($"機能[{typeof(TInterface).Name}] を管理するクラスは登録されていないか、見つけることができませんでした。", this);
+                KeyLogger.LogError($"機能[{typeof(TInterface).Name}] を管理するクラスは登録されていません。", this);
             }
         }
+
 
         #endregion
 

@@ -40,7 +40,8 @@ namespace OutGameSystem.Dev
             {
                 saveDataInitializer.InitializeSaveData(xenositeSaveData);
             }
-            await _sceneFlowManager.LoadMainSceneAsync(SceneName.ManagementScene);
+
+            await _sceneFlowManager.LoadSubSceneAsync(SceneName.ManagementScene);
         }
     }
 }

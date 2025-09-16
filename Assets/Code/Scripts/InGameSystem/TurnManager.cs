@@ -52,6 +52,7 @@ namespace InGameSystem
         public void Initialize()
         {
             _turnNumber = 0;
+            StartCoroutine(TurnFlow());
         }
 
         public void RegisterFunc(IUseTurnAction instance)

@@ -11,7 +11,7 @@ namespace GridSystem
     public class PlacedObjectData : IDataLayer
     {
         [SerializeField] private List<PutUnitData> _putUnitDataList = new();
-
+        
         public void SetUnit(PutUnitData putUnitData)
         {
             _putUnitDataList.Add(putUnitData);

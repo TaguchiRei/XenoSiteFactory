@@ -65,16 +65,12 @@ namespace XenositeFramework.SceneSystem
         /// </summary>
         /// <param name="loadSceneName"></param>
         /// <param name="originalSceneName"></param>
-        public async UniTask LoadMainSceneHoldObjectAsync(SceneName loadSceneName, SceneName originalSceneName)
+        public async UniTask LoadMainSceneHoldObjectAsync(SceneName loadSceneName)
         {
             //もともとのシーンが読み込まれているかを調べる
-            if (originalSceneName != _mainScene.sceneName)
-            {
-                KeyLogger.Log($"シーン{originalSceneName.ToString()}は読み込まれていません", this);
-            }
             //一度サブシーンとして読み込み、オブジェクトをすべて移動
             await SceneManager.LoadSceneAsync(loadSceneName.ToString(), LoadSceneMode.Additive);
-            foreach (var obj in SceneManager.GetSceneByName(originalSceneName.ToString()).GetRootGameObjects())
+            foreach (var obj in _mainScene.scene.GetRootGameObjects())
             {
                 TryMoveObjectSceneToScene(obj, loadSceneName);
             }
