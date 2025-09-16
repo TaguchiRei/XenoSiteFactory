@@ -7,7 +7,6 @@ namespace OutGameSystem
 {
     public class OutGameUIManager : MonoBehaviour, IPresentationLayer
     {
-
         private void OnAnyKeyInput()
         {
             
@@ -27,6 +26,17 @@ namespace OutGameSystem
             if (ServiceLocateManager.Instance.TryGetDomainLayer(out T instanceDomain))
             {
                 instance = instanceDomain;
+                return true;
+            }
+            instance = null;
+            return false;
+        }
+
+        public bool GetApplication<T>(out T instance) where T : class, IApplicationLayer
+        {
+            if (ServiceLocateManager.Instance.TryGetApplicationLayer(out T instanceApplication))
+            {
+                instance = instanceApplication;
                 return true;
             }
             instance = null;

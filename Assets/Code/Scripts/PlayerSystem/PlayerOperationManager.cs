@@ -148,6 +148,22 @@ namespace PlayerSystem
             }
         }
 
+        public bool GetApplication<T>(out T instance) where T : class, IApplicationLayer
+        {
+            if(ServiceLocateManager.Instance.TryGetApplicationLayer(out T applicationInstance))
+            {
+                instance = applicationInstance;
+                return true;
+            }
+            instance = null;
+            return false;
+        }
+
+
+        public void RegisterManagementFunc()
+        {
+            ServiceLocateManager.Instance.RegisterManagementFunc(this);
+        }
 
         public void RegisterManagementFunc()
         {

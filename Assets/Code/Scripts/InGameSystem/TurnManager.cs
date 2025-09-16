@@ -60,6 +60,7 @@ namespace InGameSystem
         public void RegisterManagementFunc()
         {
             ServiceLocateManager.Instance.RegisterManagementFunc<IUseTurnAction>(this);
+            ServiceLocateManager.Instance.RegisterManagementFunc(this);
         }
 
         public void RegisterFunc(IUseTurnAction instance)
