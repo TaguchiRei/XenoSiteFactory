@@ -7,6 +7,7 @@ namespace InGameSystem
 {
     public class PauseManager : MonoBehaviour, IManagementFunc<IPauseable>, IApplicationLayer
     {
+        public bool IsPause { get; private set; }
         private Action _pauseAction;
         private Action _resumeAction;
 
@@ -19,11 +20,13 @@ namespace InGameSystem
         public void Pause()
         {
             _pauseAction?.Invoke();
+            IsPause = true;
         }
 
         public void Resume()
         {
             _resumeAction?.Invoke();
+            IsPause = false;
         }
 
         #region インターフェース実装

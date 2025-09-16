@@ -4,28 +4,75 @@ using InGameSystem;
 using Interface;
 using ServiceManagement;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UnitSystem
 {
     public class InGameUIManager : MonoBehaviour, IPresentationLayer
     {
         private static readonly int UIState = Animator.StringToHash("UIState");
-        [SerializeField] private Animator _animator;
-        private PauseManager _pauseManager;
 
+        [SerializeField] private Animator _animator;
+
+        [Header("UI")] 
+        [SerializeField] private Image _pauseButton;
+        [SerializeField] private Image _speedButton;
+        
+        [Header("UI Image")]
+        [SerializeField] private Sprite[] _pauseSprite;
+        [SerializeField] private Sprite[] _speedSprite;
+
+        private PauseManager _pauseManager;
+        private TurnManager _turnManager;
         private bool _isOpenMenu;
         private bool _isOpenSelectField;
+        private bool _isDoubleSpeed;
         private int _tabNumber;
 
         private void Start()
         {
-            if (!GetApplication(out _pauseManager))
+            if (!GetApplication(out _pauseManager) &&
+                !GetApplication(out  _turnManager))
             {
-                KeyLogger.Log($"ポーズマネージャーの取得に失敗",this);
+                KeyLogger.Log($"初期化に失敗", this);
             }
         }
 
         #region パブリックメソッド
+
+        /// <summary>
+        /// ポーズボタンを押したときの挙動
+        /// </summary>
+        public void PauseButton()
+        {
+            if (_pauseManager.IsPause)
+            {
+                _pauseManager.Resume();
+                _pauseButton.sprite = _pauseSprite[0];
+            }
+            else
+            {
+                _pauseManager.Pause();
+                _pauseButton.sprite = _pauseSprite[1];
+            }
+        }
+
+        /// <summary>
+        /// スピードボタンを押したときの挙動
+        /// </summary>
+        public void SpeedButton()
+        {
+            if (_isDoubleSpeed)
+            {
+                _isDoubleSpeed= false;
+                _speedButton.sprite = _speedSprite[0];
+            }
+            else
+            {
+                _isDoubleSpeed = true;
+                _speedButton.sprite = _speedSprite[1];
+            }
+        }
 
         /// <summary>
         /// メニューを開く
@@ -50,13 +97,12 @@ namespace UnitSystem
             if (!_isOpenSelectField && _tabNumber == tabNumber)
             {
                 _animator.SetInteger(UIState, 0);
-                _pauseManager.Resume();
             }
             else
             {
                 _animator.SetInteger(UIState, 1);
-                _pauseManager.Pause();
             }
+
             _tabNumber = tabNumber;
         }
 
