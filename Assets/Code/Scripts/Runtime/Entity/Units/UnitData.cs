@@ -5,8 +5,11 @@ using UnityEngine;
 /// </summary>
 public class UnitData
 {
-    public Vector3Int Position { get; private set; }
     public int UnitID { get; private set; }
+    public Vector3Int Position { get; private set; }
+    public UnitRotate Rotation { get; private set; }
+    public Vector3Int[] InputPorts { get; private set; }
+    public Vector3Int[] OutputPorts { get; private set; }
     public bool[,,] UnitShape { get; private set; }
     public int UnitWidth { get; private set; }
     public int UnitDepth { get; private set; }
@@ -14,12 +17,15 @@ public class UnitData
     public int UnitHeight { get; private set; }
 
     private bool[] _existingHeight;
-    
 
-    public UnitData(int unitID, bool[,,] unitShape, Vector3Int position)
+
+    public UnitData(int unitID, Vector3Int position, UnitRotate rotation, Vector3Int[] inputPorts, Vector3Int[] outputPorts, bool[,,] unitShape)
     {
         UnitID = unitID;
         UnitShape = unitShape;
+        Rotation = rotation;
+        InputPorts = inputPorts;
+        OutputPorts = outputPorts;
 
         UnitWidth = unitShape.GetLength(0);
         UnitHeight = unitShape.GetLength(1);

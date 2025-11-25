@@ -26,19 +26,7 @@ namespace Code.Scripts.Runtime.Entity.Grid
             _depth = depth;
             _placedUnitData = placedUnitData;
         }
-
-        public bool CheckCanPut(Vector3Int position)
-        {
-            if (position.x >= _width || position.y >= _height || position.z >= _depth ||
-                position.x < 0 || position.y < 0 || position.z < 0) return false;
-            foreach (var unitData in _placedUnitData)
-            {
-                if (unitData.HasBlockAt(position)) return false;
-            }
-
-            return true;
-        }
-
+        
         private bool CheckCanPut(UnitData unitData, Vector3Int position)
         {
             if (position.x + unitData.UnitWidth > _width ||
