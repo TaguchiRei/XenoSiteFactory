@@ -8,45 +8,47 @@ public class UnitData
     public Vector3Int Position { get; private set; }
     public int UnitID { get; private set; }
     public bool[,,] UnitShape { get; private set; }
+    public int UnitWidth { get; private set; }
+    public int UnitDepth { get; private set; }
+
+    public int UnitHeight { get; private set; }
 
     private bool[] _existingHeight;
+    
 
-    private int _unitWidth;
-    private int _unitDepth;
-
-    public UnitData(int unitID, bool[,,] unitShape)
+    public UnitData(int unitID, bool[,,] unitShape, Vector3Int position)
     {
         UnitID = unitID;
         UnitShape = unitShape;
-        _existingHeight = new bool[UnitShape.GetLength(1)];
 
-        _unitWidth = UnitShape.GetLength(0);
-        _unitDepth = UnitShape.GetLength(2);
+        UnitWidth = unitShape.GetLength(0);
+        UnitHeight = unitShape.GetLength(1);
+        UnitDepth = unitShape.GetLength(2);
 
-        for (int height = 0; height < _existingHeight.Length; height++)
+        _existingHeight = new bool[UnitHeight];
+
+        //ユニットが存在しない高さがある場合その高度の探査をスキップするのであらかじめ調べておく
+        for (int y = 0; y < UnitHeight; y++)
         {
-            if (_existingHeight[height]) continue;
-            
-            bool exist = false;
-            for (int x = 0; x < _unitWidth; x++)
+            bool isExist = false;
+            for (int x = 0; x < UnitWidth; x++)
             {
-                for (int z = 0; z < _unitDepth; z++)
+                for (int z = 0; z < UnitDepth; z++)
                 {
-                    if (unitShape[x, height, z])
+                    if (UnitShape[x, y, z])
                     {
-                        exist = true;
+                        isExist = true;
                         break;
                     }
                 }
 
-                if (exist) break;
+                if (isExist) break;
             }
 
-            if (exist)
-            {
-                _existingHeight[height] = true;
-            }
+            if (isExist) _existingHeight[y] = true;
         }
+
+        SetPosition(position);
     }
 
     public void SetPosition(Vector3Int position)
@@ -59,34 +61,48 @@ public class UnitData
     /// </summary>
     /// <param name="position"></param>
     /// <returns>指定した高さに何もなければ-1が返る</returns>
-    public int GetDistanceToPosition(Vector3Int position)
+    public int GetNearestDistanceAt(Vector3Int position)
     {
-        //その高さに何もなかったら-1を返して戻る
-        if (!_existingHeight[position.y])
-        {
-            return -1;
-        }
+        int localY = position.y - Position.y;
+        //positionで指定する高さがオブジェクトと重なる高さでなければ-1を返す
+        if (position.y < Position.y || position.y >= Position.y + UnitHeight) return -1;
+        //positionで指定した高さにユニットが存在しない場合-1を返す
+        if (!_existingHeight[localY]) return -1;
 
         int nearestDistance = int.MaxValue;
 
-        for (int x = 0; x < UnitShape.GetLength(0); x++)
+        for (int x = 0; x < UnitWidth; x++)
         {
-            for (int z = 0; z < UnitShape.GetLength(2); z++)
+            for (int z = 0; z < UnitDepth; z++)
             {
-                if (!UnitShape[x, position.y, z])
-                {
-                    continue;
-                }
+                if (!UnitShape[x, localY, z]) continue;
 
-                int manhattanDistance = Mathf.Abs(Position.x + x - position.x) + Mathf.Abs(Position.z + z - position.z);
+                //マンハッタン距離で距離を調べる。(キャラクターなどは前後左右のみ移動し斜め移動はしない予定)
+                var manhattan = Mathf.Abs((Position.x + x) - position.x) + Mathf.Abs(Position.z + z - position.z);
 
-                if (manhattanDistance < nearestDistance)
+                if (manhattan < nearestDistance)
                 {
-                    nearestDistance = manhattanDistance;
+                    nearestDistance = manhattan;
                 }
             }
         }
 
         return nearestDistance;
+    }
+
+    /// <summary>
+    /// 指定した座標がユニットによって占有されているかを調べる
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    public bool HasBlockAt(Vector3Int position)
+    {
+        var checkIndex = position - Position;
+
+        //そもそも範囲外ならそこには何もない
+        if (checkIndex.x < 0 || checkIndex.y < 0 || checkIndex.z < 0 ||
+            checkIndex.x >= UnitWidth || checkIndex.y >= UnitHeight || checkIndex.z >= UnitDepth) return false;
+
+        return UnitShape[checkIndex.x, checkIndex.y, checkIndex.z];
     }
 }
