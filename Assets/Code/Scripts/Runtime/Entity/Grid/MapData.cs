@@ -57,10 +57,14 @@ namespace Code.Scripts.Runtime.Entity.Grid
 
             return true;
         }
-        
+
         /// <summary>
         /// AABBを取り入れて検索を効率化する
         /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="unit"></param>
+        /// <param name="placedUnit"></param>
+        /// <returns></returns>
         private bool IsBoundingBoxOverlap(Vector3Int pos, UnitData unit, UnitData placedUnit)
         {
             // X軸で重なっているか
