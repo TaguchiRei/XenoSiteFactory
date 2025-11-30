@@ -5,18 +5,29 @@ using UnityEngine;
 
 public class CodeGenerator : EditorWindow
 {
-    private const string _folderPath = "Assets";
+    private const string DEFAULT_FOLDER_PATH = "Assets";
+
     private string _codeName = "NewCode";
     private string _code;
     private Vector2 _scrollPosition;
+    private GenerateMode _generateMode;
 
+    private Func<string, string> _generateCodeFunc;
+
+    //トグル表示
     private bool _showSimpleClass;
     private bool _showOthers;
+    private bool _showOptions;
 
     private bool _isPushButton;
     private bool _isEmptyName;
 
-    private Func<string, string> _generateCodeFunc;
+    //コード改造
+    private bool _isSerializable;
+    private bool _useSummary;
+    private AccessModifier _accessModifier;
+    private OtherModifier _otherModifier;
+
 
     [MenuItem("Window/UsefulTools/Code Generator")]
     public static void ShowWindow()
@@ -27,6 +38,7 @@ public class CodeGenerator : EditorWindow
     private void OnEnable()
     {
         _generateCodeFunc = GetSimpleCsCode;
+        _generateMode = GenerateMode.SimpleCs;
     }
 
     public void OnGUI()
@@ -38,6 +50,22 @@ public class CodeGenerator : EditorWindow
         {
             _isPushButton = true;
         }
+
+        _showOptions = EditorGUILayout.Foldout(_showOptions, "Options");
+        if (_showOptions)
+        {
+            EditorGUI.BeginChangeCheck();
+            _useSummary = EditorGUILayout.Toggle("Use Summary", _useSummary);
+            IsSerializable();
+            _accessModifier = (AccessModifier)EditorGUILayout.EnumPopup("Access Modifier", _accessModifier);
+            _otherModifier = (OtherModifier)EditorGUILayout.EnumPopup("Other Modifier", _otherModifier);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                _isPushButton = true;
+            }
+        }
+
 
         GUILayout.Label("Code Preview");
         //コードプレビュー
@@ -60,24 +88,28 @@ public class CodeGenerator : EditorWindow
             if (GUILayout.Button("SimpleCS"))
             {
                 _generateCodeFunc = GetSimpleCsCode;
+                _generateMode = GenerateMode.SimpleCs;
                 _isPushButton = true;
             }
 
             if (GUILayout.Button("MonoBehaviour"))
             {
                 _generateCodeFunc = GetSimpleMonoBehaviourScript;
+                _generateMode = GenerateMode.MonoBehaviour;
                 _isPushButton = true;
             }
 
             if (GUILayout.Button("ScriptableObject"))
             {
                 _generateCodeFunc = GetSimpleScriptableObjectScript;
+                _generateMode = GenerateMode.ScriptableObject;
                 _isPushButton = true;
             }
 
             if (GUILayout.Button("EditorWindow"))
             {
                 _generateCodeFunc = GetSimpleEditorWindowScript;
+                _generateMode = GenerateMode.EditorWindow;
                 _isPushButton = true;
             }
 
@@ -93,18 +125,21 @@ public class CodeGenerator : EditorWindow
             if (GUILayout.Button("Struct"))
             {
                 _generateCodeFunc = GetStructCode;
+                _generateMode = GenerateMode.Struct;
                 _isPushButton = true;
             }
 
             if (GUILayout.Button("Enum"))
             {
                 _generateCodeFunc = GetEnumCode;
+                _generateMode = GenerateMode.Enum;
                 _isPushButton = true;
             }
 
             if (GUILayout.Button("Interface"))
             {
                 _generateCodeFunc = GetInterfaceCode;
+                _generateMode = GenerateMode.Interface;
                 _isPushButton = true;
             }
 
@@ -127,11 +162,35 @@ public class CodeGenerator : EditorWindow
         }
     }
 
+    #region Options
+
+    private void IsSerializable()
+    {
+        if (_generateMode == GenerateMode.SimpleCs || _generateMode == GenerateMode.Struct)
+        {
+            _isSerializable = EditorGUILayout.Toggle("Is Serializable", _isSerializable);
+        }
+    }
+
+    private string GetOtherModifier()
+    {
+        if (_otherModifier == OtherModifier.None)
+        {
+            return "";
+        }
+        else
+        {
+            return _otherModifier.ToString().ToLower();
+        }
+    }
+
+    #endregion
+
     #region GenerateCode
 
     private void GenerateCode(string code)
     {
-        string selectedPath = EditorUtility.OpenFolderPanel("Select Folder", _folderPath, _codeName);
+        string selectedPath = EditorUtility.OpenFolderPanel("Select Folder", DEFAULT_FOLDER_PATH, _codeName);
         if (!string.IsNullOrEmpty(selectedPath))
         {
             if (selectedPath.StartsWith(Application.dataPath))
@@ -153,7 +212,7 @@ public class CodeGenerator : EditorWindow
     /// <param name="code"></param>
     private void GenerateCsFile(string path, string code)
     {
-        File.WriteAllText(path, code);
+        File.WriteAllText(Path.Combine(path, _codeName + ".cs"), code);
         AssetDatabase.Refresh();
 
         Debug.Log("EditorWindowスクリプトを生成しました: " + path);
@@ -165,47 +224,85 @@ public class CodeGenerator : EditorWindow
 
     private string GetSimpleCsCode(string className)
     {
-        return $@"public class {className}
+        string code = _isSerializable ? "using System;\n[Serializable]\n" : "";
+        code = _useSummary
+            ? code + @"
+/// <summary>
+/// 
+/// </summary>
+"
+            : code;
+
+        code += $@"{_accessModifier.ToString().ToLower()} {GetOtherModifier()} class {className}
 {{
     
 }}";
+        return code;
     }
 
     private string GetSimpleMonoBehaviourScript(string className)
     {
-        return $@"using UnityEngine;
+        string code = "using UnityEngine";
 
-public class {className} : MonoBehaviour
+        code = _useSummary
+            ? code + @"
+/// <summary>
+/// 
+/// </summary>
+"
+            : code;
+
+        code += $@";
+
+{_accessModifier.ToString().ToLower()} {GetOtherModifier()}  class {className} : MonoBehaviour
 {{
     
 }}
 
 ";
+        return code;
     }
 
     private string GetSimpleScriptableObjectScript(string className)
     {
-        return $@"using UnityEngine;
+        string code = "using UnityEngine;";
+        code += _useSummary
+            ? @"
+/// <summary>
+/// 
+/// </summary>
+"
+            : "";
 
+        code += $@"
 [CreateAssetMenu(fileName = ""{className}"", menuName = ""ScriptableObjects/{className}"")]
-public class {className} : ScriptableObject
+{_accessModifier.ToString().ToLower()} {GetOtherModifier()}  class {className} : ScriptableObject
 {{
     
 }}
 ";
+        return code;
     }
 
     private string GetSimpleEditorWindowScript(string className)
     {
-        return $@"using UnityEngine;
-using UnityEditor;
+        string code = "using UnityEngine;\nusing UnityEditor;";
 
-public class {name} : EditorWindow
+        code += _useSummary
+            ? @"
+/// <summary>
+/// 
+/// </summary>
+"
+            : "";
+
+        code += $@"
+{_accessModifier.ToString().ToLower()} {GetOtherModifier()}  class {className} : EditorWindow
 {{
-    [MenuItem(""Window/UsefulTools/{name}"")]
-    public static void ShowWindow()
+    [MenuItem(""Window/UsefulTools/{className}"")]
+    {_accessModifier.ToString().ToLower()} static void ShowWindow()
     {{
-        GetWindow<{name}>(""{name}"");
+        GetWindow<{className}>(""{className}"");
     }}
 
     private void OnGUI()
@@ -213,23 +310,24 @@ public class {name} : EditorWindow
 
     }}
 }}";
+
+        return code;
     }
 
     private string GetStructCode(string structName)
     {
-        return $@"public struct {structName}
+        string code = _isSerializable ? "using System;\n[Serializable]\n" : "";
+        code += $@"{_accessModifier.ToString().ToLower()}  struct {structName}
 {{
-
-    public {structName}()
-    {{
-
-    }}
+    
 }}";
+
+        return code;
     }
 
     private string GetEnumCode(string enumName)
     {
-        return $@"public enum {enumName} 
+        return $@"{_accessModifier.ToString().ToLower()} enum {enumName} 
 {{
     
 }}";
@@ -237,11 +335,38 @@ public class {name} : EditorWindow
 
     private string GetInterfaceCode(string interfaceName)
     {
-        return $@"public  interface {interfaceName}
+        return $@"{_accessModifier.ToString().ToLower()}  interface {interfaceName}
 {{
     
 }}";
     }
 
     #endregion
+
+    private enum GenerateMode
+    {
+        SimpleCs,
+        MonoBehaviour,
+        ScriptableObject,
+        EditorWindow,
+        Struct,
+        Enum,
+        Interface
+    }
+
+    private enum AccessModifier
+    {
+        Public,
+        Protected,
+        Internal,
+        Private,
+    }
+
+    private enum OtherModifier
+    {
+        None,
+        Abstract,
+        Sealed,
+        Static,
+    }
 }
