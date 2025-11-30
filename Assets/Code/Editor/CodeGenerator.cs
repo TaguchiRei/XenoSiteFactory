@@ -1,5 +1,7 @@
 using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -49,6 +51,7 @@ public class CodeGenerator : EditorWindow
         if (EditorGUI.EndChangeCheck())
         {
             _isPushButton = true;
+            _codeName = ToPascalCase(_codeName);
         }
 
         _showOptions = EditorGUILayout.Foldout(_showOptions, "Options");
@@ -342,6 +345,20 @@ public class CodeGenerator : EditorWindow
     }
 
     #endregion
+
+
+    static string ToPascalCase(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return string.Empty;
+
+        TextInfo textInfo = CultureInfo.InvariantCulture.TextInfo;
+
+        return string.Concat(
+            input.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(word => textInfo.ToTitleCase(word.ToLower()))
+        );
+    }
 
     private enum GenerateMode
     {
