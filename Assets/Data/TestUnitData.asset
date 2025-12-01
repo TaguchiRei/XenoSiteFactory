@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 356731bd2bdda2145be30371aab9f2e6, type: 3}
+  m_Name: TestUnitData
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDatas
+  AllUnitData:
+  - Name: 
+    Info: 
+    UnitTexture: {fileID: 0}
+    UnitPrefab: {fileID: 0}
+    InputPorts: []
+    OutputPorts: []
+    UnitShape: 00
+    UnitWidth: 1
+    UniDepth: 1
+    UnitHeight: 1
+  - Name: 
+    Info: 
+    UnitTexture: {fileID: 0}
+    UnitPrefab: {fileID: 0}
+    InputPorts: []
+    OutputPorts: []
+    UnitShape: 00
+    UnitWidth: 1
+    UniDepth: 1
+    UnitHeight: 1
