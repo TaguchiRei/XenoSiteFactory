@@ -7,5 +7,5 @@ public interface IUnitCalculation
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    public ItemData CalculateItem(ItemData[] item);
+    public ItemEntity CalculateItem(ItemEntity[] item);
 }

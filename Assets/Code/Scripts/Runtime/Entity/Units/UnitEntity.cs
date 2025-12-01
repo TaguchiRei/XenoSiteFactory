@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// ユニットの処理に使うデータ
 /// </summary>
-public class UnitData
+public class UnitEntity
 {
     public int UnitID { get; private set; }
     public Vector3Int Position { get; private set; }
@@ -19,7 +19,7 @@ public class UnitData
     private bool[] _existingHeight;
 
 
-    public UnitData(int unitID, Vector3Int position, UnitRotate rotation, Vector3Int[] inputPorts, Vector3Int[] outputPorts, bool[,,] unitShape)
+    public UnitEntity(int unitID, Vector3Int position, UnitRotate rotation, Vector3Int[] inputPorts, Vector3Int[] outputPorts, bool[,,] unitShape)
     {
         UnitID = unitID;
         UnitShape = unitShape;

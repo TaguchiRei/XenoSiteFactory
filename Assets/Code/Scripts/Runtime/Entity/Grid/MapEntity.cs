@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace Code.Scripts.Runtime.Entity.Grid
 {
-    public class MapData
+    public class MapEntity
     {
         private int _height;
         private int _width;
         private int _depth;
 
-        private List<UnitData> _placedUnitData;
+        private List<UnitEntity> _placedUnitData;
 
-        public MapData(int height, int width, int depth)
+        public MapEntity(int height, int width, int depth)
         {
             _height = height;
             _width = width;
@@ -19,7 +19,7 @@ namespace Code.Scripts.Runtime.Entity.Grid
             _placedUnitData = new();
         }
 
-        public MapData(int height, int width, int depth, List<UnitData> placedUnitData)
+        public MapEntity(int height, int width, int depth, List<UnitEntity> placedUnitData)
         {
             _height = height;
             _width = width;
@@ -27,27 +27,27 @@ namespace Code.Scripts.Runtime.Entity.Grid
             _placedUnitData = placedUnitData;
         }
         
-        private bool CheckCanPut(UnitData unitData, Vector3Int position)
+        private bool CheckCanPut(UnitEntity unitEntity, Vector3Int position)
         {
-            if (position.x + unitData.UnitWidth > _width ||
-                position.y + unitData.UnitHeight > _height ||
-                position.z + unitData.UnitDepth > _depth ||
+            if (position.x + unitEntity.UnitWidth > _width ||
+                position.y + unitEntity.UnitHeight > _height ||
+                position.z + unitEntity.UnitDepth > _depth ||
                 position.x < 0 || position.y < 0 || position.z < 0) return false;
 
             foreach (var placedUnit in _placedUnitData)
             {
-                if (!IsBoundingBoxOverlap(position, unitData, placedUnit))
+                if (!IsBoundingBoxOverlap(position, unitEntity, placedUnit))
                 {
                     continue;
                 }
 
-                for (int x = 0; x < unitData.UnitWidth; x++)
+                for (int x = 0; x < unitEntity.UnitWidth; x++)
                 {
-                    for (int y = 0; y < unitData.UnitHeight; y++)
+                    for (int y = 0; y < unitEntity.UnitHeight; y++)
                     {
-                        for (int z = 0; z < unitData.UnitDepth; z++)
+                        for (int z = 0; z < unitEntity.UnitDepth; z++)
                         {
-                            if (!unitData.UnitShape[x, y, z]) continue;
+                            if (!unitEntity.UnitShape[x, y, z]) continue;
 
                             if (placedUnit.HasBlockAt(new(x, y, z))) return false;
                         }
@@ -65,7 +65,7 @@ namespace Code.Scripts.Runtime.Entity.Grid
         /// <param name="unit"></param>
         /// <param name="placedUnit"></param>
         /// <returns></returns>
-        private bool IsBoundingBoxOverlap(Vector3Int pos, UnitData unit, UnitData placedUnit)
+        private bool IsBoundingBoxOverlap(Vector3Int pos, UnitEntity unit, UnitEntity placedUnit)
         {
             // X軸で重なっているか
             bool overlapX = pos.x < placedUnit.Position.x + placedUnit.UnitWidth &&

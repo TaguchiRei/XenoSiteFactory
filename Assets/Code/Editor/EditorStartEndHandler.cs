@@ -46,27 +46,22 @@ public static class EditorStartupHandler
         }
 
         //ファイルがなければ無視し、あればデータを読み込む
+        _workManagement = new WorkManagement();
         if (ExistFile($"{_startDate.Date:yyyy-MM-dd}.txt"))
         {
-            _workManagement = new WorkManagement();
             string data = File.ReadAllText(Path.Combine(_folderPath, $"{_startDate.Date:yyyy-MM-dd}.txt"));
             _workManagement.FromString(data);
-
-            string projectFolderName = Path.GetFileName(Path.GetDirectoryName(Application.dataPath));
-            if (_workManagement.TryGetLastWork(projectFolderName, out var last) && last.IsWorking)
-            {
-                Debug.Log("前回の起動時はエディタが予期せず終了した可能性があります。");
-                last.IsWorking = false;
-            }
-        }
-        else
-        {
-            _workManagement = new WorkManagement();
         }
 
         if (SessionState.GetBool(INIT_KEY, false))
             return; // このエディタセッション中に既に実行済みならスキップ
 
+        string projectFolderName = Path.GetFileName(Path.GetDirectoryName(Application.dataPath));
+        if (_workManagement.TryGetLastWork(projectFolderName, out var last) && last.IsWorking)
+        {
+            Debug.Log("前回の起動時はエディタが予期せず終了した可能性があります。");
+            last.IsWorking = false;
+        }
         SessionStart("作業開始を記録しました");
     }
 
@@ -86,9 +81,11 @@ public static class EditorStartupHandler
         {
             SaveWork(true);
             _lastSaveTime = DateTime.Now;
+            Debug.Log("定期記録を行いました");
         }
 
         if (DateTime.Now.Date == _startDate.Date) return;
+
         SaveWork();
         _startDate = DateTime.Now;
         SessionStart($"日付が変わったため、記録を終了して{DateTime.Now.Date}として再開しました");
@@ -104,15 +101,23 @@ public static class EditorStartupHandler
         SessionState.SetString(LAST_SAVE_TIME_KEY, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
 
         string projectFolderName = Path.GetFileName(Path.GetDirectoryName(Application.dataPath));
+    
+        DateTime endTime = DateTime.Now;
+    
+        // 終了時刻が0:00:00の場合は前日の23:59:59に調整
+        if (endTime.TimeOfDay == TimeSpan.Zero)
+        {
+            endTime = endTime.AddMilliseconds(-1);
+        }
 
         if (_workManagement.TryGetLastWork(projectFolderName, out var last) && last.IsWorking)
         {
-            last.End = DateTime.Now;
+            last.End = endTime;
             last.IsWorking = isWorking;
         }
         else
         {
-            _workManagement.AddWork(new Work(projectFolderName, _startDate, DateTime.Now, isWorking));
+            _workManagement.AddWork(new Work(projectFolderName, _startDate, endTime, isWorking));
         }
 
         string path = Path.Combine(_folderPath, $"{_startDate.Date:yyyy-MM-dd}.txt");
