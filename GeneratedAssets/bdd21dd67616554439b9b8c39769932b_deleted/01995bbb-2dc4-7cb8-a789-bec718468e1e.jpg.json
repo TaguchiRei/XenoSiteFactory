@@ -1,0 +1,20 @@
+{
+    "asset": "bdd21dd67616554439b9b8c39769932b",
+    "fileName": "01995bbb-2dc4-7cb8-a789-bec718468e1e.jpg",
+    "prompt": "mandarin orange,Sealing wax,letter,orange color",
+    "negativePrompt": "",
+    "model": "94c4260f-b988-40e7-b3d3-435b9f449bd0",
+    "modelName": "Flux.1 Dev",
+    "customSeed": -1,
+    "w3CTraceId": "bfb1c828d496d5f1391c024b0ce10351",
+    "refinementMode": "Generation",
+    "pixelateTargetSize": 0,
+    "pixelateKeepImageSize": false,
+    "pixelatePixelBlockSize": 0,
+    "pixelateMode": 0,
+    "pixelateOutlineThickness": 0,
+    "doodles": {
+        "m_Items": []
+    },
+    "upscaleFactor": 0
+}
