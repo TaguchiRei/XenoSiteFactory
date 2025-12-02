@@ -4,12 +4,11 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
-/// コアなサービスに限定したサービスロケーター
-/// ゲーム内で汎用にどこからでも利用される機能をインターフェースの形で登録する
+/// ゲーム内で汎用に利用される機能をインターフェースの形で登録する
 /// </summary>
-public class SystemService : MonoBehaviour
+public class ServiceLocator : MonoBehaviour
 {
-    public static SystemService Instance;
+    public static ServiceLocator Instance;
 
     private readonly Dictionary<Type, object> _systemServices = new();
 
@@ -26,7 +25,7 @@ public class SystemService : MonoBehaviour
     }
 
     /// <summary>
-    /// システムサービスを登録する
+    /// サービスの登録を試みる
     /// </summary>
     /// <param name="instance"></param>
     /// <typeparam name="T"></typeparam>
@@ -50,7 +49,7 @@ public class SystemService : MonoBehaviour
     }
 
     /// <summary>
-    /// コンポーネントの登録を試みる
+    /// サービスの登録解除を試みる
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
@@ -73,7 +72,7 @@ public class SystemService : MonoBehaviour
     }
 
     /// <summary>
-    /// 指定したコアシステムを取得する
+    /// 指定したクラスのインスタンス取得を試みる
     /// </summary>
     /// <param name="instance"></param>
     /// <typeparam name="T"></typeparam>
@@ -125,6 +124,6 @@ public class SystemService : MonoBehaviour
     /// <returns>CoreSystemを継承たインターフェース以外はfalse</returns>
     private bool CheckIsCoreSystem<T>()
     {
-        return System.Attribute.IsDefined(typeof(T), typeof(CoreSystemAttribute));
+        return System.Attribute.IsDefined(typeof(T), typeof(RegisterableServiceAttribute));
     }
 }

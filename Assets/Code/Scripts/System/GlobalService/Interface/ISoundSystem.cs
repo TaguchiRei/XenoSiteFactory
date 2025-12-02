@@ -1,6 +1,6 @@
 namespace Xenosite.System.GlobalService.Interface
 {
-    [CoreSystem]
+    [RegisterableService]
     public interface IAudioMasterSettings
     {
         /// <summary>
@@ -29,7 +29,7 @@ namespace Xenosite.System.GlobalService.Interface
     /// <summary>
     /// 効果音を再生する機能を持ちます
     /// </summary>
-    [CoreSystem]
+    [RegisterableService]
     public interface ISoundSystem
     {
         /// <summary>
@@ -89,7 +89,7 @@ namespace Xenosite.System.GlobalService.Interface
     /// <summary>
     /// BGMを再生する機能を持ちます
     /// </summary>
-    [CoreSystem]
+    [RegisterableService]
     public interface IBGMSystem
     {
         /// <summary>
