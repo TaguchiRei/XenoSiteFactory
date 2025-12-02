@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class CodeGenerator : EditorWindow
 {
-    private const string DEFAULT_FOLDER_PATH = "Assets";
-
     private string _codeName = "NewCode";
     private string _code;
     private Vector2 _scrollPosition;
@@ -193,13 +191,15 @@ public class CodeGenerator : EditorWindow
 
     private void GenerateCode(string code)
     {
-        string selectedPath = EditorUtility.OpenFolderPanel("Select Folder", DEFAULT_FOLDER_PATH, _codeName);
+        string selectedPath =
+            EditorUtility.OpenFolderPanel("Select Folder", ProjectWindowSelector.GetSelectedFolderPath(), _codeName);
         if (!string.IsNullOrEmpty(selectedPath))
         {
             if (selectedPath.StartsWith(Application.dataPath))
             {
                 var folderPath = "Assets" + selectedPath.Substring(Application.dataPath.Length);
-                GenerateCsFile(folderPath, code);
+                var p = GenerateCsFile(folderPath, code);
+                ProjectWindowSelector.SelectAsset(p);
             }
             else
             {
@@ -213,12 +213,14 @@ public class CodeGenerator : EditorWindow
     /// </summary>
     /// <param name="path"></param>
     /// <param name="code"></param>
-    private void GenerateCsFile(string path, string code)
+    private string GenerateCsFile(string path, string code)
     {
-        File.WriteAllText(Path.Combine(path, _codeName + ".cs"), code);
+        var generatedPath = Path.Combine(path, _codeName + ".cs");
+        File.WriteAllText(generatedPath, code);
         AssetDatabase.Refresh();
 
         Debug.Log("EditorWindowスクリプトを生成しました: " + path);
+        return generatedPath;
     }
 
     #endregion
