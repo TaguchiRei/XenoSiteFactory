@@ -1,6 +1,8 @@
+using System.GlobalService.Interface;
+
 namespace Xenosite.System.GlobalService.Interface
 {
-    public interface IAudioMasterSettings
+    public interface IAudioMasterSettings : ICoreSystem
     {
         /// <summary>
         /// マスターボリュームを設定します（0~1）
@@ -24,10 +26,11 @@ namespace Xenosite.System.GlobalService.Interface
         /// <returns></returns>
         public bool IsMuted();
     }
+
     /// <summary>
     /// 効果音を再生する機能を持ちます
     /// </summary>
-    public interface ISoundSystem
+    public interface ISoundSystem : ICoreSystem
     {
         /// <summary>
         /// 効果音を再生します
@@ -86,7 +89,7 @@ namespace Xenosite.System.GlobalService.Interface
     /// <summary>
     /// BGMを再生する機能を持ちます
     /// </summary>
-    public interface IBGMSystem
+    public interface IBGMSystem : ICoreSystem
     {
         /// <summary>
         /// BGMを再生します
