@@ -9,4 +9,5 @@ public enum InListSceneName
 
 public enum OutListSceneName
 {
+    System,
 }
