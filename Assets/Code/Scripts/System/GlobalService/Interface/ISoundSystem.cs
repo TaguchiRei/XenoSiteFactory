@@ -2,7 +2,8 @@ using System.GlobalService.Interface;
 
 namespace Xenosite.System.GlobalService.Interface
 {
-    public interface IAudioMasterSettings : ICoreSystem
+    [CoreSystem]
+    public interface IAudioMasterSettings
     {
         /// <summary>
         /// マスターボリュームを設定します（0~1）
@@ -30,7 +31,8 @@ namespace Xenosite.System.GlobalService.Interface
     /// <summary>
     /// 効果音を再生する機能を持ちます
     /// </summary>
-    public interface ISoundSystem : ICoreSystem
+    [CoreSystem]
+    public interface ISoundSystem
     {
         /// <summary>
         /// 効果音を再生します
@@ -89,7 +91,8 @@ namespace Xenosite.System.GlobalService.Interface
     /// <summary>
     /// BGMを再生する機能を持ちます
     /// </summary>
-    public interface IBGMSystem : ICoreSystem
+    [CoreSystem]
+    public interface IBGMSystem
     {
         /// <summary>
         /// BGMを再生します
