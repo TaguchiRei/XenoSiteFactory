@@ -1,5 +1,3 @@
-using System.GlobalService.Interface;
-
 namespace Xenosite.System.GlobalService.Interface
 {
     [CoreSystem]
