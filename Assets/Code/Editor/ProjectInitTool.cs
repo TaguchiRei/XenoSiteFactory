@@ -17,7 +17,12 @@ public class ProjectInitTool : EditorWindow
     {
         if (GUILayout.Button("UniTaskを導入"))
         {
-            InstallUniTask();
+            InstallURL("https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask");
+        }
+
+        if (GUILayout.Button("VContainerを導入"))
+        {
+            InstallURL("https://github.com/hadashiA/VContainer.git");
         }
 
         if (GUILayout.Button("Addressableを導入"))
@@ -72,10 +77,9 @@ public class ProjectInitTool : EditorWindow
 
     #region Asset導入
 
-    private void InstallUniTask()
+    private void InstallURL(string url)
     {
-        string packageUrl = "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask";
-        var request = Client.Add(packageUrl);
+        var request = Client.Add(url);
     }
 
     private void InstallPackageManager(string packageName)
