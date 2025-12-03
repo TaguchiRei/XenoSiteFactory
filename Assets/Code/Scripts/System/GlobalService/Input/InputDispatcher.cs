@@ -10,6 +10,13 @@ public class InputDispatcher : MonoBehaviour, IInputDispatcher
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
+        
+        foreach (var actionsActionMap in _playerInput.actions.actionMaps)
+        {
+            actionsActionMap.Disable();
+        }
+
+        _playerInput.actions.FindActionMap(nameof(ActionMaps.Player)).Enable();
     }
 
     public void RegisterActionStart(string actionMap, string actionName, Action<InputAction.CallbackContext> action)
