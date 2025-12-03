@@ -40,9 +40,11 @@ namespace XenoSiteFactory.Editor
             string actionMapEnumName = $"ActionMaps";
             sb.AppendLine($"public enum {actionMapEnumName}");
             sb.AppendLine("{");
+            int i = 0;
             foreach (var map in asset.actionMaps)
             {
-                sb.AppendLine($"    {SanitizeName(map.name)},");
+                sb.AppendLine($"    {SanitizeName(map.name)} = {i},");
+                i++;
             }
 
             sb.AppendLine("}");
@@ -55,7 +57,7 @@ namespace XenoSiteFactory.Editor
                 sb.AppendLine($"public enum {actionEnumName}");
                 sb.AppendLine("{");
 
-                int i = 0;
+                i = 0;
                 foreach (var action in map.actions)
                 {
                     sb.AppendLine($"    {SanitizeName(action.name)} = {i},");
