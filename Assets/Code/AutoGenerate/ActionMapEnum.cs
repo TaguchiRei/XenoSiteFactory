@@ -1,8 +1,8 @@
 // 自動生成ファイルの為、手動での編集は上書きされます。
 public enum ActionMaps
 {
-    Player,
-    UI,
+    Player = 0,
+    UI = 1,
 }
 
 public enum PlayerActions
