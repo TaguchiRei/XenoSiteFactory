@@ -20,6 +20,6 @@ public class UnitData
     public Vector3Int[] OutputPorts;
     public bool[] UnitShape;
     public int UnitWidth;
-    public int UniDepth;
+    public int UnitDepth;
     public int UnitHeight;
 }
