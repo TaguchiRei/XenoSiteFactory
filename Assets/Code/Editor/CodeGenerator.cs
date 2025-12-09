@@ -1,7 +1,6 @@
 using System;
-using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -349,17 +348,39 @@ public class CodeGenerator : EditorWindow
     #endregion
 
 
-    static string ToPascalCase(string input)
+    private string ToPascalCase(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
             return string.Empty;
 
-        TextInfo textInfo = CultureInfo.InvariantCulture.TextInfo;
+        StringBuilder sb = new StringBuilder();
 
-        return string.Concat(
-            input.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                .Select(word => textInfo.ToTitleCase(word.ToLower()))
-        );
+        sb.Append(char.ToUpper(input[0]));
+        bool beforeSeparator = false;
+
+        for (int i = 1; i < input.Length; i++)
+        {
+            var separator = IsSeparator(input[i]);
+            if (separator)
+            {
+                beforeSeparator = true;
+                continue;
+            }
+
+            sb.Append(beforeSeparator ? char.ToUpper(input[i]) : input[i]);
+        }
+
+        return sb.ToString();
+    }
+
+    private bool IsSeparator(char c)
+    {
+        return c == ' ' ||
+               c == '_' ||
+               c == '-' ||
+               c == '/' ||
+               c == '\n' ||
+               c == '\r';
     }
 
     private enum GenerateMode
