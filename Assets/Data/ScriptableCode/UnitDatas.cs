@@ -6,7 +6,11 @@ using UnityEngine.AddressableAssets;
 [CreateAssetMenu(fileName = "UnitData", menuName = "ScriptableObjects/UnitData")]
 public class UnitDatas : ScriptableObject
 {
-    public List<UnitData> AllUnitData = new();
+    public UnitData[] Manufactures;
+
+    public UnitData[] Weapons;
+
+    public UnitData[] Xenosites;
 }
 
 [Serializable]
