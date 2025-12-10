@@ -10,7 +10,7 @@ public class InputDispatcher : MonoBehaviour, IInputDispatcher
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
-        
+
         foreach (var actionsActionMap in _playerInput.actions.actionMaps)
         {
             actionsActionMap.Disable();
