@@ -8,4 +8,5 @@ public enum OutListSceneName
 {
     InGame,
     System,
+    UnitPlacementTestScene,
 }

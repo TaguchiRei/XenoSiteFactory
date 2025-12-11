@@ -18,12 +18,12 @@ public class SceneEnumGenerate
         Generate();
     }
 
-    private static void OnNewSceneCreated(UnityEngine.SceneManagement.Scene scene, UnityEditor.SceneManagement.NewSceneSetup setup, UnityEditor.SceneManagement.NewSceneMode mode)
+    private static void OnNewSceneCreated(UnityEngine.SceneManagement.Scene scene, NewSceneSetup setup, NewSceneMode mode)
     {
         Generate();
     }
 
-    private static void Generate()
+    public static void Generate()
     {
         // BuildSettings に登録されているシーン
         var buildScenes = EditorBuildSettings.scenes;
@@ -36,7 +36,7 @@ public class SceneEnumGenerate
         // プロジェクト内の全シーンファイル
         var allScenePaths = Directory.GetFiles(Application.dataPath, "*.unity", SearchOption.AllDirectories);
         var allScenes = allScenePaths
-            .Select(p => Path.GetFileNameWithoutExtension(p))
+            .Select(Path.GetFileNameWithoutExtension)
             .Distinct()
             .ToArray();
 
