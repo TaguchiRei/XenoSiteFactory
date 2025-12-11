@@ -2,12 +2,10 @@
 public enum InListSceneName
 {
     Bootstrap,
-    StartScene,
-    ManagementScene,
-    InGame,
 }
 
 public enum OutListSceneName
 {
+    InGame,
     System,
 }

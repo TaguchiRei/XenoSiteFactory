@@ -8,15 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Level/Scenes/OutGame/Bootstrap.unity
     guid: 21c10d12f03b9cb45a5085187a0e1424
-  - enabled: 1
-    path: Assets/Level/Scenes/OutGame/StartScene.unity
-    guid: 391866c621e367541a0d8398856c48be
-  - enabled: 1
-    path: Assets/Level/Scenes/System/ManagementScene.unity
-    guid: d43b9572df32f93438a05a51598ba35d
-  - enabled: 1
-    path: Assets/Level/Scenes/InGame/InGame.unity
-    guid: 2c99d55de1a836e45bf6d3661b17c68c
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 93fc7543d2b5df646bde112b74b93ca6, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
