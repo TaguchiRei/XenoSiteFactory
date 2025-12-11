@@ -26,8 +26,8 @@ namespace Code.Scripts.Runtime.Entity.Grid
             _depth = depth;
             _placedUnitData = placedUnitData;
         }
-        
-        private bool CheckCanPut(UnitEntity unitEntity, Vector3Int position)
+
+        public bool CheckCanPut(UnitEntity unitEntity, Vector3Int position)
         {
             if (position.x + unitEntity.UnitWidth > _width ||
                 position.y + unitEntity.UnitHeight > _height ||
