@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu(fileName = "UnitData", menuName = "ScriptableObjects/UnitData")]
 public class UnitDatas : ScriptableObject
 {
-    public List<UnitData> AllUnitData = new();
+    public UnitData[] Manufactures;
+
+    public UnitData[] Weapons;
+
+    public UnitData[] Xenosites;
 }
 
 [Serializable]
@@ -13,12 +18,12 @@ public class UnitData
 {
     public string Name;
     public string Info;
-    public Texture2D UnitTexture;
-    public GameObject UnitPrefab;
+    public AssetReferenceTexture2D UnitTexture;
+    public AssetReferenceGameObject UnitPrefab;
     public Vector3Int[] InputPorts;
     public Vector3Int[] OutputPorts;
     public bool[] UnitShape;
     public int UnitWidth;
-    public int UniDepth;
+    public int UnitDepth;
     public int UnitHeight;
 }

@@ -1,7 +1,6 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SceneLoader : EditorWindow
 {
@@ -36,7 +35,7 @@ public class SceneLoader : EditorWindow
             {
                 if (GUILayout.Button(scene))
                 {
-                    UnityEditor.SceneManagement.EditorSceneManager.OpenScene($"Assets/Level/Scenes/{scene}.unity");
+                    UnityEditor.SceneManagement.EditorSceneManager.OpenScene(FindScenePathUnderLevelScenes(scene));
                 }
             }
         }
@@ -53,10 +52,34 @@ public class SceneLoader : EditorWindow
             {
                 if (GUILayout.Button(scene))
                 {
-                    UnityEditor.SceneManagement.EditorSceneManager.OpenScene($"Assets/Level/Scenes/{scene}.unity");
+                    UnityEditor.SceneManagement.EditorSceneManager.OpenScene(FindScenePathUnderLevelScenes(scene));
                 }
             }
         }
+
         EditorGUILayout.EndScrollView();
+    }
+
+
+    static string FindScenePathUnderLevelScenes(string sceneName)
+    {
+        // "t:Scene" でシーンのみ検索、フォルダ指定で範囲を限定
+        var guids = AssetDatabase.FindAssets($"t:Scene {sceneName}", new[] { "Assets/Level/Scenes" });
+
+        if (guids == null || guids.Length == 0)
+            return null;
+
+        // 同名シーンが複数ある可能性があるため最初の一致を返す
+        // 必要なら名前完全一致に絞る処理を追加可能
+        foreach (var guid in guids)
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            var file = System.IO.Path.GetFileNameWithoutExtension(path);
+
+            if (file == sceneName)
+                return path;
+        }
+
+        return null;
     }
 }
